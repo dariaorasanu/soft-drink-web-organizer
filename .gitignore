@@ -1,0 +1,30 @@
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment / local config
+.env
+.env.local
+
+# Dependencies
+/vendor/
+node_modules/
+
+# Local databases
+*.sqlite
+*.db
+
+# Uploaded files
+public/images/uploads/
+
+# Cache / temp
+tmp/
+cache/
