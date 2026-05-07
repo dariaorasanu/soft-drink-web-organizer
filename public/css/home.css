@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Playfair+Display:wght@700&display=swap');
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    background: #171817;
+    color: #f4f1ea;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.home-page {
+    width: min(100%, 1180px);
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: #262826;
+    border: 1px solid #3b3d3a;
+    border-radius: 18px;
+    position: sticky;
+    top: 1rem;
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    flex-direction: column;
+    min-width: 130px;
+}
+
+.brand-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.brand-main span {
+    color: #f72585;
+}
+
+.brand-subtitle {
+    margin-top: 0.2rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.22rem;
+    text-transform: uppercase;
+    color: #9b8cb3;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 1;
+}
+
+.nav-link {
+    padding: 0.85rem 1.1rem;
+    border: 1px solid #555753;
+    border-radius: 8px;
+    color: #f0eee8;
+    font-weight: 800;
+    font-size: 0.95rem;
+    background: #2b2d2a;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.nav-link:hover {
+    background: #343733;
+    border-color: #8df0c0;
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    background: #3a3d38;
+    border-color: #8df0c0;
+    color: #ffffff;
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #c7f8df;
+    color: #173629;
+    font-weight: 800;
+}
+
+.username {
+    color: #d8d2c7;
+    font-weight: 700;
+}
+
+.logout-btn {
+    padding: 0.65rem 0.9rem;
+    border: 1px solid #555753;
+    border-radius: 8px;
+    color: #d8d2c7;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.hero {
+    margin-top: 1rem;
+    padding: 1.4rem 1.2rem 1.2rem;
+    background: #252824;
+    border: 1px solid #373a35;
+    border-radius: 20px;
+}
+
+.eyebrow {
+    margin: 0 0 0.2rem;
+    color: #8df0c0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12rem;
+    font-weight: 800;
+}
+
+.welcome h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.1;
+}
+
+.subtitle {
+    margin: 0.45rem 0 1rem;
+    color: #bcb5aa;
+    font-size: 1rem;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #2c2e2a;
+    border: 1px solid #595c55;
+    border-radius: 10px;
+}
+
+.search-icon {
+    color: #8b8d86;
+    font-size: 1.2rem;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #f4f1ea;
+    font: inherit;
+}
+
+.search-box input::placeholder {
+    color: #86877f;
+}
+
+.category-row {
+    display: flex;
+    gap: 0.7rem;
+    overflow-x: auto;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #373a35;
+}
+
+.category-pill {
+    flex: 0 0 auto;
+    padding: 0.65rem 1rem;
+    border: 1px solid #555753;
+    border-radius: 999px;
+    background: #2b2d2a;
+    color: #d8d2c7;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.category-pill.active {
+    background: #d9fff0;
+    border-color: #8df0c0;
+    color: #18362b;
+}
+
+@media (max-width: 900px) {
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .nav-menu {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.2rem;
+    }
+
+    .user-area {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-end;
+    }
+}
