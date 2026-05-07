@@ -5,12 +5,35 @@ require_once __DIR__ . '/../config/Bootstrap.php';
 
 /** @var AuthGuard $guard */
 /** @var UserService $userService */
+/** @var PDO $pdo */
 
 $guard->requireAuth();
 
 $currentUser = $userService->getCurrentUser();
 $username = $currentUser?->username ?? 'Utilizator';
 $initials = strtoupper(substr($username, 0, 1));
+$userId = $currentUser?->id;
+
+$activeListsCount = 0;
+$favoriteProductsCount = 0;
+
+if ($userId !== null) {
+    $activeListsStmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM shopping_lists
+        WHERE user_id = :user_id
+    ");
+    $activeListsStmt->execute([':user_id' => $userId]);
+    $activeListsCount = (int) $activeListsStmt->fetchColumn();
+
+    $favoriteProductsStmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM user_favorites
+        WHERE user_id = :user_id
+    ");
+    $favoriteProductsStmt->execute([':user_id' => $userId]);
+    $favoriteProductsCount = (int) $favoriteProductsStmt->fetchColumn();
+}
 ?>
 <!DOCTYPE html>
 <html lang="ro">
@@ -54,7 +77,7 @@ $initials = strtoupper(substr($username, 0, 1));
             <p class="eyebrow">Bine ai revenit</p>
             <h1>Bună ziua, <?= htmlspecialchars($username) ?> 👋</h1>
             <p class="subtitle">
-                Ai 3 liste active · 24 produse favorite · ultima activitate acum 2 ore
+                Ai <?= $activeListsCount ?> liste active · <?= $favoriteProductsCount ?> produse favorite
             </p>
 
             <form class="search-box" action="/pages/catalog.php" method="get">
