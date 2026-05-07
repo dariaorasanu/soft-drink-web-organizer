@@ -1,8 +1,11 @@
 <?php
 session_start();
+
 require_once __DIR__ . '/../config/Bootstrap.php';
 
 /** @var AuthGuard $guard */
+/** @var UserService $userService */
+
 $guard->requireAuth();
 
 $currentUser = $userService->getCurrentUser();
@@ -43,8 +46,7 @@ $initials = strtoupper(substr($username, 0, 1));
         <div class="user-area">
             <div class="avatar"><?= htmlspecialchars($initials) ?></div>
             <span class="username"><?= htmlspecialchars($username) ?></span>
-            <a href="/api/users.php?action=logout" class="logout-btn">Ieșire</a>
-        </div>
+            <button type="button" class="logout-btn" id="logout-btn">Ieșire</button>        </div>
     </header>
 
     <main class="hero">
@@ -77,6 +79,6 @@ $initials = strtoupper(substr($username, 0, 1));
     </main>
 
 </div>
-
+<script src="/public/js/home.js"></script>
 </body>
 </html>
