@@ -23,6 +23,7 @@ match ($action) {
     'get' => $controller->get(),
     'top' => $controller->top(),
     'search' => $controller->search(),
+    'toggle_favorite' => $controller->toggleFavorite(),
     default => (function () {
         http_response_code(404);
         header('Content-Type: application/json; charset=utf-8');

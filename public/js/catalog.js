@@ -124,6 +124,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 </article>
             `;
         }).join('');
+        attachFavoriteEvents();
+    }
+
+    function attachFavoriteEvents() {
+        document.querySelectorAll('.favorite-btn').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                event.preventDefault();
+
+                const productId = button.dataset.productId;
+
+                const formData = new FormData();
+                formData.append('product_id', productId);
+
+                button.disabled = true;
+
+                try {
+                    const response = await fetch('/api/product.php?action=toggle_favorite', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (!data.success) {
+                        alert(data.message || 'Nu am putut actualiza favoritele.');
+                        return;
+                    }
+
+                    if (data.is_favorite) {
+                        button.textContent = '♥ Favorit';
+                        button.classList.add('active');
+                    } else {
+                        button.textContent = '♡ Favorite';
+                        button.classList.remove('active');
+                    }
+                } catch (error) {
+                    alert('A apărut o eroare la favorite.');
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        });
     }
 
     function updatePagination() {

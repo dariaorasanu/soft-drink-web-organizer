@@ -24,6 +24,7 @@ class ProductController
                 'brand' => $_GET['brand'] ?? null,
             ];
 
+
             $result = $this->productService->getAll($filters, $limit, $offset);
 
             $this->jsonSuccess([
@@ -98,5 +99,40 @@ class ProductController
             'message' => $message,
         ], JSON_UNESCAPED_UNICODE);
         exit;
+    }
+
+    public function toggleFavorite(): void
+    {
+        try {
+            if (empty($_SESSION['user_id'])) {
+                $this->jsonError('Trebuie să fii autentificat.', 401);
+                return;
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->jsonError('Metodă invalidă.', 405);
+                return;
+            }
+
+            $productId = (int)($_POST['product_id'] ?? 0);
+
+            if ($productId <= 0) {
+                $this->jsonError('Produs invalid.', 400);
+                return;
+            }
+
+            $result = $this->productService->toggleFavorite(
+                (int)$_SESSION['user_id'],
+                $productId
+            );
+
+            $this->jsonSuccess($result);
+        } catch (InvalidArgumentException $e) {
+            $this->jsonError($e->getMessage(), 400);
+        } catch (RuntimeException $e) {
+            $this->jsonError($e->getMessage(), 404);
+        } catch (Throwable $e) {
+            $this->jsonError('Eroare la actualizarea favoritului.', 500);
+        }
     }
 }

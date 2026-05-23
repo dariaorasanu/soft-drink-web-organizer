@@ -360,4 +360,65 @@ class ProductRepository implements ProductRepositoryInterface
         $stmt->execute([':slug' => $slug]);
         return $stmt->fetch() !== false;
     }
+
+    public function isFavorite(int $userId, int $productId): bool
+    {
+        $stmt = $this->db->prepare("
+        SELECT 1
+        FROM user_favorites
+        WHERE user_id = :user_id
+          AND product_id = :product_id
+        LIMIT 1
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+        ]);
+
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function addFavorite(int $userId, int $productId): void
+    {
+        $stmt = $this->db->prepare("
+        INSERT INTO user_favorites (user_id, product_id)
+        VALUES (:user_id, :product_id)
+        ON CONFLICT DO NOTHING
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+        ]);
+    }
+
+    public function removeFavorite(int $userId, int $productId): void
+    {
+        $stmt = $this->db->prepare("
+        DELETE FROM user_favorites
+        WHERE user_id = :user_id
+          AND product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+        ]);
+    }
+
+    public function countFavorites(int $productId): int
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(*)
+        FROM user_favorites
+        WHERE product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        return (int)$stmt->fetchColumn();
+    }
 }

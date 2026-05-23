@@ -152,4 +152,41 @@ class ProductService
 
         return $data;
     }
+
+    public function toggleFavorite(int $userId, int $productId): array
+    {
+        if ($userId <= 0 || $productId <= 0) {
+            throw new InvalidArgumentException('Date invalide pentru favorite.');
+        }
+
+        $product = $this->productRepository->findById($productId);
+
+        if ($product === null) {
+            throw new RuntimeException('Produsul nu există.');
+        }
+
+        $isFavorite = $this->productRepository->isFavorite($userId, $productId);
+
+        if ($isFavorite) {
+            $this->productRepository->removeFavorite($userId, $productId);
+            $isFavorite = false;
+        } else {
+            $this->productRepository->addFavorite($userId, $productId);
+            $isFavorite = true;
+        }
+
+        return [
+            'is_favorite' => $isFavorite,
+            'favorites_count' => $this->productRepository->countFavorites($productId),
+        ];
+    }
+
+    public function isFavorite(int $userId, int $productId): bool
+    {
+        if ($userId <= 0 || $productId <= 0) {
+            return false;
+        }
+
+        return $this->productRepository->isFavorite($userId, $productId);
+    }
 }
