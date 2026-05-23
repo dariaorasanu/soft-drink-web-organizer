@@ -24,6 +24,8 @@ match ($action) {
     'top' => $controller->top(),
     'search' => $controller->search(),
     'toggle_favorite' => $controller->toggleFavorite(),
+    'rate' => $controller->rate(),
+    'get_ratings' => $controller->getRatings(),
     default => (function () {
         http_response_code(404);
         header('Content-Type: application/json; charset=utf-8');

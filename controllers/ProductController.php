@@ -135,4 +135,62 @@ class ProductController
             $this->jsonError('Eroare la actualizarea favoritului.', 500);
         }
     }
+
+    public function rate(): void
+    {
+        try {
+            if (empty($_SESSION['user_id'])) {
+                $this->jsonError('Trebuie să fii autentificat.', 401);
+                return;
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->jsonError('Metodă invalidă.', 405);
+                return;
+            }
+
+            $productId = (int)($_POST['product_id'] ?? 0);
+            $rating = (int)($_POST['rating'] ?? 0);
+            $review = $_POST['review'] ?? null;
+
+            if ($productId <= 0) {
+                $this->jsonError('Produs invalid.', 400);
+                return;
+            }
+
+            $result = $this->productService->addRating(
+                (int)$_SESSION['user_id'],
+                $productId,
+                $rating,
+                $review
+            );
+
+            $this->jsonSuccess($result);
+        } catch (InvalidArgumentException $e) {
+            $this->jsonError($e->getMessage(), 400);
+        } catch (RuntimeException $e) {
+            $this->jsonError($e->getMessage(), 404);
+        } catch (Throwable $e) {
+            $this->jsonError('Eroare la salvarea ratingului.', 500);
+        }
+    }
+
+    public function getRatings(): void
+    {
+        try {
+            $productId = (int)($_GET['product_id'] ?? 0);
+
+            if ($productId <= 0) {
+                $this->jsonError('Produs invalid.', 400);
+                return;
+            }
+
+            $ratings = $this->productService->getRatings($productId);
+
+            $this->jsonSuccess(['ratings' => $ratings]);
+        } catch (Throwable $e) {
+            $this->jsonError('Eroare la încărcarea ratingurilor.', 500);
+        }
+    }
+
 }

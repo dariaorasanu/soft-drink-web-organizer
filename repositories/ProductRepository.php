@@ -421,4 +421,80 @@ class ProductRepository implements ProductRepositoryInterface
 
         return (int)$stmt->fetchColumn();
     }
+
+    public function addRating(int $userId, int $productId, int $rating, ?string $review = null): void
+    {
+        $stmt = $this->db->prepare("
+        INSERT INTO product_ratings (user_id, product_id, rating, review)
+        VALUES (:user_id, :product_id, :rating, :review)
+        ON CONFLICT (user_id, product_id)
+        DO UPDATE SET
+            rating = EXCLUDED.rating,
+            review = EXCLUDED.review,
+            created_at = NOW()
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+            ':rating' => $rating,
+            ':review' => $review,
+        ]);
+    }
+
+    public function findRatings(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            pr.id,
+            pr.user_id,
+            pr.product_id,
+            pr.rating,
+            pr.review,
+            pr.created_at,
+            u.username
+        FROM product_ratings pr
+        JOIN users u ON u.id = pr.user_id
+        WHERE pr.product_id = :product_id
+        ORDER BY pr.created_at DESC
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    public function getAverageRating(int $productId): ?float
+    {
+        $stmt = $this->db->prepare("
+        SELECT AVG(rating)
+        FROM product_ratings
+        WHERE product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        $average = $stmt->fetchColumn();
+
+        return $average !== null ? round((float)$average, 2) : null;
+    }
+
+    public function countRatings(int $productId): int
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(*)
+        FROM product_ratings
+        WHERE product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        return (int)$stmt->fetchColumn();
+    }
 }

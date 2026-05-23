@@ -189,4 +189,56 @@ class ProductService
 
         return $this->productRepository->isFavorite($userId, $productId);
     }
+
+    public function addRating(int $userId, int $productId, int $rating, ?string $review = null): array
+    {
+        if ($userId <= 0 || $productId <= 0) {
+            throw new InvalidArgumentException('Date invalide pentru rating.');
+        }
+
+        if ($rating < 1 || $rating > 5) {
+            throw new InvalidArgumentException('Ratingul trebuie să fie între 1 și 5.');
+        }
+
+        $product = $this->productRepository->findById($productId);
+
+        if ($product === null) {
+            throw new RuntimeException('Produsul nu există.');
+        }
+
+        $review = $review !== null ? trim($review) : null;
+
+        if ($review === '') {
+            $review = null;
+        }
+
+        $this->productRepository->addRating($userId, $productId, $rating, $review);
+
+        return [
+            'average_rating' => $this->productRepository->getAverageRating($productId),
+            'ratings_count' => $this->productRepository->countRatings($productId),
+            'ratings' => $this->getRatings($productId),
+        ];
+    }
+
+    public function getRatings(int $productId): array
+    {
+        if ($productId <= 0) {
+            return [];
+        }
+
+        $ratings = $this->productRepository->findRatings($productId);
+
+        return array_map(function (array $rating) {
+            return [
+                'id' => (int)$rating['id'],
+                'user_id' => (int)$rating['user_id'],
+                'product_id' => (int)$rating['product_id'],
+                'rating' => (int)$rating['rating'],
+                'review' => $rating['review'],
+                'username' => htmlspecialchars($rating['username'], ENT_QUOTES, 'UTF-8'),
+                'created_at' => $rating['created_at'],
+            ];
+        }, $ratings);
+    }
 }
