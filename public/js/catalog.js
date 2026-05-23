@@ -114,8 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     </a>
 
                     <div class="product-actions">
-                        <button type="button" class="favorite-btn" data-product-id="${product.id}">
-                            ♡ Favorite
+                        <button 
+                            type="button" 
+                            class="favorite-btn ${product.is_favorite ? 'active' : ''}" 
+                            data-product-id="${product.id}"
+                        >
+                            ${product.is_favorite ? '♥ Favorit' : '♡ Favorite'}
                         </button>
                         <button type="button" class="list-btn" data-product-id="${product.id}">
                             + Adaugă la listă

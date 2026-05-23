@@ -108,23 +108,23 @@ class ProductRepository implements ProductRepositoryInterface
         ");
 
         $stmt->execute([
-            ':name'             => $data['name'],
-            ':slug'             => $this->generateSlug($data['name']),
-            ':description'      => $data['description']      ?? null,
-            ':price'            => $data['price']            ?? null,
-            ':image_url'        => $data['image_url']        ?? null,
-            ':ingredients'      => $data['ingredients']      ?? null,
-            ':barcode'          => $data['barcode']          ?? null,
-            ':brand'            => $data['brand']            ?? null,
-            ':volume_ml'        => $data['volume_ml']        ?? null,
+            ':name'               => $data['name'],
+            ':slug'               => $this->generateSlug($data['name']),
+            ':description'        => $data['description'] ?: null,
+            ':price'              => $data['price'] ?? null,
+            ':image_url'          => $data['image_url'] ?: null,
+            ':ingredients'        => $data['ingredients'] ?: null,
+            ':barcode'            => $data['barcode'] ?: null,
+            ':brand'              => $data['brand'] ?: null,
+            ':volume_ml'          => $data['volume_ml'] ?? null,
             ':calories_per_100ml' => $data['calories_per_100ml'] ?? null,
-            ':sugar_per_100ml'  => $data['sugar_per_100ml']  ?? null,
-            ':is_perishable'    => $data['is_perishable']    ?? false,
-            ':shelf_life_days'  => $data['shelf_life_days']  ?? null,
-            ':is_vegan'         => $data['is_vegan']         ?? false,
-            ':is_gluten_free'   => $data['is_gluten_free']   ?? false,
-            ':openfoodfacts_id' => $data['openfoodfacts_id'] ?? null,
-            ':created_by'       => $data['created_by']       ?? null,
+            ':sugar_per_100ml'    => $data['sugar_per_100ml'] ?? null,
+            ':is_perishable'      => !empty($data['is_perishable']) ? 'true' : 'false',
+            ':shelf_life_days'    => $data['shelf_life_days'] ?? null,
+            ':is_vegan'           => !empty($data['is_vegan']) ? 'true' : 'false',
+            ':is_gluten_free'     => !empty($data['is_gluten_free']) ? 'true' : 'false',
+            ':openfoodfacts_id'   => !empty($data['openfoodfacts_id']) ? $data['openfoodfacts_id'] : null,
+            ':created_by'         => $data['created_by'] ?? null,
         ]);
 
         return (int)$stmt->fetchColumn();
@@ -133,39 +133,41 @@ class ProductRepository implements ProductRepositoryInterface
     public function update(int $id, array $data): bool
     {
         $stmt = $this->db->prepare("
-            UPDATE products SET
-                name               = :name,
-                description        = :description,
-                price              = :price,
-                image_url          = :image_url,
-                ingredients        = :ingredients,
-                brand              = :brand,
-                volume_ml          = :volume_ml,
-                calories_per_100ml = :calories_per_100ml,
-                sugar_per_100ml    = :sugar_per_100ml,
-                is_perishable      = :is_perishable,
-                shelf_life_days    = :shelf_life_days,
-                is_vegan           = :is_vegan,
-                is_gluten_free     = :is_gluten_free,
-                updated_at         = NOW()
-            WHERE id = :id
-        ");
+        UPDATE products SET
+            name               = :name,
+            description        = :description,
+            price              = :price,
+            image_url          = :image_url,
+            ingredients        = :ingredients,
+            brand              = :brand,
+            volume_ml          = :volume_ml,
+            calories_per_100ml = :calories_per_100ml,
+            sugar_per_100ml    = :sugar_per_100ml,
+            is_perishable      = :is_perishable,
+            shelf_life_days    = :shelf_life_days,
+            is_vegan           = :is_vegan,
+            is_gluten_free     = :is_gluten_free,
+            updated_at         = NOW()
+        WHERE id = :id
+    ");
 
         return $stmt->execute([
-            ':id'                => $id,
-            ':name'              => $data['name'],
-            ':description'       => $data['description']      ?? null,
-            ':price'             => $data['price']            ?? null,
-            ':image_url'         => $data['image_url']        ?? null,
-            ':ingredients'       => $data['ingredients']      ?? null,
-            ':brand'             => $data['brand']            ?? null,
-            ':volume_ml'         => $data['volume_ml']        ?? null,
-            ':calories_per_100ml'=> $data['calories_per_100ml'] ?? null,
-            ':sugar_per_100ml'   => $data['sugar_per_100ml']  ?? null,
-            ':is_perishable'     => $data['is_perishable']    ?? false,
-            ':shelf_life_days'   => $data['shelf_life_days']  ?? null,
-            ':is_vegan'          => $data['is_vegan']         ?? false,
-            ':is_gluten_free'    => $data['is_gluten_free']   ?? false,
+            ':id'                  => $id,
+            ':name'                => $data['name'],
+            ':description'         => !empty($data['description']) ? $data['description'] : null,
+            ':price'               => $data['price'] !== '' ? $data['price'] : null,
+            ':image_url'           => !empty($data['image_url']) ? $data['image_url'] : null,
+            ':ingredients'         => !empty($data['ingredients']) ? $data['ingredients'] : null,
+            ':brand'               => !empty($data['brand']) ? $data['brand'] : null,
+            ':volume_ml'           => !empty($data['volume_ml']) ? (int)$data['volume_ml'] : null,
+            ':calories_per_100ml'  => !empty($data['calories_per_100ml']) ? (float)$data['calories_per_100ml'] : null,
+            ':sugar_per_100ml'     => !empty($data['sugar_per_100ml']) ? (float)$data['sugar_per_100ml'] : null,
+
+            // IMPORTANT: PostgreSQL vrea true/false, nu string gol ""
+            ':is_perishable'       => !empty($data['is_perishable']) ? 'true' : 'false',
+            ':shelf_life_days'     => !empty($data['shelf_life_days']) ? (int)$data['shelf_life_days'] : null,
+            ':is_vegan'            => !empty($data['is_vegan']) ? 'true' : 'false',
+            ':is_gluten_free'      => !empty($data['is_gluten_free']) ? 'true' : 'false',
         ]);
     }
 

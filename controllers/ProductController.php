@@ -25,7 +25,9 @@ class ProductController
             ];
 
 
-            $result = $this->productService->getAll($filters, $limit, $offset);
+            $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+
+            $result = $this->productService->getAll($filters, $limit, $offset, $userId);
 
             $this->jsonSuccess([
                 'products' => $result['products'],
@@ -190,6 +192,87 @@ class ProductController
             $this->jsonSuccess(['ratings' => $ratings]);
         } catch (Throwable $e) {
             $this->jsonError('Eroare la încărcarea ratingurilor.', 500);
+        }
+    }
+
+    public function create(): void
+    {
+        try {
+            $this->requireAdmin();
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->jsonError('Metodă invalidă.', 405);
+                return;
+            }
+
+            $product = $this->productService->create($_POST, (int)$_SESSION['user_id']);
+
+            $this->jsonSuccess(['product' => $product], 201);
+        } catch (InvalidArgumentException $e) {
+            $this->jsonError($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            $this->jsonError('Eroare la crearea produsului: ', 500);
+        }
+    }
+
+    public function update(): void
+    {
+        try {
+            $this->requireAdmin();
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->jsonError('Metodă invalidă.', 405);
+                return;
+            }
+
+            $id = (int)($_POST['id'] ?? 0);
+
+            $product = $this->productService->update($id, $_POST);
+
+            $this->jsonSuccess(['product' => $product]);
+        } catch (InvalidArgumentException $e) {
+            $this->jsonError($e->getMessage(), 400);
+        } catch (RuntimeException $e) {
+            $this->jsonError($e->getMessage(), 404);
+        } catch (Throwable $e) {
+            $this->jsonError('Eroare la actualizarea produsului.', 500);
+        }
+    }
+
+    public function delete(): void
+    {
+        try {
+            $this->requireAdmin();
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->jsonError('Metodă invalidă.', 405);
+                return;
+            }
+
+            $id = (int)($_POST['id'] ?? 0);
+
+            $this->productService->delete($id);
+
+            $this->jsonSuccess(['message' => 'Produs șters cu succes.']);
+        } catch (InvalidArgumentException $e) {
+            $this->jsonError($e->getMessage(), 400);
+        } catch (RuntimeException $e) {
+            $this->jsonError($e->getMessage(), 404);
+        } catch (Throwable $e) {
+            $this->jsonError('Eroare la ștergerea produsului.', 500);
+        }
+    }
+
+    private function requireAdmin(): void
+    {
+        if (empty($_SESSION['user_id'])) {
+            $this->jsonError('Trebuie să fii autentificat.', 401);
+            exit;
+        }
+
+        if (($_SESSION['role'] ?? '') !== 'admin') {
+            $this->jsonError('Ai nevoie de rol de admin.', 403);
+            exit;
         }
     }
 

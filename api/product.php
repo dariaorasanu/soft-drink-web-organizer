@@ -2,7 +2,7 @@
 
 session_start();
 
-ini_set('display_errors', 1);
+//ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../config/Bootstrap.php';
@@ -26,6 +26,9 @@ match ($action) {
     'toggle_favorite' => $controller->toggleFavorite(),
     'rate' => $controller->rate(),
     'get_ratings' => $controller->getRatings(),
+    'create' => $controller->create(),
+    'update' => $controller->update(),
+    'delete' => $controller->delete(),
     default => (function () {
         http_response_code(404);
         header('Content-Type: application/json; charset=utf-8');

@@ -6,7 +6,7 @@ class ProductService
 {
     public function __construct(private readonly ProductRepository $productRepository) {}
 
-    public function getAll(array $filters = [], int $limit = 12, int $offset = 0): array
+    public function getAll(array $filters = [], int $limit = 12, int $offset = 0, ?int $userId = null): array
     {
         $limit = max(1, min($limit, 50));
         $offset = max(0, $offset);
@@ -18,7 +18,7 @@ class ProductService
 
         return [
             'products' => array_map(
-                fn(Product $product) => $this->enrichProduct($product),
+                fn(Product $product) => $this->enrichProduct($product, $userId),
                 $products
             ),
             'total' => $total,
@@ -79,7 +79,7 @@ class ProductService
         );
     }
 
-    private function enrichProduct(Product $product): array
+    private function enrichProduct(Product $product, ?int $userId = null): array
     {
         $data = $product->toArray();
 
@@ -92,6 +92,12 @@ class ProductService
             fn(Allergen $allergen) => $allergen->toArray(),
             $this->productRepository->findAllergens($product->id)
         );
+
+        $data['is_favorite'] = $userId
+            ? $this->productRepository->isFavorite($userId, $product->id)
+            : false;
+
+        $data['favorites_count'] = $this->productRepository->countFavorites($product->id);
 
         return $data;
     }
@@ -241,4 +247,103 @@ class ProductService
             ];
         }, $ratings);
     }
+
+    public function create(array $data, int $userId): array
+    {
+        $cleanData = $this->validateProductData($data);
+        $cleanData['created_by'] = $userId;
+
+        $productId = $this->productRepository->create($cleanData);
+
+        if (!empty($data['category_ids']) && is_array($data['category_ids'])) {
+            $categoryIds = array_map('intval', $data['category_ids']);
+            $this->productRepository->syncCategories($productId, $categoryIds);
+        }
+
+        if (!empty($data['allergen_ids']) && is_array($data['allergen_ids'])) {
+            $allergenIds = array_map('intval', $data['allergen_ids']);
+            $this->productRepository->syncAllergens($productId, $allergenIds);
+        }
+
+        return $this->getById($productId);
+    }
+
+    public function update(int $id, array $data): array
+    {
+        if ($id <= 0) {
+            throw new InvalidArgumentException('Produs invalid.');
+        }
+
+        $existingProduct = $this->productRepository->findById($id);
+
+        if ($existingProduct === null) {
+            throw new RuntimeException('Produsul nu există.');
+        }
+
+        $cleanData = $this->validateProductData($data);
+
+        $this->productRepository->update($id, $cleanData);
+
+        if (isset($data['category_ids']) && is_array($data['category_ids'])) {
+            $categoryIds = array_map('intval', $data['category_ids']);
+            $this->productRepository->syncCategories($id, $categoryIds);
+        }
+
+        if (isset($data['allergen_ids']) && is_array($data['allergen_ids'])) {
+            $allergenIds = array_map('intval', $data['allergen_ids']);
+            $this->productRepository->syncAllergens($id, $allergenIds);
+        }
+
+        return $this->getById($id);
+    }
+
+    public function delete(int $id): bool
+    {
+        if ($id <= 0) {
+            throw new InvalidArgumentException('Produs invalid.');
+        }
+
+        $existingProduct = $this->productRepository->findById($id);
+
+        if ($existingProduct === null) {
+            throw new RuntimeException('Produsul nu există.');
+        }
+
+        return $this->productRepository->delete($id);
+    }
+
+    private function validateProductData(array $data): array
+    {
+        $name = trim((string)($data['name'] ?? ''));
+
+        if ($name === '') {
+            throw new InvalidArgumentException('Numele produsului este obligatoriu.');
+        }
+
+        $price = $data['price'] ?? null;
+
+        if ($price !== null && $price !== '' && (float)$price < 0) {
+            throw new InvalidArgumentException('Prețul nu poate fi negativ.');
+        }
+
+        return [
+            'name' => $name,
+            'description' => trim((string)($data['description'] ?? '')),
+            'price' => $price !== '' ? $price : null,
+            'image_url' => trim((string)($data['image_url'] ?? '')),
+            'ingredients' => trim((string)($data['ingredients'] ?? '')),
+            'barcode' => trim((string)($data['barcode'] ?? '')),
+            'brand' => trim((string)($data['brand'] ?? '')),
+            'volume_ml' => !empty($data['volume_ml']) ? (int)$data['volume_ml'] : null,
+            'calories_per_100ml' => !empty($data['calories_per_100ml']) ? (float)$data['calories_per_100ml'] : null,
+            'sugar_per_100ml' => !empty($data['sugar_per_100ml']) ? (float)$data['sugar_per_100ml'] : null,
+            'is_perishable' => !empty($data['is_perishable']),
+            'shelf_life_days' => !empty($data['shelf_life_days']) ? (int)$data['shelf_life_days'] : null,
+            'is_vegan' => !empty($data['is_vegan']),
+            'is_gluten_free' => !empty($data['is_gluten_free']),
+            'openfoodfacts_id' => trim((string)($data['openfoodfacts_id'] ?? '')),
+        ];
+    }
+
+
 }
