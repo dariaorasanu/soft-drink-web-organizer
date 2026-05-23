@@ -4,59 +4,8 @@ session_start();
 require_once __DIR__ . '/../config/Bootstrap.php';
 
 /** @var AuthGuard $guard */
-/** @var PDO $pdo */
 
 $guard->requireAuth();
-
-$query = trim($_GET['q'] ?? '');
-$categorySlug = trim($_GET['category'] ?? '');
-
-$sql = "
-    SELECT DISTINCT 
-        p.id,
-        p.name,
-        p.slug,
-        p.description,
-        p.price,
-        p.image_url,
-        p.brand,
-        p.volume_ml,
-        p.view_count,
-        p.created_at
-    FROM products p
-    LEFT JOIN product_categories pc ON pc.product_id = p.id
-    LEFT JOIN categories c ON c.id = pc.category_id
-    WHERE 1 = 1
-";
-
-$params = [];
-
-if ($query !== '') {
-    $sql .= "
-        AND (
-            p.name ILIKE :query
-            OR p.brand ILIKE :query
-            OR p.description ILIKE :query
-            OR p.ingredients ILIKE :query
-        )
-    ";
-    $params[':query'] = '%' . $query . '%';
-}
-
-if ($categorySlug !== '') {
-    $sql .= " AND c.slug = :category_slug";
-    $params[':category_slug'] = $categorySlug;
-}
-
-$sql .= " ORDER BY p.created_at DESC LIMIT 30";
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$products = $stmt->fetchAll();
-
-$categoryLabel = $categorySlug !== ''
-        ? ucfirst(str_replace('-', ' ', $categorySlug))
-        : 'Toate produsele';
 ?>
 <!DOCTYPE html>
 <html lang="ro">
@@ -64,6 +13,7 @@ $categoryLabel = $categorySlug !== ''
     <meta charset="UTF-8">
     <title>Explorează produse</title>
     <link rel="stylesheet" href="/public/css/home.css">
+    <link rel="stylesheet" href="/public/css/catalog.css">
 </head>
 <body>
 
@@ -86,89 +36,91 @@ $categoryLabel = $categorySlug !== ''
     <main class="hero">
         <section class="welcome">
             <p class="eyebrow">Explorează</p>
-            <h1><?= htmlspecialchars($categoryLabel) ?></h1>
+            <h1 id="catalogTitle">Toate produsele</h1>
 
-            <?php if ($query !== ''): ?>
-                <p class="subtitle">
-                    Rezultate pentru: <strong><?= htmlspecialchars($query) ?></strong>
-                </p>
-            <?php elseif ($categorySlug !== ''): ?>
-                <p class="subtitle">
-                    Produse din categoria: <strong><?= htmlspecialchars($categorySlug) ?></strong>
-                </p>
-            <?php else: ?>
-                <p class="subtitle">
-                    Toate produsele disponibile în catalog.
-                </p>
-            <?php endif; ?>
+            <p class="subtitle" id="catalogSubtitle">
+                Toate produsele disponibile în catalog.
+            </p>
 
-            <form class="search-box" action="/pages/catalog.php" method="get">
+            <div class="search-box">
                 <span class="search-icon">⌕</span>
                 <input
+                        id="catalogSearch"
                         type="search"
-                        name="q"
-                        value="<?= htmlspecialchars($query) ?>"
                         placeholder="Caută un produs, ingredient, marcă sau local..."
                 >
-            </form>
+            </div>
         </section>
 
-        <section class="category-row" aria-label="Categorii produse">
-            <a href="/pages/catalog.php" class="category-pill <?= $categorySlug === '' ? 'active' : '' ?>">▦ Toate</a>
-            <a href="/pages/catalog.php?category=ceaiuri" class="category-pill <?= $categorySlug === 'ceaiuri' ? 'active' : '' ?>">🍵 Ceaiuri</a>
-            <a href="/pages/catalog.php?category=sucuri" class="category-pill <?= $categorySlug === 'sucuri' ? 'active' : '' ?>">🍊 Sucuri</a>
-            <a href="/pages/catalog.php?category=lactate" class="category-pill <?= $categorySlug === 'lactate' ? 'active' : '' ?>">🥛 Lactate</a>
-            <a href="/pages/catalog.php?category=siropuri" class="category-pill <?= $categorySlug === 'siropuri' ? 'active' : '' ?>">🍓 Siropuri</a>
-            <a href="/pages/catalog.php?category=ape" class="category-pill <?= $categorySlug === 'ape' ? 'active' : '' ?>">〰 Ape</a>
-            <a href="/pages/catalog.php?category=sezoniere" class="category-pill <?= $categorySlug === 'sezoniere' ? 'active' : '' ?>">✦ Sezonier</a>
-        </section>
+        <section class="catalog-layout">
+            <aside class="catalog-filters">
+                <h2>Filtre</h2>
 
-        <section class="catalog-grid">
-            <?php if (empty($products)): ?>
-                <div class="empty-state">
-                    <h2>Nu există produse de afișat.</h2>
-                    <p>
-                        Momentan nu avem produse pentru filtrul ales sau baza de date nu este populată.
-                    </p>
+                <div class="filter-group">
+                    <p>Categorii</p>
+
+                    <button type="button" class="category-pill active" data-category="">▦ Toate</button>
+                    <button type="button" class="category-pill" data-category="ceaiuri">🍵 Ceaiuri</button>
+                    <button type="button" class="category-pill" data-category="sucuri">🍊 Sucuri</button>
+                    <button type="button" class="category-pill" data-category="lactate">🥛 Lactate</button>
+                    <button type="button" class="category-pill" data-category="siropuri">🍓 Siropuri</button>
+                    <button type="button" class="category-pill" data-category="ape">〰 Ape</button>
+                    <button type="button" class="category-pill" data-category="sezoniere">✦ Sezonier</button>
                 </div>
-            <?php else: ?>
-                <?php foreach ($products as $product): ?>
-                    <article class="product-card">
-                        <div class="product-image">
-                            <?php if (!empty($product['image_url'])): ?>
-                                <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-                            <?php else: ?>
-                                <span>🥤</span>
-                            <?php endif; ?>
-                        </div>
 
-                        <div class="product-info">
-                            <h2><?= htmlspecialchars($product['name']) ?></h2>
+                <div class="filter-group">
+                    <label>
+                        <input type="checkbox" id="veganFilter">
+                        Vegan
+                    </label>
 
-                            <?php if (!empty($product['brand'])): ?>
-                                <p><?= htmlspecialchars($product['brand']) ?></p>
-                            <?php endif; ?>
+                    <label>
+                        <input type="checkbox" id="glutenFreeFilter">
+                        Fără gluten
+                    </label>
+                </div>
 
-                            <?php if (!empty($product['description'])): ?>
-                                <p><?= htmlspecialchars($product['description']) ?></p>
-                            <?php endif; ?>
+                <div class="filter-group">
+                    <label for="seasonFilter">Sezon</label>
+                    <select id="seasonFilter">
+                        <option value="">Toate</option>
+                        <option value="spring">Primăvară</option>
+                        <option value="summer">Vară</option>
+                        <option value="autumn">Toamnă</option>
+                        <option value="winter">Iarnă</option>
+                    </select>
+                </div>
 
-                            <div class="product-meta">
-                                <?php if ($product['price'] !== null): ?>
-                                    <span><?= number_format((float)$product['price'], 2) ?> RON</span>
-                                <?php endif; ?>
+                <div class="filter-group">
+                    <label for="regionFilter">Regiune</label>
+                    <select id="regionFilter">
+                        <option value="">Toate</option>
+                        <option value="Moldova">Moldova</option>
+                        <option value="Muntenia">Muntenia</option>
+                        <option value="Transilvania">Transilvania</option>
+                        <option value="Dobrogea">Dobrogea</option>
+                        <option value="Basarabia">Basarabia</option>
+                        <option value="Bavaria">Bavaria</option>
+                        <option value="Toscana">Toscana</option>
+                    </select>
+                </div>
+            </aside>
 
-                                <?php if (!empty($product['volume_ml'])): ?>
-                                    <span><?= (int)$product['volume_ml'] ?> ml</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            <?php endif; ?>
+            <section class="catalog-content">
+                <div id="productsGrid" class="catalog-grid">
+                    <p class="catalog-loading">Se încarcă produsele...</p>
+                </div>
+
+                <div class="pagination">
+                    <button type="button" id="prevPage">← Anterior</button>
+                    <span id="pageInfo">Pagina 1</span>
+                    <button type="button" id="nextPage">Următor →</button>
+                </div>
+            </section>
         </section>
     </main>
 </div>
 
+<script src="/public/js/catalog.js"></script>
 </body>
 </html>

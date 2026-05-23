@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/Interfaces/ProductRepositoryInterface.php';
+require_once __DIR__ . '/interfaces/ProductRepositoryInterface.php';
 require_once __DIR__ . '/../models/Product.php';
 require_once __DIR__ . '/../models/Category.php';
 require_once __DIR__ . '/../models/Allergen.php';
@@ -108,23 +108,23 @@ class ProductRepository implements ProductRepositoryInterface
         ");
 
         $stmt->execute([
-            ':name'             => $data['name'],
-            ':slug'             => $this->generateSlug($data['name']),
-            ':description'      => $data['description']      ?? null,
-            ':price'            => $data['price']            ?? null,
-            ':image_url'        => $data['image_url']        ?? null,
-            ':ingredients'      => $data['ingredients']      ?? null,
-            ':barcode'          => $data['barcode']          ?? null,
-            ':brand'            => $data['brand']            ?? null,
-            ':volume_ml'        => $data['volume_ml']        ?? null,
+            ':name'               => $data['name'],
+            ':slug'               => $this->generateSlug($data['name']),
+            ':description'        => $data['description'] ?: null,
+            ':price'              => $data['price'] ?? null,
+            ':image_url'          => $data['image_url'] ?: null,
+            ':ingredients'        => $data['ingredients'] ?: null,
+            ':barcode'            => $data['barcode'] ?: null,
+            ':brand'              => $data['brand'] ?: null,
+            ':volume_ml'          => $data['volume_ml'] ?? null,
             ':calories_per_100ml' => $data['calories_per_100ml'] ?? null,
-            ':sugar_per_100ml'  => $data['sugar_per_100ml']  ?? null,
-            ':is_perishable'    => $data['is_perishable']    ?? false,
-            ':shelf_life_days'  => $data['shelf_life_days']  ?? null,
-            ':is_vegan'         => $data['is_vegan']         ?? false,
-            ':is_gluten_free'   => $data['is_gluten_free']   ?? false,
-            ':openfoodfacts_id' => $data['openfoodfacts_id'] ?? null,
-            ':created_by'       => $data['created_by']       ?? null,
+            ':sugar_per_100ml'    => $data['sugar_per_100ml'] ?? null,
+            ':is_perishable'      => !empty($data['is_perishable']) ? 'true' : 'false',
+            ':shelf_life_days'    => $data['shelf_life_days'] ?? null,
+            ':is_vegan'           => !empty($data['is_vegan']) ? 'true' : 'false',
+            ':is_gluten_free'     => !empty($data['is_gluten_free']) ? 'true' : 'false',
+            ':openfoodfacts_id'   => !empty($data['openfoodfacts_id']) ? $data['openfoodfacts_id'] : null,
+            ':created_by'         => $data['created_by'] ?? null,
         ]);
 
         return (int)$stmt->fetchColumn();
@@ -133,39 +133,41 @@ class ProductRepository implements ProductRepositoryInterface
     public function update(int $id, array $data): bool
     {
         $stmt = $this->db->prepare("
-            UPDATE products SET
-                name               = :name,
-                description        = :description,
-                price              = :price,
-                image_url          = :image_url,
-                ingredients        = :ingredients,
-                brand              = :brand,
-                volume_ml          = :volume_ml,
-                calories_per_100ml = :calories_per_100ml,
-                sugar_per_100ml    = :sugar_per_100ml,
-                is_perishable      = :is_perishable,
-                shelf_life_days    = :shelf_life_days,
-                is_vegan           = :is_vegan,
-                is_gluten_free     = :is_gluten_free,
-                updated_at         = NOW()
-            WHERE id = :id
-        ");
+        UPDATE products SET
+            name               = :name,
+            description        = :description,
+            price              = :price,
+            image_url          = :image_url,
+            ingredients        = :ingredients,
+            brand              = :brand,
+            volume_ml          = :volume_ml,
+            calories_per_100ml = :calories_per_100ml,
+            sugar_per_100ml    = :sugar_per_100ml,
+            is_perishable      = :is_perishable,
+            shelf_life_days    = :shelf_life_days,
+            is_vegan           = :is_vegan,
+            is_gluten_free     = :is_gluten_free,
+            updated_at         = NOW()
+        WHERE id = :id
+    ");
 
         return $stmt->execute([
-            ':id'                => $id,
-            ':name'              => $data['name'],
-            ':description'       => $data['description']      ?? null,
-            ':price'             => $data['price']            ?? null,
-            ':image_url'         => $data['image_url']        ?? null,
-            ':ingredients'       => $data['ingredients']      ?? null,
-            ':brand'             => $data['brand']            ?? null,
-            ':volume_ml'         => $data['volume_ml']        ?? null,
-            ':calories_per_100ml'=> $data['calories_per_100ml'] ?? null,
-            ':sugar_per_100ml'   => $data['sugar_per_100ml']  ?? null,
-            ':is_perishable'     => $data['is_perishable']    ?? false,
-            ':shelf_life_days'   => $data['shelf_life_days']  ?? null,
-            ':is_vegan'          => $data['is_vegan']         ?? false,
-            ':is_gluten_free'    => $data['is_gluten_free']   ?? false,
+            ':id'                  => $id,
+            ':name'                => $data['name'],
+            ':description'         => !empty($data['description']) ? $data['description'] : null,
+            ':price'               => $data['price'] !== '' ? $data['price'] : null,
+            ':image_url'           => !empty($data['image_url']) ? $data['image_url'] : null,
+            ':ingredients'         => !empty($data['ingredients']) ? $data['ingredients'] : null,
+            ':brand'               => !empty($data['brand']) ? $data['brand'] : null,
+            ':volume_ml'           => !empty($data['volume_ml']) ? (int)$data['volume_ml'] : null,
+            ':calories_per_100ml'  => !empty($data['calories_per_100ml']) ? (float)$data['calories_per_100ml'] : null,
+            ':sugar_per_100ml'     => !empty($data['sugar_per_100ml']) ? (float)$data['sugar_per_100ml'] : null,
+
+            // IMPORTANT: PostgreSQL vrea true/false, nu string gol ""
+            ':is_perishable'       => !empty($data['is_perishable']) ? 'true' : 'false',
+            ':shelf_life_days'     => !empty($data['shelf_life_days']) ? (int)$data['shelf_life_days'] : null,
+            ':is_vegan'            => !empty($data['is_vegan']) ? 'true' : 'false',
+            ':is_gluten_free'      => !empty($data['is_gluten_free']) ? 'true' : 'false',
         ]);
     }
 
@@ -262,6 +264,39 @@ class ProductRepository implements ProductRepositoryInterface
             $params[':category_id'] = (int)$filters['category_id'];
         }
 
+        if (!empty($filters['category'])) {
+            $conditions[] = 'EXISTS (
+            SELECT 1
+            FROM product_categories pc_filter
+            JOIN categories c_filter ON c_filter.id = pc_filter.category_id
+            WHERE pc_filter.product_id = p.id
+              AND c_filter.slug = :category
+        )';
+            $params[':category'] = $filters['category'];
+        }
+
+        if (!empty($filters['season'])) {
+            $conditions[] = 'EXISTS (
+            SELECT 1
+            FROM product_seasons ps_filter
+            JOIN seasons s_filter ON s_filter.id = ps_filter.season_id
+            WHERE ps_filter.product_id = p.id
+              AND s_filter.name = :season
+        )';
+            $params[':season'] = $filters['season'];
+        }
+
+        if (!empty($filters['region'])) {
+            $conditions[] = 'EXISTS (
+            SELECT 1
+            FROM product_regions pr_filter
+            JOIN regions r_filter ON r_filter.id = pr_filter.region_id
+            WHERE pr_filter.product_id = p.id
+              AND r_filter.name ILIKE :region
+        )';
+            $params[':region'] = $filters['region'];
+        }
+
         if (!empty($filters['is_vegan'])) {
             $conditions[] = 'p.is_vegan = true';
         }
@@ -271,7 +306,12 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         if (!empty($filters['search'])) {
-            $conditions[] = "(p.name ILIKE :search OR p.brand ILIKE :search OR p.description ILIKE :search)";
+            $conditions[] = "(
+            p.name ILIKE :search 
+            OR p.brand ILIKE :search 
+            OR p.description ILIKE :search
+            OR p.ingredients ILIKE :search
+        )";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 
@@ -321,5 +361,142 @@ class ProductRepository implements ProductRepositoryInterface
         $stmt = $this->db->prepare("SELECT id FROM products WHERE slug = :slug");
         $stmt->execute([':slug' => $slug]);
         return $stmt->fetch() !== false;
+    }
+
+    public function isFavorite(int $userId, int $productId): bool
+    {
+        $stmt = $this->db->prepare("
+        SELECT 1
+        FROM user_favorites
+        WHERE user_id = :user_id
+          AND product_id = :product_id
+        LIMIT 1
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+        ]);
+
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function addFavorite(int $userId, int $productId): void
+    {
+        $stmt = $this->db->prepare("
+        INSERT INTO user_favorites (user_id, product_id)
+        VALUES (:user_id, :product_id)
+        ON CONFLICT DO NOTHING
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+        ]);
+    }
+
+    public function removeFavorite(int $userId, int $productId): void
+    {
+        $stmt = $this->db->prepare("
+        DELETE FROM user_favorites
+        WHERE user_id = :user_id
+          AND product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+        ]);
+    }
+
+    public function countFavorites(int $productId): int
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(*)
+        FROM user_favorites
+        WHERE product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function addRating(int $userId, int $productId, int $rating, ?string $review = null): void
+    {
+        $stmt = $this->db->prepare("
+        INSERT INTO product_ratings (user_id, product_id, rating, review)
+        VALUES (:user_id, :product_id, :rating, :review)
+        ON CONFLICT (user_id, product_id)
+        DO UPDATE SET
+            rating = EXCLUDED.rating,
+            review = EXCLUDED.review,
+            created_at = NOW()
+    ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':product_id' => $productId,
+            ':rating' => $rating,
+            ':review' => $review,
+        ]);
+    }
+
+    public function findRatings(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            pr.id,
+            pr.user_id,
+            pr.product_id,
+            pr.rating,
+            pr.review,
+            pr.created_at,
+            u.username
+        FROM product_ratings pr
+        JOIN users u ON u.id = pr.user_id
+        WHERE pr.product_id = :product_id
+        ORDER BY pr.created_at DESC
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    public function getAverageRating(int $productId): ?float
+    {
+        $stmt = $this->db->prepare("
+        SELECT AVG(rating)
+        FROM product_ratings
+        WHERE product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        $average = $stmt->fetchColumn();
+
+        return $average !== null ? round((float)$average, 2) : null;
+    }
+
+    public function countRatings(int $productId): int
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(*)
+        FROM product_ratings
+        WHERE product_id = :product_id
+    ");
+
+        $stmt->execute([
+            ':product_id' => $productId,
+        ]);
+
+        return (int)$stmt->fetchColumn();
     }
 }
