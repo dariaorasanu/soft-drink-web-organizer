@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/Interfaces/ProductRepositoryInterface.php';
+require_once __DIR__ . '/interfaces/ProductRepositoryInterface.php';
 require_once __DIR__ . '/../models/Product.php';
 require_once __DIR__ . '/../models/Category.php';
 require_once __DIR__ . '/../models/Allergen.php';
@@ -262,6 +262,39 @@ class ProductRepository implements ProductRepositoryInterface
             $params[':category_id'] = (int)$filters['category_id'];
         }
 
+        if (!empty($filters['category'])) {
+            $conditions[] = 'EXISTS (
+            SELECT 1
+            FROM product_categories pc_filter
+            JOIN categories c_filter ON c_filter.id = pc_filter.category_id
+            WHERE pc_filter.product_id = p.id
+              AND c_filter.slug = :category
+        )';
+            $params[':category'] = $filters['category'];
+        }
+
+        if (!empty($filters['season'])) {
+            $conditions[] = 'EXISTS (
+            SELECT 1
+            FROM product_seasons ps_filter
+            JOIN seasons s_filter ON s_filter.id = ps_filter.season_id
+            WHERE ps_filter.product_id = p.id
+              AND s_filter.name = :season
+        )';
+            $params[':season'] = $filters['season'];
+        }
+
+        if (!empty($filters['region'])) {
+            $conditions[] = 'EXISTS (
+            SELECT 1
+            FROM product_regions pr_filter
+            JOIN regions r_filter ON r_filter.id = pr_filter.region_id
+            WHERE pr_filter.product_id = p.id
+              AND r_filter.name ILIKE :region
+        )';
+            $params[':region'] = $filters['region'];
+        }
+
         if (!empty($filters['is_vegan'])) {
             $conditions[] = 'p.is_vegan = true';
         }
@@ -271,7 +304,12 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         if (!empty($filters['search'])) {
-            $conditions[] = "(p.name ILIKE :search OR p.brand ILIKE :search OR p.description ILIKE :search)";
+            $conditions[] = "(
+            p.name ILIKE :search 
+            OR p.brand ILIKE :search 
+            OR p.description ILIKE :search
+            OR p.ingredients ILIKE :search
+        )";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 
