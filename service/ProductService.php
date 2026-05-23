@@ -83,10 +83,17 @@ class ProductService
     {
         $data = $product->toArray();
 
-        $data['categories'] = $this->getCategoriesForProduct($product->id);
-        $data['allergens'] = $this->getAllergensForProduct($product->id);
+        $data['categories'] = array_map(
+            fn(Category $category) => $category->toArray(),
+            $this->productRepository->findCategories($product->id)
+        );
 
-        return $this->escapeArray($data);
+        $data['allergens'] = array_map(
+            fn(Allergen $allergen) => $allergen->toArray(),
+            $this->productRepository->findAllergens($product->id)
+        );
+
+        return $data;
     }
 
     private function cleanFilters(array $filters): array
