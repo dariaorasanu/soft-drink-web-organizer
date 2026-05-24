@@ -1,0 +1,21 @@
+
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=800&fit=crop' WHERE slug = 'matcha-latte';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1609016617751-e80552ae6ec2?w=800&fit=crop' WHERE slug = 'ceai-verde-iasomie';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=800&fit=crop' WHERE slug = 'ceai-rece-piersici';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=800&fit=crop' WHERE slug = 'infuzie-fructe-padure';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=800&fit=crop' WHERE slug = 'fresh-portocale';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1523677011781-c91d1bbe2f9e?w=800&fit=crop' WHERE slug = 'limonada-menta';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1727989815707-1b9e8f376775?w=800&fit=crop' WHERE slug = 'suc-mere-presat';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=800&fit=crop' WHERE slug = 'suc-carbogazos-soc';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&fit=crop' WHERE slug = 'iaurt-baut-capsuni';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&fit=crop' WHERE slug = 'lapte-cacao';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1609246280917-339404083c49?w=800&fit=crop' WHERE slug = 'kefir-natural';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1641116106437-2e4230650f32?w=800&fit=crop' WHERE slug = 'lapte-ovaz-barista';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1603189864584-b52b40a2a2cd?w=800&fit=crop' WHERE slug = 'sirop-zmeura';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1633933108592-8efcf681806d?w=800&fit=crop' WHERE slug = 'sirop-soc';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1631029098074-be99eb2b425c?w=800&fit=crop' WHERE slug = 'sirop-ghimbir';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=800&fit=crop' WHERE slug = 'apa-minerala-carbogazoasa';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=800&fit=crop' WHERE slug = 'apa-plata';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=800&fit=crop' WHERE slug = 'apa-aromatizata-lamaie';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=800&fit=crop' WHERE slug = 'pumpkin-spice-latte';
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=800&fit=crop' WHERE slug = 'ciocolata-calda-alune';

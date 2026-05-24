@@ -7,9 +7,7 @@ require_once __DIR__ . '/../models/Allergen.php';
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    //injectam baza de date
     public function __construct(private PDO $db) {}
-
 
     public function findAll(array $filters = [], int $limit = 20, int $offset = 0): array
     {
@@ -25,19 +23,12 @@ class ProductRepository implements ProductRepositoryInterface
         ";
 
         $stmt = $this->db->prepare($sql);
-
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
+        foreach ($params as $key => $value) $stmt->bindValue($key, $value);
         $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return array_map(
-            fn(array $row) => Product::fromArray($row),
-            $stmt->fetchAll()
-        );
+        return array_map(fn(array $row) => Product::fromArray($row), $stmt->fetchAll());
     }
 
     public function findById(int $id): ?Product
@@ -45,7 +36,6 @@ class ProductRepository implements ProductRepositoryInterface
         $stmt = $this->db->prepare("SELECT * FROM products WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch();
-
         return $row ? Product::fromArray($row) : null;
     }
 
@@ -54,40 +44,23 @@ class ProductRepository implements ProductRepositoryInterface
         $stmt = $this->db->prepare("SELECT * FROM products WHERE slug = :slug");
         $stmt->execute([':slug' => $slug]);
         $row = $stmt->fetch();
-
         return $row ? Product::fromArray($row) : null;
     }
 
     public function findTopViewed(int $limit = 10): array
     {
-        $stmt = $this->db->prepare("
-            SELECT * FROM products
-            ORDER BY view_count DESC
-            LIMIT :limit
-        ");
+        $stmt = $this->db->prepare("SELECT * FROM products ORDER BY view_count DESC LIMIT :limit");
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-
-        return array_map(
-            fn(array $row) => Product::fromArray($row),
-            $stmt->fetchAll()
-        );
+        return array_map(fn(array $row) => Product::fromArray($row), $stmt->fetchAll());
     }
 
     public function countAll(array $filters = []): int
     {
         [$where, $params] = $this->buildFilters($filters);
-
-        $sql = "
-            SELECT COUNT(DISTINCT p.id)
-            FROM products p
-            LEFT JOIN product_categories pc ON pc.product_id = p.id
-            $where
-        ";
-
+        $sql = "SELECT COUNT(DISTINCT p.id) FROM products p LEFT JOIN product_categories pc ON pc.product_id = p.id $where";
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-
         return (int)$stmt->fetchColumn();
     }
 
@@ -133,41 +106,39 @@ class ProductRepository implements ProductRepositoryInterface
     public function update(int $id, array $data): bool
     {
         $stmt = $this->db->prepare("
-        UPDATE products SET
-            name               = :name,
-            description        = :description,
-            price              = :price,
-            image_url          = :image_url,
-            ingredients        = :ingredients,
-            brand              = :brand,
-            volume_ml          = :volume_ml,
-            calories_per_100ml = :calories_per_100ml,
-            sugar_per_100ml    = :sugar_per_100ml,
-            is_perishable      = :is_perishable,
-            shelf_life_days    = :shelf_life_days,
-            is_vegan           = :is_vegan,
-            is_gluten_free     = :is_gluten_free,
-            updated_at         = NOW()
-        WHERE id = :id
-    ");
+            UPDATE products SET
+                name               = :name,
+                description        = :description,
+                price              = :price,
+                image_url          = :image_url,
+                ingredients        = :ingredients,
+                brand              = :brand,
+                volume_ml          = :volume_ml,
+                calories_per_100ml = :calories_per_100ml,
+                sugar_per_100ml    = :sugar_per_100ml,
+                is_perishable      = :is_perishable,
+                shelf_life_days    = :shelf_life_days,
+                is_vegan           = :is_vegan,
+                is_gluten_free     = :is_gluten_free,
+                updated_at         = NOW()
+            WHERE id = :id
+        ");
 
         return $stmt->execute([
-            ':id'                  => $id,
-            ':name'                => $data['name'],
-            ':description'         => !empty($data['description']) ? $data['description'] : null,
-            ':price'               => $data['price'] !== '' ? $data['price'] : null,
-            ':image_url'           => !empty($data['image_url']) ? $data['image_url'] : null,
-            ':ingredients'         => !empty($data['ingredients']) ? $data['ingredients'] : null,
-            ':brand'               => !empty($data['brand']) ? $data['brand'] : null,
-            ':volume_ml'           => !empty($data['volume_ml']) ? (int)$data['volume_ml'] : null,
-            ':calories_per_100ml'  => !empty($data['calories_per_100ml']) ? (float)$data['calories_per_100ml'] : null,
-            ':sugar_per_100ml'     => !empty($data['sugar_per_100ml']) ? (float)$data['sugar_per_100ml'] : null,
-
-            // IMPORTANT: PostgreSQL vrea true/false, nu string gol ""
-            ':is_perishable'       => !empty($data['is_perishable']) ? 'true' : 'false',
-            ':shelf_life_days'     => !empty($data['shelf_life_days']) ? (int)$data['shelf_life_days'] : null,
-            ':is_vegan'            => !empty($data['is_vegan']) ? 'true' : 'false',
-            ':is_gluten_free'      => !empty($data['is_gluten_free']) ? 'true' : 'false',
+            ':id'                 => $id,
+            ':name'               => $data['name'],
+            ':description'        => !empty($data['description']) ? $data['description'] : null,
+            ':price'              => $data['price'] !== '' ? $data['price'] : null,
+            ':image_url'          => !empty($data['image_url']) ? $data['image_url'] : null,
+            ':ingredients'        => !empty($data['ingredients']) ? $data['ingredients'] : null,
+            ':brand'              => !empty($data['brand']) ? $data['brand'] : null,
+            ':volume_ml'          => !empty($data['volume_ml']) ? (int)$data['volume_ml'] : null,
+            ':calories_per_100ml' => !empty($data['calories_per_100ml']) ? (float)$data['calories_per_100ml'] : null,
+            ':sugar_per_100ml'    => !empty($data['sugar_per_100ml']) ? (float)$data['sugar_per_100ml'] : null,
+            ':is_perishable'      => !empty($data['is_perishable']) ? 'true' : 'false',
+            ':shelf_life_days'    => !empty($data['shelf_life_days']) ? (int)$data['shelf_life_days'] : null,
+            ':is_vegan'           => !empty($data['is_vegan']) ? 'true' : 'false',
+            ':is_gluten_free'     => !empty($data['is_gluten_free']) ? 'true' : 'false',
         ]);
     }
 
@@ -179,81 +150,167 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function incrementViewCount(int $id): void
     {
-        $stmt = $this->db->prepare("
-            UPDATE products SET view_count = view_count + 1 WHERE id = :id
-        ");
+        $stmt = $this->db->prepare("UPDATE products SET view_count = view_count + 1 WHERE id = :id");
         $stmt->execute([':id' => $id]);
     }
 
-    // ── PIVOT: categorii & alergeni ───────────────────────────────────────────
+    // ── Categorii ─────────────────────────────────────────────────────────────
 
     public function findCategories(int $productId): array
     {
         $stmt = $this->db->prepare("
-            SELECT c.*
-            FROM categories c
+            SELECT c.* FROM categories c
             JOIN product_categories pc ON pc.category_id = c.id
             WHERE pc.product_id = :product_id
         ");
         $stmt->execute([':product_id' => $productId]);
-
-        return array_map(
-            fn(array $row) => Category::fromArray($row),
-            $stmt->fetchAll()
-        );
-    }
-
-    public function findAllergens(int $productId): array
-    {
-        $stmt = $this->db->prepare("
-            SELECT a.*
-            FROM allergens a
-            JOIN product_allergens pa ON pa.allergen_id = a.id
-            WHERE pa.product_id = :product_id
-        ");
-        $stmt->execute([':product_id' => $productId]);
-
-        return array_map(
-            fn(array $row) => Allergen::fromArray($row),
-            $stmt->fetchAll()
-        );
+        return array_map(fn(array $row) => Category::fromArray($row), $stmt->fetchAll());
     }
 
     public function syncCategories(int $productId, array $categoryIds): void
     {
-        // Șterge ce există și inserează din nou — simplu și sigur
-        $del = $this->db->prepare("DELETE FROM product_categories WHERE product_id = :id");
-        $del->execute([':id' => $productId]);
+        $this->db->prepare("DELETE FROM product_categories WHERE product_id = :id")->execute([':id' => $productId]);
+        $ins = $this->db->prepare("INSERT INTO product_categories (product_id, category_id) VALUES (:pid, :cid)");
+        foreach ($categoryIds as $cid) $ins->execute([':pid' => $productId, ':cid' => $cid]);
+    }
 
-        $ins = $this->db->prepare("
-            INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)
+    // ── Alergeni ──────────────────────────────────────────────────────────────
+
+    public function findAllergens(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT a.* FROM allergens a
+            JOIN product_allergens pa ON pa.allergen_id = a.id
+            WHERE pa.product_id = :product_id
         ");
-
-        foreach ($categoryIds as $categoryId) {
-            $ins->execute([':product_id' => $productId, ':category_id' => $categoryId]);
-        }
+        $stmt->execute([':product_id' => $productId]);
+        return array_map(fn(array $row) => Allergen::fromArray($row), $stmt->fetchAll());
     }
 
     public function syncAllergens(int $productId, array $allergenIds): void
     {
-        $del = $this->db->prepare("DELETE FROM product_allergens WHERE product_id = :id");
-        $del->execute([':id' => $productId]);
-
-        $ins = $this->db->prepare("
-            INSERT INTO product_allergens (product_id, allergen_id) VALUES (:product_id, :allergen_id)
-        ");
-
-        foreach ($allergenIds as $allergenId) {
-            $ins->execute([':product_id' => $productId, ':allergen_id' => $allergenId]);
-        }
+        $this->db->prepare("DELETE FROM product_allergens WHERE product_id = :id")->execute([':id' => $productId]);
+        $ins = $this->db->prepare("INSERT INTO product_allergens (product_id, allergen_id) VALUES (:pid, :aid)");
+        foreach ($allergenIds as $aid) $ins->execute([':pid' => $productId, ':aid' => $aid]);
     }
 
-    // ── HELPERS ───────────────────────────────────────────────────────────────
+    // ── Sezoane ───────────────────────────────────────────────────────────────
 
-    /**
-     * Construiește clauza WHERE și parametrii din array-ul de filtre.
-     * Returneaza [$whereClause, $params]
-     */
+    public function findSeasons(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT s.id, s.name AS slug, s.name
+            FROM seasons s
+            JOIN product_seasons ps ON ps.season_id = s.id
+            WHERE ps.product_id = :product_id
+        ");
+        $stmt->execute([':product_id' => $productId]);
+        return $stmt->fetchAll();
+    }
+
+    // ── Regiuni ───────────────────────────────────────────────────────────────
+
+    public function findRegions(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT r.id, r.name, r.country
+            FROM regions r
+            JOIN product_regions pr ON pr.region_id = r.id
+            WHERE pr.product_id = :product_id
+        ");
+        $stmt->execute([':product_id' => $productId]);
+        return $stmt->fetchAll();
+    }
+
+    // ── Localuri ──────────────────────────────────────────────────────────────
+
+    public function findVenues(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT v.id, v.name, v.address, v.city,
+                   pv.price_at_venue AS price
+            FROM venues v
+            JOIN product_venues pv ON pv.venue_id = v.id
+            WHERE pv.product_id = :product_id
+            ORDER BY v.name
+        ");
+        $stmt->execute([':product_id' => $productId]);
+        return $stmt->fetchAll();
+    }
+
+    // ── Favorite ──────────────────────────────────────────────────────────────
+
+    public function isFavorite(int $userId, int $productId): bool
+    {
+        $stmt = $this->db->prepare("SELECT 1 FROM user_favorites WHERE user_id = :uid AND product_id = :pid LIMIT 1");
+        $stmt->execute([':uid' => $userId, ':pid' => $productId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function addFavorite(int $userId, int $productId): void
+    {
+        $stmt = $this->db->prepare("INSERT INTO user_favorites (user_id, product_id) VALUES (:uid, :pid) ON CONFLICT DO NOTHING");
+        $stmt->execute([':uid' => $userId, ':pid' => $productId]);
+    }
+
+    public function removeFavorite(int $userId, int $productId): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM user_favorites WHERE user_id = :uid AND product_id = :pid");
+        $stmt->execute([':uid' => $userId, ':pid' => $productId]);
+    }
+
+    public function countFavorites(int $productId): int
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM user_favorites WHERE product_id = :pid");
+        $stmt->execute([':pid' => $productId]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    // ── Ratinguri ─────────────────────────────────────────────────────────────
+
+    public function addRating(int $userId, int $productId, int $rating, ?string $review = null): void
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO product_ratings (user_id, product_id, rating, review)
+            VALUES (:uid, :pid, :rating, :review)
+            ON CONFLICT (user_id, product_id) DO UPDATE SET
+                rating = EXCLUDED.rating,
+                review = EXCLUDED.review,
+                created_at = NOW()
+        ");
+        $stmt->execute([':uid' => $userId, ':pid' => $productId, ':rating' => $rating, ':review' => $review]);
+    }
+
+    public function findRatings(int $productId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT pr.id, pr.user_id, pr.product_id, pr.rating, pr.review, pr.created_at, u.username
+            FROM product_ratings pr
+            JOIN users u ON u.id = pr.user_id
+            WHERE pr.product_id = :pid
+            ORDER BY pr.created_at DESC
+        ");
+        $stmt->execute([':pid' => $productId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getAverageRating(int $productId): ?float
+    {
+        $stmt = $this->db->prepare("SELECT AVG(rating) FROM product_ratings WHERE product_id = :pid");
+        $stmt->execute([':pid' => $productId]);
+        $avg = $stmt->fetchColumn();
+        return $avg !== null ? round((float)$avg, 2) : null;
+    }
+
+    public function countRatings(int $productId): int
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM product_ratings WHERE product_id = :pid");
+        $stmt->execute([':pid' => $productId]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
     private function buildFilters(array $filters): array
     {
         $conditions = [];
@@ -263,96 +320,49 @@ class ProductRepository implements ProductRepositoryInterface
             $conditions[] = 'pc.category_id = :category_id';
             $params[':category_id'] = (int)$filters['category_id'];
         }
-
         if (!empty($filters['category'])) {
-            $conditions[] = 'EXISTS (
-            SELECT 1
-            FROM product_categories pc_filter
-            JOIN categories c_filter ON c_filter.id = pc_filter.category_id
-            WHERE pc_filter.product_id = p.id
-              AND c_filter.slug = :category
-        )';
+            $conditions[] = 'EXISTS (SELECT 1 FROM product_categories pc2 JOIN categories c2 ON c2.id = pc2.category_id WHERE pc2.product_id = p.id AND c2.slug = :category)';
             $params[':category'] = $filters['category'];
         }
-
         if (!empty($filters['season'])) {
-            $conditions[] = 'EXISTS (
-            SELECT 1
-            FROM product_seasons ps_filter
-            JOIN seasons s_filter ON s_filter.id = ps_filter.season_id
-            WHERE ps_filter.product_id = p.id
-              AND s_filter.name = :season
-        )';
+            $conditions[] = 'EXISTS (SELECT 1 FROM product_seasons ps2 JOIN seasons s2 ON s2.id = ps2.season_id WHERE ps2.product_id = p.id AND s2.name = :season)';
             $params[':season'] = $filters['season'];
         }
-
         if (!empty($filters['region'])) {
-            $conditions[] = 'EXISTS (
-            SELECT 1
-            FROM product_regions pr_filter
-            JOIN regions r_filter ON r_filter.id = pr_filter.region_id
-            WHERE pr_filter.product_id = p.id
-              AND r_filter.name ILIKE :region
-        )';
+            $conditions[] = 'EXISTS (SELECT 1 FROM product_regions pr2 JOIN regions r2 ON r2.id = pr2.region_id WHERE pr2.product_id = p.id AND r2.name ILIKE :region)';
             $params[':region'] = $filters['region'];
         }
-
-        if (!empty($filters['is_vegan'])) {
-            $conditions[] = 'p.is_vegan = true';
-        }
-
-        if (!empty($filters['is_gluten_free'])) {
-            $conditions[] = 'p.is_gluten_free = true';
-        }
-
+        if (!empty($filters['is_vegan']))       $conditions[] = 'p.is_vegan = true';
+        if (!empty($filters['is_gluten_free'])) $conditions[] = 'p.is_gluten_free = true';
         if (!empty($filters['search'])) {
-            $conditions[] = "(
-            p.name ILIKE :search 
-            OR p.brand ILIKE :search 
-            OR p.description ILIKE :search
-            OR p.ingredients ILIKE :search
-        )";
+            $conditions[] = '(p.name ILIKE :search OR p.brand ILIKE :search OR p.description ILIKE :search OR p.ingredients ILIKE :search)';
             $params[':search'] = '%' . $filters['search'] . '%';
         }
-
         if (!empty($filters['brand'])) {
             $conditions[] = 'p.brand ILIKE :brand';
             $params[':brand'] = '%' . $filters['brand'] . '%';
         }
 
         $where = empty($conditions) ? '' : 'WHERE ' . implode(' AND ', $conditions);
-
         return [$where, $params];
     }
 
-    /**
-     * Generează un slug unic din numele produsului.
-     * Ex: "Suc de Portocale Bio" → "suc-de-portocale-bio"
-     */
     private function generateSlug(string $name): string
     {
         $slug = strtolower(trim($name));
-
-        // Înlocuiește diacriticele românești
         $slug = str_replace(
             ['ă','â','î','ș','ț','Ă','Â','Î','Ș','Ț'],
             ['a','a','i','s','t','a','a','i','s','t'],
             $slug
         );
-
-        // Înlocuiește orice non-alfanumeric cu liniuță
         $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
         $slug = trim($slug, '-');
 
-        // Verifică unicitate și adaugă sufix dacă e nevoie
         $original = $slug;
         $counter  = 1;
-
         while ($this->slugExists($slug)) {
-            $slug = $original . '-' . $counter;
-            $counter++;
+            $slug = $original . '-' . $counter++;
         }
-
         return $slug;
     }
 
@@ -361,142 +371,5 @@ class ProductRepository implements ProductRepositoryInterface
         $stmt = $this->db->prepare("SELECT id FROM products WHERE slug = :slug");
         $stmt->execute([':slug' => $slug]);
         return $stmt->fetch() !== false;
-    }
-
-    public function isFavorite(int $userId, int $productId): bool
-    {
-        $stmt = $this->db->prepare("
-        SELECT 1
-        FROM user_favorites
-        WHERE user_id = :user_id
-          AND product_id = :product_id
-        LIMIT 1
-    ");
-
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':product_id' => $productId,
-        ]);
-
-        return (bool)$stmt->fetchColumn();
-    }
-
-    public function addFavorite(int $userId, int $productId): void
-    {
-        $stmt = $this->db->prepare("
-        INSERT INTO user_favorites (user_id, product_id)
-        VALUES (:user_id, :product_id)
-        ON CONFLICT DO NOTHING
-    ");
-
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':product_id' => $productId,
-        ]);
-    }
-
-    public function removeFavorite(int $userId, int $productId): void
-    {
-        $stmt = $this->db->prepare("
-        DELETE FROM user_favorites
-        WHERE user_id = :user_id
-          AND product_id = :product_id
-    ");
-
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':product_id' => $productId,
-        ]);
-    }
-
-    public function countFavorites(int $productId): int
-    {
-        $stmt = $this->db->prepare("
-        SELECT COUNT(*)
-        FROM user_favorites
-        WHERE product_id = :product_id
-    ");
-
-        $stmt->execute([
-            ':product_id' => $productId,
-        ]);
-
-        return (int)$stmt->fetchColumn();
-    }
-
-    public function addRating(int $userId, int $productId, int $rating, ?string $review = null): void
-    {
-        $stmt = $this->db->prepare("
-        INSERT INTO product_ratings (user_id, product_id, rating, review)
-        VALUES (:user_id, :product_id, :rating, :review)
-        ON CONFLICT (user_id, product_id)
-        DO UPDATE SET
-            rating = EXCLUDED.rating,
-            review = EXCLUDED.review,
-            created_at = NOW()
-    ");
-
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':product_id' => $productId,
-            ':rating' => $rating,
-            ':review' => $review,
-        ]);
-    }
-
-    public function findRatings(int $productId): array
-    {
-        $stmt = $this->db->prepare("
-        SELECT 
-            pr.id,
-            pr.user_id,
-            pr.product_id,
-            pr.rating,
-            pr.review,
-            pr.created_at,
-            u.username
-        FROM product_ratings pr
-        JOIN users u ON u.id = pr.user_id
-        WHERE pr.product_id = :product_id
-        ORDER BY pr.created_at DESC
-    ");
-
-        $stmt->execute([
-            ':product_id' => $productId,
-        ]);
-
-        return $stmt->fetchAll();
-    }
-
-    public function getAverageRating(int $productId): ?float
-    {
-        $stmt = $this->db->prepare("
-        SELECT AVG(rating)
-        FROM product_ratings
-        WHERE product_id = :product_id
-    ");
-
-        $stmt->execute([
-            ':product_id' => $productId,
-        ]);
-
-        $average = $stmt->fetchColumn();
-
-        return $average !== null ? round((float)$average, 2) : null;
-    }
-
-    public function countRatings(int $productId): int
-    {
-        $stmt = $this->db->prepare("
-        SELECT COUNT(*)
-        FROM product_ratings
-        WHERE product_id = :product_id
-    ");
-
-        $stmt->execute([
-            ':product_id' => $productId,
-        ]);
-
-        return (int)$stmt->fetchColumn();
     }
 }
