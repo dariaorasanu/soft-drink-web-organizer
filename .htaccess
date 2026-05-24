@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Permite accesul direct la fișiere și directoare existente
+# (imagini, CSS, JS, PHP din /api/ și /public/)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirecționează orice altceva spre router
+RewriteRule ^ index.php [QSA,L]
