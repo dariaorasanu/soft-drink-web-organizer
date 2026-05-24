@@ -4,51 +4,33 @@ session_start();
 require_once __DIR__ . '/../config/Bootstrap.php';
 
 /** @var AuthGuard $guard */
+/** @var UserService $userService */
 
 $guard->requireAuth();
+
+$currentUser = $userService->getCurrentUser();
+$username    = $currentUser?->username ?? 'Utilizator';
+$initials    = strtoupper(substr($username, 0, 1));
+
+$title      = 'SOr — Explorează produse';
+$extraCss   = ['/public/css/catalog.css'];
+$extraJs    = ['/public/js/catalog.js'];
+$activePage = 'catalog';
+
+require_once __DIR__ . '/../templates/header.php';
+require_once __DIR__ . '/../templates/navbar.php';
 ?>
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <title>Explorează produse</title>
-    <link rel="stylesheet" href="/public/css/home.css">
-    <link rel="stylesheet" href="/public/css/catalog.css">
-</head>
-<body>
 
 <div class="home-page">
-    <header class="topbar">
-        <a href="/pages/home.php" class="brand">
-            <span class="brand-main">S<span>O</span>r</span>
-            <span class="brand-subtitle">Soft Drink Organizer</span>
-        </a>
-
-        <nav class="nav-menu">
-            <a href="/pages/home.php" class="nav-link">Acasă</a>
-            <a href="/pages/catalog.php" class="nav-link active">Explorează</a>
-            <a href="/pages/shopping-list.php" class="nav-link">Listele mele</a>
-            <a href="#" class="nav-link disabled">Clasament</a>
-            <a href="#" class="nav-link disabled">Statistici</a>
-        </nav>
-    </header>
-
     <main class="hero">
         <section class="welcome">
             <p class="eyebrow">Explorează</p>
             <h1 id="catalogTitle">Toate produsele</h1>
-
-            <p class="subtitle" id="catalogSubtitle">
-                Toate produsele disponibile în catalog.
-            </p>
+            <p class="subtitle" id="catalogSubtitle">Toate produsele disponibile în catalog.</p>
 
             <div class="search-box">
                 <span class="search-icon">⌕</span>
-                <input
-                        id="catalogSearch"
-                        type="search"
-                        placeholder="Caută un produs, ingredient, marcă sau local..."
-                >
+                <input id="catalogSearch" type="search" placeholder="Caută un produs, ingredient, marcă sau local...">
             </div>
         </section>
 
@@ -58,7 +40,6 @@ $guard->requireAuth();
 
                 <div class="filter-group">
                     <p>Categorii</p>
-
                     <button type="button" class="category-pill active" data-category="">▦ Toate</button>
                     <button type="button" class="category-pill" data-category="ceaiuri">🍵 Ceaiuri</button>
                     <button type="button" class="category-pill" data-category="sucuri">🍊 Sucuri</button>
@@ -69,15 +50,8 @@ $guard->requireAuth();
                 </div>
 
                 <div class="filter-group">
-                    <label>
-                        <input type="checkbox" id="veganFilter">
-                        Vegan
-                    </label>
-
-                    <label>
-                        <input type="checkbox" id="glutenFreeFilter">
-                        Fără gluten
-                    </label>
+                    <label><input type="checkbox" id="veganFilter"> Vegan</label>
+                    <label><input type="checkbox" id="glutenFreeFilter"> Fără gluten</label>
                 </div>
 
                 <div class="filter-group">
@@ -121,6 +95,4 @@ $guard->requireAuth();
     </main>
 </div>
 
-<script src="/public/js/catalog.js"></script>
-</body>
-</html>
+<?php require_once __DIR__ . '/../templates/footer.php'; ?>
