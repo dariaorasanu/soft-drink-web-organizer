@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  php-lint:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+      - name: Check syntax
+        run: find . -name "*.php" -not -path "./vendor/*" | xargs -I {} php -l {}
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: .env not committed
+        run: |
+          if git ls-files | grep -q "^\.env$"; then
+            echo "❌ .env is tracked by git!"; exit 1
+          fi
+      - name: No raw SQL concatenation
+        run: |
+          if grep -rn --include="*.php" -E '"SELECT.+\.\s*\$|"INSERT.+\.\s*\$|"UPDATE.+\.\s*\$|"DELETE.+\.\s*\$' .; then
+            echo "❌ Possible SQL injection — use prepared statements!"; exit 1
+          fi
+
+  css-lint:
+    name: CSS Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install -g stylelint stylelint-config-standard
+      - run: stylelint "./public/css/**/*.css" --config '{"extends":"stylelint-config-standard"}' || true
