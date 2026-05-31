@@ -475,7 +475,7 @@
     padding: 1rem 0;
 }
 
-/* ── Responsiv ───────────────────────────────────────── */
+/* responsiv*/
 @media (max-width: 900px) {
     .product-body {
         grid-template-columns: 1fr;
