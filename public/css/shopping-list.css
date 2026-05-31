@@ -1,0 +1,1338 @@
+/* ============================================================
+   shopping-list.css — SOr dark theme
+   Variabile din design system (definite în home.css):
+     --bg: #171817  --bg-card: #252824  --border: #3b3d3a
+     --accent: #8df0c0  --pink: #f72585
+     --text: #f4f1ea  --text-2: #bcb5aa
+   ============================================================ */
+
+/* ── Layout principal ──────────────────────────────────────────────── */
+.sl-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 5rem);
+    gap: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 6rem;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────────────── */
+.sl-sidebar {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: sticky;
+    top: 5rem;
+    height: calc(100vh - 7rem);
+    margin-right: 1.25rem;
+}
+
+.sl-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 0.75rem;
+    border-bottom: 1px solid #3b3d3a;
+    flex-shrink: 0;
+}
+
+.sl-sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: #f4f1ea;
+    margin: 0;
+}
+
+.sl-mobile-close {
+    display: none;
+    background: none;
+    border: none;
+    color: #bcb5aa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+/* Lista de liste */
+.sl-lists-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: #3b3d3a transparent;
+}
+.sl-lists-container::-webkit-scrollbar { width: 4px; }
+.sl-lists-container::-webkit-scrollbar-thumb { background: #3b3d3a; border-radius: 4px; }
+
+/* Loading spinner */
+.sl-loading {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+.spinner {
+    width: 28px; height: 28px;
+    border: 2.5px solid #3b3d3a;
+    border-top-color: #8df0c0;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Rândul unei liste */
+.sl-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+    position: relative;
+}
+.sl-list-item:hover { background: rgba(141,240,192,0.04); }
+.sl-list-item.active {
+    background: rgba(141,240,192,0.08);
+    border-left-color: #8df0c0;
+}
+
+.sl-list-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.sl-list-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sl-list-item-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #f4f1ea;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+    width: 100%;
+    font-family: 'Nunito', sans-serif;
+}
+.sl-list-item-name:hover { color: #8df0c0; }
+
+/* Inline rename input */
+.sl-list-item-name.editing {
+    background: #1e201e;
+    border: 1px solid #8df0c0;
+    border-radius: 6px;
+    padding: 0.2rem 0.4rem;
+    color: #f4f1ea;
+    outline: none;
+    width: 100%;
+}
+
+.sl-list-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.15rem;
+}
+
+.sl-list-count {
+    font-size: 0.75rem;
+    color: #7a7d75;
+    font-weight: 700;
+}
+
+.sl-shared-dot {
+    width: 7px; height: 7px;
+    background: #8df0c0;
+    border-radius: 50%;
+    display: inline-block;
+    title: "Partajată";
+}
+
+.sl-list-actions {
+    display: none;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+.sl-list-item:hover .sl-list-actions,
+.sl-list-item.active .sl-list-actions {
+    display: flex;
+}
+
+.sl-action-btn {
+    background: none;
+    border: none;
+    color: #7a7d75;
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+}
+.sl-action-btn:hover { color: #f4f1ea; background: rgba(255,255,255,0.06); }
+.sl-action-btn.danger:hover { color: #f72585; }
+
+/* Formular listă nouă */
+.sl-new-list {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #3b3d3a;
+    flex-shrink: 0;
+}
+.sl-new-list-input-wrap {
+    display: flex;
+    gap: 0.5rem;
+}
+.sl-input {
+    flex: 1;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 10px;
+    color: #f4f1ea;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    padding: 0.6rem 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.sl-input:focus { border-color: #8df0c0; }
+.sl-input::placeholder { color: #7a7d75; }
+
+.sl-btn-create {
+    background: #8df0c0;
+    color: #173629;
+    border: none;
+    border-radius: 10px;
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.1s;
+    font-weight: 800;
+}
+.sl-btn-create:hover { background: #d9fff0; transform: scale(1.05); }
+
+/* ── Conținut principal ────────────────────────────────────────────── */
+.sl-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-height: 0;
+}
+
+/* Empty state */
+.sl-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5rem 2rem;
+    gap: 0.75rem;
+    color: #bcb5aa;
+}
+.sl-empty-icon { font-size: 3.5rem; line-height: 1; }
+.sl-empty-state h3 { font-size: 1.3rem; color: #f4f1ea; margin: 0; font-family: 'Playfair Display', serif; }
+.sl-empty-state p  { margin: 0; font-size: 0.95rem; }
+
+/* Header listă */
+.sl-list-header {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 20px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.sl-list-header-left { flex: 1; min-width: 0; }
+
+.sl-list-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #f4f1ea;
+    margin: 0 0 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sl-progress-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.sl-progress-bar  { flex: 1; max-width: 200px; height: 6px; background: #3b3d3a; border-radius: 99px; overflow: hidden; }
+.sl-progress-fill { height: 100%; background: #8df0c0; border-radius: 99px; transition: width 0.4s ease; }
+.sl-progress-label { font-size: 0.8rem; color: #7a7d75; font-weight: 700; white-space: nowrap; }
+
+.sl-list-header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.sl-btn-icon {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 10px;
+    color: #bcb5aa;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+.sl-btn-icon:hover { border-color: #8df0c0; color: #8df0c0; }
+.sl-btn-icon.sl-btn-share:hover  { border-color: #8df0c0; color: #8df0c0; }
+.sl-btn-icon.sl-btn-clear:hover  { border-color: #f72585; color: #f72585; }
+.sl-btn-icon.sl-btn-export:hover { border-color: #8df0c0; color: #8df0c0; }
+
+/* Container iteme */
+.sl-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1;
+}
+
+/* ── Card item ─────────────────────────────────────────────────────── */
+.sl-item-card {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 16px;
+    padding: 0.9rem 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    transition: border-color 0.15s, opacity 0.2s;
+    animation: itemIn 0.25s ease;
+}
+@keyframes itemIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.sl-item-card:hover { border-color: rgba(141,240,192,0.2); }
+.sl-item-card.purchased {
+    opacity: 0.5;
+    border-style: dashed;
+}
+.sl-item-card.purchased .sl-item-name { text-decoration: line-through; color: #7a7d75; }
+
+/* Checkbox custom */
+.sl-checkbox-wrap { flex-shrink: 0; padding-top: 0.15rem; }
+.sl-checkbox {
+    width: 22px; height: 22px;
+    border: 2px solid #555753;
+    border-radius: 7px;
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+}
+.sl-checkbox.checked {
+    border-color: #8df0c0;
+    background: rgba(141,240,192,0.15);
+    color: #8df0c0;
+}
+.sl-checkbox svg { display: none; }
+.sl-checkbox.checked svg { display: block; }
+
+/* Imagine produs */
+.sl-item-img {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #1e201e;
+}
+.sl-item-emoji {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    background: #1e201e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+/* Info produs */
+.sl-item-info { flex: 1; min-width: 0; }
+
+.sl-item-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f4f1ea;
+    margin: 0 0 0.15rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sl-item-brand {
+    font-size: 0.78rem;
+    color: #7a7d75;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+/* Notes */
+.sl-item-notes-wrap { margin-top: 0.35rem; }
+.sl-item-notes-toggle {
+    background: none; border: none; cursor: pointer;
+    color: #7a7d75; font-size: 0.78rem; font-family: 'Nunito', sans-serif;
+    font-weight: 700; padding: 0; transition: color 0.15s;
+}
+.sl-item-notes-toggle:hover { color: #8df0c0; }
+.sl-item-notes-text {
+    font-size: 0.82rem; color: #bcb5aa;
+    background: #1e201e; border: 1px solid #3b3d3a;
+    border-radius: 8px; padding: 0.4rem 0.7rem;
+    margin-top: 0.3rem; width: 100%;
+    font-family: 'Nunito', sans-serif;
+    resize: none; outline: none;
+    transition: border-color 0.15s;
+}
+.sl-item-notes-text:focus { border-color: #8df0c0; }
+
+/* Stepper cantitate */
+.sl-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.sl-item-stepper {
+    display: flex; align-items: center; gap: 0;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.sl-stepper-btn {
+    width: 30px; height: 30px;
+    background: none; border: none;
+    color: #bcb5aa; font-size: 1.1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, color 0.12s;
+    font-family: 'Nunito', sans-serif;
+}
+.sl-stepper-btn:hover { background: rgba(141,240,192,0.1); color: #8df0c0; }
+.sl-stepper-qty {
+    min-width: 32px;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #f4f1ea;
+    padding: 0 0.2rem;
+    font-family: 'Nunito', sans-serif;
+    background: none; border: none; outline: none;
+    -moz-appearance: textfield;
+}
+.sl-stepper-qty::-webkit-inner-spin-button,
+.sl-stepper-qty::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.sl-item-price {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #8df0c0;
+    text-align: right;
+}
+.sl-item-price-sub {
+    font-size: 0.72rem;
+    color: #7a7d75;
+    font-weight: 700;
+}
+
+.sl-item-remove {
+    background: none; border: none;
+    color: #555753; cursor: pointer;
+    font-size: 1rem; padding: 0.2rem;
+    border-radius: 6px;
+    transition: color 0.15s;
+    line-height: 1;
+}
+.sl-item-remove:hover { color: #f72585; }
+
+/* Footer total */
+.sl-footer {
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(to top, #171817 70%, transparent);
+    padding: 1.5rem 0 0.5rem;
+    margin-top: auto;
+}
+.sl-footer-inner {
+    background: #252824;
+    border: 1px solid #8df0c0;
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.sl-total-label {
+    font-size: 0.88rem;
+    color: #bcb5aa;
+    font-weight: 700;
+}
+.sl-total-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #8df0c0;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Buton FAB mobil */
+.sl-mobile-fab {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem; left: 1.5rem;
+    background: #8df0c0;
+    color: #173629;
+    border: none;
+    border-radius: 16px;
+    padding: 0.75rem 1.1rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 20px rgba(141,240,192,0.25);
+    z-index: 50;
+    transition: background 0.15s, transform 0.1s;
+}
+.sl-mobile-fab:hover { background: #d9fff0; transform: scale(1.03); }
+
+/* ── Modale ─────────────────────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 24px;
+    padding: 2rem;
+    width: min(460px, 90vw);
+    position: relative;
+    animation: modalIn 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+}
+.modal-box--sm { width: min(340px, 90vw); }
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; color: #7a7d75;
+    font-size: 1.1rem; cursor: pointer; padding: 0.3rem;
+    border-radius: 8px; transition: color 0.15s;
+}
+.modal-close:hover { color: #f4f1ea; }
+
+.modal-icon { font-size: 2.5rem; line-height: 1; }
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: #f4f1ea; margin: 0;
+}
+.modal-desc { font-size: 0.9rem; color: #bcb5aa; margin: 0; }
+
+.share-link-wrap {
+    display: flex; gap: 0.5rem;
+    width: 100%; margin-top: 0.5rem;
+}
+.share-link-input {
+    flex: 1;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 10px;
+    color: #f4f1ea;
+    font-size: 0.82rem;
+    padding: 0.6rem 0.8rem;
+    outline: none;
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.share-link-copy {
+    background: #8df0c0; color: #173629;
+    border: none; border-radius: 10px;
+    padding: 0.6rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem; font-weight: 800;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 0.35rem;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.share-link-copy:hover { background: #d9fff0; }
+.share-link-copy.copied { background: #173629; color: #8df0c0; border: 1px solid #8df0c0; }
+
+.btn-danger-outline {
+    margin-top: 0.5rem;
+    background: transparent;
+    border: 1px solid rgba(247,37,133,0.4);
+    color: #f72585;
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    cursor: pointer; width: 100%;
+    transition: background 0.15s, border-color 0.15s;
+}
+.btn-danger-outline:hover { background: rgba(247,37,133,0.08); border-color: #f72585; }
+
+.modal-actions { display: flex; gap: 0.75rem; width: 100%; margin-top: 0.5rem; }
+.btn-secondary {
+    flex: 1;
+    background: #1e201e; border: 1px solid #3b3d3a;
+    color: #bcb5aa; border-radius: 10px;
+    padding: 0.65rem; font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer;
+    transition: border-color 0.15s;
+}
+.btn-secondary:hover { border-color: #8df0c0; color: #f4f1ea; }
+.btn-danger {
+    flex: 1;
+    background: rgba(247,37,133,0.1); border: 1px solid rgba(247,37,133,0.4);
+    color: #f72585; border-radius: 10px;
+    padding: 0.65rem; font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-danger:hover { background: rgba(247,37,133,0.2); }
+
+/* ── Pagina publică shared ──────────────────────────────────────────── */
+.shared-page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+.shared-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #3b3d3a;
+    flex-wrap: wrap;
+}
+.brand-link {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #8df0c0;
+    text-decoration: none;
+    font-weight: 700;
+}
+.shared-title-wrap { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.shared-list-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #f4f1ea;
+    margin: 0;
+}
+.shared-badge {
+    background: rgba(141,240,192,0.1);
+    border: 1px solid rgba(141,240,192,0.25);
+    color: #8df0c0;
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.shared-empty {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 0.75rem; padding: 5rem 2rem;
+}
+.shared-empty-icon { font-size: 3rem; }
+.shared-empty h2 { color: #f4f1ea; font-family: 'Playfair Display', serif; }
+.shared-empty p  { color: #bcb5aa; }
+
+/* Shared items list */
+.shared-items-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.shared-item {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 14px;
+    padding: 0.85rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+.shared-item.purchased {
+    opacity: 0.5;
+    border-style: dashed;
+}
+.shared-item.purchased .shared-item-name { text-decoration: line-through; }
+
+.shared-item-img  { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: #1e201e; }
+.shared-item-emoji {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: #1e201e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+}
+.shared-item-info  { flex: 1; min-width: 0; }
+.shared-item-name  { font-size: 0.93rem; font-weight: 700; color: #f4f1ea; margin: 0 0 0.1rem; }
+.shared-item-brand { font-size: 0.76rem; color: #7a7d75; font-weight: 700; }
+.shared-item-right { text-align: right; flex-shrink: 0; }
+.shared-item-qty   { font-size: 0.8rem; color: #bcb5aa; font-weight: 700; }
+.shared-item-price { font-size: 0.92rem; font-weight: 800; color: #8df0c0; }
+
+.shared-total {
+    margin-top: 1.5rem;
+    background: #252824;
+    border: 1px solid #8df0c0;
+    border-radius: 14px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.shared-total-label { color: #bcb5aa; font-weight: 700; font-size: 0.9rem; }
+.shared-total-value { color: #8df0c0; font-weight: 800; font-size: 1.25rem; font-family: 'Playfair Display', serif; }
+
+/* ── Butoane globale ────────────────────────────────────────────────── */
+.btn-primary {
+    background: #8df0c0;
+    color: #173629;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s, transform 0.1s;
+}
+.btn-primary:hover { background: #d9fff0; transform: translateY(-1px); }
+
+/* ── Toast notificări ───────────────────────────────────────────────── */
+.sl-toast {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    background: #252824;
+    border: 1px solid #8df0c0;
+    color: #f4f1ea;
+    border-radius: 14px;
+    padding: 0.9rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    z-index: 200;
+    animation: toastIn 0.3s ease;
+    max-width: 320px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.sl-toast.error { border-color: #f72585; color: #f72585; }
+@keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Mod Cumpărături ────────────────────────────────────────────────── */
+.sl-btn-shop-mode:hover { border-color: #8df0c0; color: #8df0c0; }
+.sl-btn-shop-mode.active {
+    background: #8df0c0;
+    color: #173629;
+    border-color: #8df0c0;
+}
+
+.shop-mode-overlay {
+    position: fixed;
+    inset: 0;
+    background: #0f110f;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    animation: smFadeIn 0.3s ease;
+}
+@keyframes smFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Header */
+.sm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid #1e201e;
+    flex-shrink: 0;
+}
+.sm-progress-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.sm-counter {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #7a7d75;
+    font-family: 'Nunito', sans-serif;
+    white-space: nowrap;
+}
+.sm-progress-track {
+    width: 160px;
+    height: 4px;
+    background: #1e201e;
+    border-radius: 99px;
+    overflow: hidden;
+}
+.sm-progress-fill {
+    height: 100%;
+    background: #8df0c0;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+}
+.sm-close {
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    color: #bcb5aa;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+.sm-close:hover { border-color: #f72585; color: #f72585; }
+
+/* Stage — zona cardului */
+.sm-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.sm-card {
+    width: min(480px, 100%);
+    perspective: 1000px;
+}
+
+.sm-card-inner {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 28px;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+    animation: smCardIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+@keyframes smCardIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.sm-card-inner.exit-left {
+    animation: smExitLeft 0.25s ease forwards;
+}
+.sm-card-inner.exit-right {
+    animation: smExitRight 0.25s ease forwards;
+}
+@keyframes smExitLeft {
+    to { opacity: 0; transform: translateX(-80px) rotate(-5deg); }
+}
+@keyframes smExitRight {
+    to { opacity: 0; transform: translateX(80px) rotate(5deg); }
+}
+
+/* Glow accent pe card */
+.sm-card-inner::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(141,240,192,0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.sm-card-img {
+    width: 140px; height: 140px;
+    border-radius: 20px;
+    object-fit: cover;
+    background: #1e201e;
+}
+.sm-card-emoji {
+    width: 140px; height: 140px;
+    border-radius: 20px;
+    background: #1e201e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5rem;
+    line-height: 1;
+}
+.sm-card-purchased-badge {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: rgba(141,240,192,0.15);
+    border: 1px solid rgba(141,240,192,0.3);
+    color: #8df0c0;
+    border-radius: 999px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+.sm-card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #f4f1ea;
+    margin: 0;
+    line-height: 1.2;
+}
+.sm-card-brand {
+    font-size: 0.88rem;
+    color: #7a7d75;
+    font-weight: 700;
+    margin: 0;
+}
+.sm-card-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #8df0c0;
+    font-family: 'Playfair Display', serif;
+}
+.sm-card-notes {
+    font-size: 0.85rem;
+    color: #bcb5aa;
+    background: #1e201e;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    font-style: italic;
+}
+
+/* Stepper cantitate în modul shop */
+.sm-qty-wrap {
+    display: flex;
+    align-items: center;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 16px;
+    overflow: hidden;
+    gap: 0;
+}
+.sm-qty-btn {
+    width: 48px; height: 48px;
+    background: none; border: none;
+    color: #bcb5aa;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, color 0.12s;
+    font-family: 'Nunito', sans-serif;
+}
+.sm-qty-btn:hover { background: rgba(141,240,192,0.1); color: #8df0c0; }
+.sm-qty-val {
+    min-width: 48px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #f4f1ea;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Butoane acțiuni */
+.sm-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem 2.5rem;
+    flex-shrink: 0;
+}
+
+.sm-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 20px;
+    width: 90px; height: 90px;
+    cursor: pointer;
+    color: #bcb5aa;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    transition: transform 0.15s, border-color 0.15s, color 0.15s, background 0.15s;
+    justify-content: center;
+}
+.sm-btn:hover { transform: scale(1.05); }
+
+.sm-btn-skip:hover {
+    border-color: #f72585;
+    color: #f72585;
+    background: rgba(247,37,133,0.08);
+}
+.sm-btn-check:hover {
+    border-color: #8df0c0;
+    color: #8df0c0;
+    background: rgba(141,240,192,0.08);
+}
+.sm-btn-check.pressed {
+    border-color: #8df0c0;
+    color: #8df0c0;
+    background: rgba(141,240,192,0.15);
+    transform: scale(0.95);
+}
+
+/* Ecran final */
+.sm-done {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem;
+    animation: smFadeIn 0.4s ease;
+}
+.sm-done-icon  { font-size: 4rem; line-height: 1; }
+.sm-done-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #f4f1ea;
+    margin: 0;
+}
+.sm-done-sub   { color: #bcb5aa; font-size: 1rem; margin: 0; }
+.sm-done-total {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #8df0c0;
+    font-family: 'Playfair Display', serif;
+}
+.sm-done-btn {
+    margin-top: 1rem;
+    background: #8df0c0;
+    color: #173629;
+    border: none;
+    border-radius: 14px;
+    padding: 0.9rem 2.5rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+.sm-done-btn:hover { background: #d9fff0; transform: translateY(-2px); }
+
+/* Hint swipe pe mobile */
+.sm-swipe-hint {
+    position: absolute;
+    bottom: 8.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.78rem;
+    color: #3b3d3a;
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sl-layout {
+        grid-template-columns: 1fr;
+        padding: 1rem 1rem 7rem;
+    }
+
+    .sl-sidebar {
+        position: fixed;
+        left: 0; top: 0; bottom: 0;
+        z-index: 80;
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        border-radius: 0 20px 20px 0;
+        margin-right: 0;
+        height: 100dvh;
+    }
+    .sl-sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    }
+
+    .sl-mobile-close { display: block; }
+    .sl-mobile-fab   { display: flex; }
+
+    .sl-list-header { flex-direction: column; align-items: flex-start; }
+    .sl-list-header-actions { flex-wrap: wrap; }
+
+    .sl-btn-icon span { display: none; }
+    .sl-btn-icon { padding: 0.55rem; }
+
+    .sl-progress-bar { max-width: 120px; }
+
+    .sl-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem; background: #171817; }
+
+    .sl-toast { bottom: 5rem; right: 1rem; left: 1rem; max-width: unset; }
+}
+
+/* ============================================================
+   ADAUGĂ LA SFÂRȘITUL shopping-list.css
+   Mood + Buget Tracker
+   ============================================================ */
+
+/* ── CSS Variables mood (setate din JS) ─────────────────────────────── */
+:root {
+    --mood-accent: #8df0c0;
+    --mood-glow:   rgba(141,240,192,0.15);
+}
+
+/* Aplică accent-ul mood-ului dinamic */
+.sl-list-header       { border-color: var(--mood-accent, #3b3d3a) !important; transition: border-color 0.4s; }
+.sl-progress-fill     { background: var(--mood-accent, #8df0c0) !important; }
+.sl-btn-shop-mode:hover,
+.sl-btn-share:hover,
+.sl-btn-export:hover  { border-color: var(--mood-accent) !important; color: var(--mood-accent) !important; }
+.sl-total-value       { color: var(--mood-accent, #8df0c0) !important; transition: color 0.4s; }
+
+/* ── Mood badge în header ───────────────────────────────────────────── */
+.sl-mood-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid rgba(141,240,192,0.3);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #8df0c0;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+}
+.sl-mood-badge:hover { background: rgba(141,240,192,0.06); }
+
+/* ── Mood picker în sidebar (la creare) ─────────────────────────────── */
+.sl-mood-picker-wrap {
+    padding: 0.5rem 0.75rem 0.25rem;
+    border-bottom: 1px solid #2a2c2a;
+}
+.sl-mood-picker-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #7a7d75;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+#sl-mood-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+}
+.mood-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.45rem 0.25rem;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: 'Nunito', sans-serif;
+}
+.mood-option:hover { background: rgba(141,240,192,0.05); border-color: #555753; }
+.mood-option.selected {
+    border-color: var(--mood-accent, #8df0c0);
+    background: var(--mood-glow, rgba(141,240,192,0.08));
+}
+.mood-icon  { font-size: 1.2rem; line-height: 1; }
+.mood-label { font-size: 0.65rem; font-weight: 800; color: #bcb5aa; }
+.mood-option.selected .mood-label { color: var(--mood-accent, #8df0c0); }
+
+/* ── Mood colors per list item în sidebar ───────────────────────────── */
+.sl-list-item.mood-picnic.active    { border-left-color: #ffd166; }
+.sl-list-item.mood-acasa.active     { border-left-color: #a8dadc; }
+.sl-list-item.mood-petrecere.active { border-left-color: #f72585; }
+.sl-list-item.mood-sport.active     { border-left-color: #06d6a0; }
+.sl-list-item.mood-birou.active     { border-left-color: #b5838d; }
+
+.sl-list-budget-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #ffd166;
+    background: rgba(255,209,102,0.1);
+    border: 1px solid rgba(255,209,102,0.25);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+}
+
+/* ── Buget tracker în header ────────────────────────────────────────── */
+.sl-budget-tracker {
+    display: none;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #2a2c2a;
+}
+.sl-budget-track {
+    height: 8px;
+    background: #1e201e;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.sl-budget-fill {
+    height: 100%;
+    background: var(--mood-accent, #8df0c0);
+    border-radius: 999px;
+    transition: width 0.4s ease, background 0.3s;
+}
+.sl-budget-fill.close { background: #ffd166; }
+.sl-budget-fill.over  { background: #f72585; }
+
+.sl-budget-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #bcb5aa;
+    font-family: 'Nunito', sans-serif;
+}
+.sl-budget-label.close { color: #ffd166; }
+.sl-budget-label.over  { color: #f72585; }
+
+/* ── Budget edit input ──────────────────────────────────────────────── */
+.sl-budget-edit-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: 1px solid #3b3d3a;
+    border-radius: 8px;
+    color: #7a7d75;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+.sl-budget-edit-btn:hover { border-color: #ffd166; color: #ffd166; }
+
+.sl-budget-input-wrap {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+}
+.sl-budget-input {
+    width: 120px;
+    background: #1e201e;
+    border: 1px solid #8df0c0;
+    border-radius: 8px;
+    color: #f4f1ea;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.7rem;
+    outline: none;
+}
+.sl-budget-save-btn {
+    background: #8df0c0;
+    color: #173629;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+.sl-budget-clear-btn {
+    background: none;
+    border: 1px solid #555753;
+    color: #bcb5aa;
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+}
+
+/* ── Mood change dropdown în header ─────────────────────────────────── */
+.sl-mood-change-wrap {
+    position: relative;
+}
+.sl-mood-change-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 14px;
+    padding: 0.5rem;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+    z-index: 50;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.sl-mood-change-wrap:hover .sl-mood-change-dropdown,
+.sl-mood-badge:focus + .sl-mood-change-dropdown {
+    display: grid;
+}
+.sl-mood-change-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.5rem;
+    background: #1e201e;
+    border: 1px solid #3b3d3a;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: border-color 0.15s, background 0.15s;
+}
+.sl-mood-change-btn:hover { background: rgba(141,240,192,0.05); border-color: #555753; }
+.sl-mood-change-btn span:first-child { font-size: 1.1rem; }
+.sl-mood-change-btn span:last-child  { font-size: 0.62rem; font-weight: 800; color: #7a7d75; }

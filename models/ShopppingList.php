@@ -10,6 +10,8 @@ class ShoppingList
         public readonly ?string $shareToken,
         public readonly string  $createdAt,
         public readonly string  $updatedAt,
+        public readonly ?float  $budget = null,
+        public readonly string  $mood   = 'general',
     ) {}
 
     public static function fromArray(array $row): self
@@ -18,10 +20,12 @@ class ShoppingList
             id:         (int)$row['id'],
             userId:     (int)$row['user_id'],
             name:       $row['name'],
-            isShared:   (bool)($row['is_shared'] ?? false),
-            shareToken: $row['share_token'] ?? null,
-            createdAt:  $row['created_at']  ?? '',
-            updatedAt:  $row['updated_at']  ?? '',
+            isShared:   (bool)($row['is_shared']   ?? false),
+            shareToken: $row['share_token']         ?? null,
+            createdAt:  $row['created_at']          ?? '',
+            updatedAt:  $row['updated_at']          ?? '',
+            budget:     isset($row['budget'])       ? (float)$row['budget'] : null,
+            mood:       $row['mood']                ?? 'general',
         );
     }
 
@@ -34,6 +38,9 @@ class ShoppingList
             'is_shared'   => $this->isShared,
             'share_token' => $this->shareToken,
             'created_at'  => $this->createdAt,
+            'updated_at'  => $this->updatedAt,
+            'budget'      => $this->budget,
+            'mood'        => $this->mood,
         ];
     }
 }

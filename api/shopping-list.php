@@ -40,7 +40,7 @@ function jsonErr(string $message, int $code = 400): never
 function requireListOwner(ShoppingListRepository $repo, int $listId, int $userId): \ShoppingList
 {
     $list = $repo->findById($listId);
-    if ($list === null)          jsonErr('Lista nu există.', 404);
+    if ($list === null)            jsonErr('Lista nu exista.', 404);
     if ($list->userId !== $userId) jsonErr('Acces interzis.', 403);
     return $list;
 }
@@ -49,13 +49,12 @@ function requireListOwner(ShoppingListRepository $repo, int $listId, int $userId
 function requireItemOwner(ShoppingListRepository $repo, int $itemId, int $userId): \ShoppingListItem
 {
     $item = $repo->findItemById($itemId);
-    if ($item === null) jsonErr('Itemul nu există.', 404);
-    requireListOwner($repo, $item->listId, $userId); // aruncă 403 dacă nu e owner
+    if ($item === null) jsonErr('Itemul nu exista.', 404);
+    requireListOwner($repo, $item->listId, $userId);
     return $item;
 }
 
-/** Serializează ShoppingList la array curat (XSS safe). */
-//facem serializarea listei la un array curat
+//facem serializarea listei la un array curat (XSS safe), includem mood si budget
 function serializeList(\ShoppingList $list, int $itemCount = 0): array
 {
     return [
@@ -66,6 +65,8 @@ function serializeList(\ShoppingList $list, int $itemCount = 0): array
         'created_at'  => $list->createdAt,
         'updated_at'  => $list->updatedAt,
         'item_count'  => $itemCount,
+        'budget'      => $list->budget,
+        'mood'        => $list->mood,
     ];
 }
 
@@ -97,13 +98,13 @@ function serializeItem(\ShoppingListItem $item): array
     ];
 }
 
-//actiunea fara autentificare
+//actiunea fara autentificare, pagina publica cu token
 if ($action === 'shared_view') {
     $token = trim($_GET['token'] ?? '');
-    if ($token === '') jsonErr('Token lipsă.');
+    if ($token === '') jsonErr('Token lipsa.');
 
     $list = $repo->findByToken($token);
-    if ($list === null) jsonErr('Lista nu există sau nu este partajată.', 404);
+    if ($list === null) jsonErr('Lista nu exista sau nu este partajata.', 404);
 
     $items     = $repo->findItemsByList($list->id);
     $itemsData = array_map('serializeItem', $items);
@@ -114,10 +115,10 @@ if ($action === 'shared_view') {
     ]);
 }
 
-
+//toate actiunile de mai jos necesita autentificare
 $guard->requireAuth();
 
-// getCurrentUser() returneaza obiectul user sau null
+//getCurrentUser() returneaza obiectul user sau null
 $currentUser = $userService->getCurrentUser();
 if ($currentUser === null) jsonErr('Neautentificat.', 401);
 $userId = $currentUser->id;
@@ -133,16 +134,24 @@ match ($action) {
         jsonOk($lists);
     })(),
 
-    //creeaza lista
+    //creeaza lista cu mood si buget optional
     'create' => (function () use ($repo, $userId): never {
-        $name = trim($_POST['name'] ?? '');
-        if ($name === '')          jsonErr('Numele listei este obligatoriu.');
-        if (mb_strlen($name) > 200) jsonErr('Numele este prea lung (max 200 caractere).');
+        $name   = trim($_POST['name']   ?? '');
+        $mood   = trim($_POST['mood']   ?? 'general');
+        $budget = isset($_POST['budget']) && $_POST['budget'] !== ''
+            ? (float)$_POST['budget'] : null;
 
-        $listId = $repo->create($userId, $name);
+        if ($name === '')         jsonErr('Numele listei este obligatoriu.');
+        if (strlen($name) > 200) jsonErr('Numele este prea lung (max 200 caractere).');
+
+        //validam ca mood-ul e o valoare permisa
+        $allowed = ['general', 'picnic', 'acasa', 'petrecere', 'sport', 'birou'];
+        if (!in_array($mood, $allowed, true)) $mood = 'general';
+
+        $listId = $repo->create($userId, $name, $mood, $budget);
         $list   = $repo->findById($listId);
 
-        jsonOk(serializeList($list, 0), 'Listă creată.');
+        jsonOk(serializeList($list, 0), 'Lista creata.');
     })(),
 
     //redenumire
@@ -155,10 +164,10 @@ match ($action) {
         requireListOwner($repo, $listId, $userId);
         $repo->rename($listId, $name);
 
-        jsonOk(null, 'Listă redenumită.');
+        jsonOk(null, 'Lista redenumita.');
     })(),
 
-    //sterge lista
+    //stergem lista
     'delete' => (function () use ($repo, $userId): never {
         $listId = (int)($_POST['list_id'] ?? 0);
         if ($listId <= 0) jsonErr('list_id invalid.');
@@ -166,7 +175,7 @@ match ($action) {
         requireListOwner($repo, $listId, $userId);
         $repo->delete($listId);
 
-        jsonOk(null, 'Listă ștearsă.');
+        jsonOk(null, 'Lista stearsa.');
     })(),
 
     //itemele unei liste
@@ -180,7 +189,7 @@ match ($action) {
         jsonOk(array_map('serializeItem', $items));
     })(),
 
-    //adaugam item
+    //adaugam item, daca produsul e deja in lista incrementam cantitatea
     'add_item' => (function () use ($repo, $userId): never {
         $listId    = (int)($_POST['list_id']    ?? 0);
         $productId = (int)($_POST['product_id'] ?? 0);
@@ -192,7 +201,6 @@ match ($action) {
 
         requireListOwner($repo, $listId, $userId);
 
-        // Dacă produsul e deja în listă, incrementăm cantitatea
         $existingId = $repo->itemExistsInList($listId, $productId);
         if ($existingId !== null) {
             $existing = $repo->findItemById($existingId);
@@ -204,7 +212,7 @@ match ($action) {
         }
 
         $repo->touchList($listId);
-        jsonOk(serializeItem($item), 'Produs adăugat.');
+        jsonOk(serializeItem($item), 'Produs adaugat.');
     })(),
 
     //stergem item
@@ -216,10 +224,10 @@ match ($action) {
         $repo->removeItem($itemId);
         $repo->touchList($item->listId);
 
-        jsonOk(null, 'Item șters.');
+        jsonOk(null, 'Item sters.');
     })(),
 
-    //actualizam item
+    //actualizam cantitatea si notita unui item
     'update_item' => (function () use ($repo, $userId): never {
         $itemId   = (int)($_POST['item_id']  ?? 0);
         $quantity = max(1, (int)($_POST['quantity'] ?? 1));
@@ -235,7 +243,7 @@ match ($action) {
         jsonOk(serializeItem($updated), 'Item actualizat.');
     })(),
 
-    //marcam ca cumparat
+    //marcam ca cumparat sau demarcam
     'mark_purchased' => (function () use ($repo, $userId): never {
         $itemId    = (int)($_POST['item_id']    ?? 0);
         $purchased = (bool)(int)($_POST['purchased'] ?? 0);
@@ -249,7 +257,7 @@ match ($action) {
         jsonOk(['is_purchased' => $purchased]);
     })(),
 
-    //stergem tot ce am cumparat
+    //stergem tot ce am cumparat dintr-o lista
     'clear_purchased' => (function () use ($repo, $userId): never {
         $listId = (int)($_POST['list_id'] ?? 0);
         if ($listId <= 0) jsonErr('list_id invalid.');
@@ -258,10 +266,10 @@ match ($action) {
         $deleted = $repo->clearPurchased($listId);
         $repo->touchList($listId);
 
-        jsonOk(['deleted_count' => $deleted], "$deleted item(e) șterse.");
+        jsonOk(['deleted_count' => $deleted], "$deleted item(e) sterse.");
     })(),
 
-    //activeaza partajarea
+    //activeaza partajarea si genereaza token
     'share' => (function () use ($repo, $userId): never {
         $listId = (int)($_POST['list_id'] ?? 0);
         if ($listId <= 0) jsonErr('list_id invalid.');
@@ -269,10 +277,10 @@ match ($action) {
         requireListOwner($repo, $listId, $userId);
         $token = $repo->enableShare($listId);
 
-        jsonOk(['share_token' => $token], 'Partajare activată.');
+        jsonOk(['share_token' => $token], 'Partajare activata.');
     })(),
 
-    //dezactiveaza partajarea
+    //dezactiveaza partajarea si sterge tokenul
     'unshare' => (function () use ($repo, $userId): never {
         $listId = (int)($_POST['list_id'] ?? 0);
         if ($listId <= 0) jsonErr('list_id invalid.');
@@ -280,9 +288,36 @@ match ($action) {
         requireListOwner($repo, $listId, $userId);
         $repo->disableShare($listId);
 
-        jsonOk(null, 'Partajare dezactivată.');
+        jsonOk(null, 'Partajare dezactivata.');
     })(),
 
-    //default nu exista
-    default => jsonErr('Acțiune inexistentă.', 404),
+    //seteaza bugetul listei, null inseamna stergem bugetul
+    'set_budget' => (function () use ($repo, $userId): never {
+        $listId = (int)($_POST['list_id'] ?? 0);
+        $budget = isset($_POST['budget']) && $_POST['budget'] !== ''
+            ? (float)$_POST['budget'] : null;
+
+        if ($listId <= 0) jsonErr('list_id invalid.');
+
+        requireListOwner($repo, $listId, $userId);
+        $repo->setBudget($listId, $budget > 0 ? $budget : null);
+
+        jsonOk(['budget' => $budget], 'Buget actualizat.');
+    })(),
+
+    //seteaza mood-ul listei
+    'set_mood' => (function () use ($repo, $userId): never {
+        $listId = (int)($_POST['list_id'] ?? 0);
+        $mood   = trim($_POST['mood'] ?? 'general');
+
+        if ($listId <= 0) jsonErr('list_id invalid.');
+
+        requireListOwner($repo, $listId, $userId);
+        $repo->setMood($listId, $mood);
+
+        jsonOk(['mood' => $mood], 'Mood actualizat.');
+    })(),
+
+    //default nu exista actiunea
+    default => jsonErr('Actiune inexistenta.', 404),
 };
