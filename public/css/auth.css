@@ -10,7 +10,7 @@ html, body {
     justify-content: center;
 }
 
-/* Glow decorativ fundal */
+/* glow fundal */
 body::before {
     content: '';
     position: fixed;
@@ -37,7 +37,7 @@ body::before {
     padding: 2rem 1.5rem;
 }
 
-/* Link înapoi */
+/* link spre mers inapoi pe landing */
 .auth-back {
     position: fixed;
     top: 1.5rem;
@@ -51,16 +51,16 @@ body::before {
 }
 .auth-back:hover { color: #8df0c0; }
 
-/* Card centrat */
+/* card centrat */
 .auth-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 700px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-/* Logo */
+/* logo*/
 .auth-logo {
     font-family: 'Playfair Display', serif;
     font-size: 2.2rem;
@@ -83,7 +83,7 @@ body::before {
     margin-top: -1rem;
 }
 
-/* Tabs */
+/* taburile */
 .auth-tabs {
     display: flex;
     background: #252824;
@@ -108,7 +108,7 @@ body::before {
 .tab.active { background: #8df0c0; color: #173629; }
 .tab:hover:not(.active) { color: #bcb5aa; }
 
-/* Mesaje */
+/* mesajele */
 .msg {
     padding: 0.85rem 1rem;
     border-radius: 10px;
@@ -119,7 +119,7 @@ body::before {
 .msg.error   { background: rgba(247,37,133,0.08); color: #f72585; border: 1px solid rgba(247,37,133,0.2); }
 .msg.success { background: rgba(141,240,192,0.08); color: #8df0c0; border: 1px solid rgba(141,240,192,0.2); }
 
-/* Formular */
+/* formularul */
 .auth-form { display: flex; flex-direction: column; gap: 1.1rem; }
 .auth-form.hidden { display: none; }
 
@@ -134,7 +134,7 @@ body::before {
 }
 .fg input {
     width: 100%;
-    padding: 13px 16px;
+    padding: 16px 20px;
     border: 1px solid #373a35;
     border-radius: 12px;
     font-family: 'Nunito', sans-serif;
@@ -147,10 +147,10 @@ body::before {
 .fg input:focus { border-color: #8df0c0; background: #2a2d29; }
 .fg input::placeholder { color: #4a4d47; }
 
-/* Buton principal */
+/* buton principal */
 .btn-primary {
     width: 100%;
-    padding: 13px 16px;
+    padding: 16px;
     border: none;
     border-radius: 12px;
     font-family: 'Nunito', sans-serif;
@@ -166,7 +166,7 @@ body::before {
 .btn-primary:active { transform: scale(0.985); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Switch */
+/* switch */
 .auth-switch {
     text-align: center;
     font-size: 0.85rem;
@@ -181,7 +181,7 @@ body::before {
 }
 .auth-switch a:hover { color: #d9fff0; }
 
-/* Responsiv */
+/* responsiv */
 @media (max-width: 480px) {
     .auth-card { max-width: 100%; }
     .auth-back { position: static; margin-bottom: 0.5rem; align-self: flex-start; }

@@ -3,13 +3,13 @@ session_start();
 require_once __DIR__ . '/../config/Bootstrap.php';
 /** @var \PDO $pdo */
 
-// Dacă e deja logat, trimite la home
+//daca e deja logat trimitem la home, exit neaparat ca sa iesim din php
 if (isset($_SESSION['user_id'])) {
     header('Location: /pages/home.php');
     exit;
 }
 
-// Top 4 produse după view_count
+//luam primele 4 produse dupa view count, pentru a le afisa
 $topProducts = [];
 try {
     $stmt = $pdo->query("
@@ -17,23 +17,23 @@ try {
                COALESCE(AVG(r.rating), 0) AS avg_rating,
                COUNT(r.id) AS rating_count
         FROM products p
-        LEFT JOIN ratings r ON r.product_id = p.id
+        LEFT JOIN product_ratings r ON r.product_id = p.id
         GROUP BY p.id
         ORDER BY p.view_count DESC
         LIMIT 4
     ");
     $topProducts = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-} catch (\Exception $e) { /* fallback la date statice */ }
+} catch (\Exception $e) { }
 
-// Statistici globale
+//statistici globale
 $stats = ['products' => 0, 'users' => 0, 'ratings' => 0];
 try {
     $stats['products'] = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
     $stats['users']    = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-    $stats['ratings']  = $pdo->query("SELECT COUNT(*) FROM ratings")->fetchColumn();
+    $stats['ratings'] = $pdo->query("SELECT COUNT(*) FROM product_ratings")->fetchColumn();
 } catch (\Exception $e) {}
 
-// Fallback date demo dacă DB e goală
+
 if (empty($topProducts)) {
     $topProducts = [
         ['name' => 'Ceai verde Matcha', 'brand' => 'Ito En',       'price' => 12.50, 'avg_rating' => 4.9, 'rating_count' => 142, 'view_count' => 980,  'image_url' => null],
@@ -44,15 +44,21 @@ if (empty($topProducts)) {
 }
 if ($stats['products'] == 0) { $stats = ['products' => 248, 'users' => 1200, 'ratings' => 5800]; }
 
+//default in caz ca nu au imagine
 $emojis = ['🍵', '🥤', '🍓', '🧃', '🫖', '🍋', '🧋', '🍹'];
 
+//facem statisticile mai frumos vizual
 function formatNum(int $n): string {
     if ($n >= 1000) return round($n / 1000, 1) . 'k';
     return (string)$n;
 }
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,26 +66,30 @@ function formatNum(int $n): string {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/public/css/landing.css">
 </head>
+
 <body>
 
-<!-- Navbar minimal -->
 <nav class="topbar">
     <div class="topbar-inner">
         <div class="nav-logo">
-            <span class="logo-s">S</span><span class="logo-o">O</span><span class="logo-r">r</span>
+            <span class="logo-s">S</span>
+            <span class="logo-o">O</span>
+            <span class="logo-r">r</span>
             <span class="logo-label">Soft Drink Organizer</span>
         </div>
         <a href="/pages/auth.php" class="btn-nav">Intră în cont</a>
     </div>
 </nav>
 
-<!-- Hero -->
+<!-- hero -->
 <section class="hero">
     <div class="hero-inner">
-        <div class="hero-badge">🧃 Băuturi non-alcoolice</div>
+        <div class="hero-badge"> 🧃 Băuturi non-alcoolice </div>
         <h1 class="hero-title">
             Organizează tot ce<br>
-            <span class="accent-green">bei</span> și <span class="accent-pink">iubești</span>
+            <span class="accent-green">bei</span>
+            și
+            <span class="accent-pink">iubești</span>
         </h1>
         <p class="hero-sub">
             Ceaiuri, sucuri, siropuri, lactate și mult mai mult — descoperă,
@@ -91,12 +101,12 @@ function formatNum(int $n): string {
         </div>
     </div>
 
-    <!-- Decorativ fundal -->
+    <!-- glowul de pe fundal -->
     <div class="hero-glow hero-glow--green"></div>
     <div class="hero-glow hero-glow--pink"></div>
 </section>
 
-<!-- Statistici -->
+<!-- statistici -->
 <section class="stats-bar">
     <div class="stats-inner">
         <div class="stat-item">
@@ -121,7 +131,7 @@ function formatNum(int $n): string {
     </div>
 </section>
 
-<!-- Top băuturi -->
+<!-- top bauturi -->
 <section class="top-section">
     <div class="section-inner">
         <div class="section-header">
@@ -173,7 +183,7 @@ function formatNum(int $n): string {
     </div>
 </section>
 
-<!-- Features -->
+<!-- features -->
 <section class="features-section">
     <div class="section-inner">
         <div class="section-header">
@@ -205,7 +215,7 @@ function formatNum(int $n): string {
     </div>
 </section>
 
-<!-- CTA final -->
+
 <section class="final-cta">
     <div class="final-cta-inner">
         <h2>Gata să descoperi?</h2>
@@ -215,7 +225,7 @@ function formatNum(int $n): string {
     <div class="hero-glow hero-glow--green" style="opacity:0.4"></div>
 </section>
 
-<!-- Footer -->
+<!-- footer -->
 <footer class="footer">
     <div class="footer-inner">
         <div class="footer-logo">

@@ -1,11 +1,7 @@
 <?php
-/**
- * Router principal — SOr
- */
-
 define('ROOT_PATH', __DIR__);
 
-// ── Extrage path-ul curat ────────────────────────────────────────────────────
+//extrage pathul curat
 $uri      = $_SERVER['REQUEST_URI'] ?? '/';
 $path     = parse_url($uri, PHP_URL_PATH);
 
@@ -18,7 +14,7 @@ if ($scriptDir !== '' && str_starts_with($path, $scriptDir)) {
 $path = rtrim($path, '/');
 $path = $path === '' ? '/' : $path;
 
-// ── Tabla de rute ────────────────────────────────────────────────────────────
+//tabla de rute
 $routes = [
     '/'               => 'pages/home.php',
     '/home'           => 'pages/home.php',
@@ -34,7 +30,7 @@ $routes = [
     '/admin/users'    => 'admin/users.php',
 ];
 
-// ── Potrivire rută ───────────────────────────────────────────────────────────
+//ruta potrivita
 if (array_key_exists($path, $routes)) {
     $file = ROOT_PATH . '/' . $routes[$path];
     if (is_readable($file)) {
@@ -46,7 +42,7 @@ if (array_key_exists($path, $routes)) {
     exit;
 }
 
-// ── 404 ─────────────────────────────────────────────────────────────────────
+//404 cand nu gaseste
 http_response_code(404);
 $errorPage = ROOT_PATH . '/pages/error.php';
 if (is_readable($errorPage)) {

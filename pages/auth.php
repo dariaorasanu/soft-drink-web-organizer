@@ -1,11 +1,14 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/Bootstrap.php';
-/** @var AuthGuard $guard */
-$guard->requireGuest();
+/** @var AuthGuard $guard */ //nu executa nimic, ii spune doar IDe ul
+$guard->requireGuest(); //permite accesul doar la cei care nu sunt logati
 
-// Tab implicit din URL (e.g. ?tab=register)
-$defaultTab = (isset($_GET['tab']) && $_GET['tab'] === 'register') ? 'register' : 'login';
+//
+if (isset($_GET['tab']) && $_GET['tab'] === 'register')
+    $defaultTab = 'register';
+else
+    $defaultTab = 'login';
 ?>
 <!DOCTYPE html>
 <html lang="ro">

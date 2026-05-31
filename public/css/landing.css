@@ -9,7 +9,7 @@ body {
     overflow-x: hidden;
 }
 
-/* ───── Navbar ───── */
+/* navbar */
 .topbar {
     position: sticky;
     top: 0;
@@ -61,7 +61,7 @@ body {
 }
 .btn-nav:hover { border-color: #8df0c0; background: #2a2d29; }
 
-/* ───── Hero ───── */
+/* hero */
 .hero {
     position: relative;
     padding: 6rem 2rem 5rem;
@@ -114,7 +114,7 @@ body {
     margin-top: 0.4rem;
 }
 
-/* Glow decorativ */
+/* glow decaorativ */
 .hero-glow {
     position: absolute;
     width: 500px;
@@ -135,7 +135,7 @@ body {
     right: -100px;
 }
 
-/* ───── Butoane ───── */
+/* butoane */
 .btn-primary {
     display: inline-block;
     padding: 0.85rem 1.8rem;
@@ -169,7 +169,7 @@ body {
 }
 .btn-ghost:hover { border-color: #8df0c0; color: #f4f1ea; }
 
-/* ───── Stats bar ───── */
+/* stats bar  */
 .stats-bar {
     padding: 0 2rem;
 }
@@ -210,7 +210,7 @@ body {
     background: #2e312c;
 }
 
-/* ───── Secțiuni comune ───── */
+/* sectiuni comune */
 .section-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -241,7 +241,7 @@ body {
     color: #7a7d75;
 }
 
-/* ───── Top băuturi ───── */
+/* top bauturi */
 .top-section {
     padding: 5rem 2rem;
 }
@@ -352,7 +352,7 @@ body {
 }
 .section-cta { text-align: center; }
 
-/* ───── Features ───── */
+/* features */
 .features-section {
     padding: 4rem 2rem 5rem;
     background: #1a1c19;
@@ -387,7 +387,6 @@ body {
     line-height: 1.6;
 }
 
-/* ───── CTA final ───── */
 .final-cta {
     position: relative;
     padding: 6rem 2rem;
@@ -412,7 +411,7 @@ body {
     color: #bcb5aa;
 }
 
-/* ───── Footer ───── */
+/* footer */
 .footer {
     background: #141513;
     border-top: 1px solid #2e312c;
