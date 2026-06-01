@@ -1,12 +1,5 @@
-/* ============================================================
-   shopping-list.css — SOr dark theme
-   Variabile din design system (definite în home.css):
-     --bg: #171817  --bg-card: #252824  --border: #3b3d3a
-     --accent: #8df0c0  --pink: #f72585
-     --text: #f4f1ea  --text-2: #bcb5aa
-   ============================================================ */
 
-/* ── Layout principal ──────────────────────────────────────────────── */
+/* layout principal */
 .sl-layout {
     display: grid;
     grid-template-columns: 300px 1fr;
@@ -17,7 +10,7 @@
     padding: 1.5rem 1.5rem 6rem;
 }
 
-/* ── Sidebar ───────────────────────────────────────────────────────── */
+/* sidebar */
 .sl-sidebar {
     background: #252824;
     border: 1px solid #3b3d3a;
@@ -57,7 +50,7 @@
     padding: 0.25rem;
 }
 
-/* Lista de liste */
+/* lista de liste */
 .sl-lists-container {
     flex: 1;
     overflow-y: auto;
@@ -68,7 +61,6 @@
 .sl-lists-container::-webkit-scrollbar { width: 4px; }
 .sl-lists-container::-webkit-scrollbar-thumb { background: #3b3d3a; border-radius: 4px; }
 
-/* Loading spinner */
 .sl-loading {
     display: flex;
     justify-content: center;
@@ -83,7 +75,6 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Rândul unei liste */
 .sl-list-item {
     display: flex;
     align-items: center;
@@ -129,7 +120,6 @@
 }
 .sl-list-item-name:hover { color: #8df0c0; }
 
-/* Inline rename input */
 .sl-list-item-name.editing {
     background: #1e201e;
     border: 1px solid #8df0c0;
@@ -185,7 +175,7 @@
 .sl-action-btn:hover { color: #f4f1ea; background: rgba(255,255,255,0.06); }
 .sl-action-btn.danger:hover { color: #f72585; }
 
-/* Formular listă nouă */
+/* formular lista noua */
 .sl-new-list {
     padding: 0.75rem 1rem;
     border-top: 1px solid #3b3d3a;
@@ -224,7 +214,7 @@
 }
 .sl-btn-create:hover { background: #d9fff0; transform: scale(1.05); }
 
-/* ── Conținut principal ────────────────────────────────────────────── */
+/* continut pincipal */
 .sl-main {
     position: relative;
     display: flex;
@@ -233,7 +223,7 @@
     min-height: 0;
 }
 
-/* Empty state */
+/* empty state */
 .sl-empty-state {
     display: flex;
     flex-direction: column;
@@ -248,7 +238,7 @@
 .sl-empty-state h3 { font-size: 1.3rem; color: #f4f1ea; margin: 0; font-family: 'Playfair Display', serif; }
 .sl-empty-state p  { margin: 0; font-size: 0.95rem; }
 
-/* Header listă */
+/* header lista */
 .sl-list-header {
     background: #252824;
     border: 1px solid #3b3d3a;
@@ -299,7 +289,7 @@
 .sl-btn-icon.sl-btn-clear:hover  { border-color: #f72585; color: #f72585; }
 .sl-btn-icon.sl-btn-export:hover { border-color: #8df0c0; color: #8df0c0; }
 
-/* Container iteme */
+/* cosul*/
 .sl-items-container {
     display: flex;
     flex-direction: column;
@@ -307,7 +297,7 @@
     flex: 1;
 }
 
-/* ── Card item ─────────────────────────────────────────────────────── */
+/* item din cos*/
 .sl-item-card {
     background: #252824;
     border: 1px solid #3b3d3a;
@@ -330,7 +320,7 @@
 }
 .sl-item-card.purchased .sl-item-name { text-decoration: line-through; color: #7a7d75; }
 
-/* Checkbox custom */
+/* checkbox */
 .sl-checkbox-wrap { flex-shrink: 0; padding-top: 0.15rem; }
 .sl-checkbox {
     width: 22px; height: 22px;
@@ -350,7 +340,7 @@
 .sl-checkbox svg { display: none; }
 .sl-checkbox.checked svg { display: block; }
 
-/* Imagine produs */
+/* imaginea produsului */
 .sl-item-img {
     width: 50px; height: 50px;
     border-radius: 12px;
@@ -367,7 +357,7 @@
     flex-shrink: 0;
 }
 
-/* Info produs */
+/* informatii produs */
 .sl-item-info { flex: 1; min-width: 0; }
 
 .sl-item-name {
@@ -384,7 +374,7 @@
     margin-bottom: 0.3rem;
 }
 
-/* Notes */
+/* notitele */
 .sl-item-notes-wrap { margin-top: 0.35rem; }
 .sl-item-notes-toggle {
     background: none; border: none; cursor: pointer;
@@ -464,7 +454,7 @@
 }
 .sl-item-remove:hover { color: #f72585; }
 
-/* Footer total */
+/* footer*/
 .sl-footer {
     position: sticky;
     bottom: 0;
@@ -493,7 +483,6 @@
     font-family: 'Playfair Display', serif;
 }
 
-/* Buton FAB mobil */
 .sl-mobile-fab {
     display: none;
     position: fixed;
@@ -515,7 +504,6 @@
 }
 .sl-mobile-fab:hover { background: #d9fff0; transform: scale(1.03); }
 
-/* ── Modale ─────────────────────────────────────────────────────────── */
 .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.65);
@@ -626,7 +614,7 @@
 }
 .btn-danger:hover { background: rgba(247,37,133,0.2); }
 
-/* ── Pagina publică shared ──────────────────────────────────────────── */
+/* pagina publica shared */
 .shared-page {
     max-width: 680px;
     margin: 0 auto;
@@ -674,7 +662,7 @@
 .shared-empty h2 { color: #f4f1ea; font-family: 'Playfair Display', serif; }
 .shared-empty p  { color: #bcb5aa; }
 
-/* Shared items list */
+/* lista sharuita*/
 .shared-items-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
 .shared-item {
@@ -719,7 +707,7 @@
 .shared-total-label { color: #bcb5aa; font-weight: 700; font-size: 0.9rem; }
 .shared-total-value { color: #8df0c0; font-weight: 800; font-size: 1.25rem; font-family: 'Playfair Display', serif; }
 
-/* ── Butoane globale ────────────────────────────────────────────────── */
+/* butoane*/
 .btn-primary {
     background: #8df0c0;
     color: #173629;
@@ -736,7 +724,7 @@
 }
 .btn-primary:hover { background: #d9fff0; transform: translateY(-1px); }
 
-/* ── Toast notificări ───────────────────────────────────────────────── */
+/* notificari*/
 .sl-toast {
     position: fixed;
     bottom: 2rem; right: 2rem;
@@ -758,7 +746,7 @@
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Mod Cumpărături ────────────────────────────────────────────────── */
+/* mod cumparaturi */
 .sl-btn-shop-mode:hover { border-color: #8df0c0; color: #8df0c0; }
 .sl-btn-shop-mode.active {
     background: #8df0c0;
@@ -780,7 +768,7 @@
     to   { opacity: 1; }
 }
 
-/* Header */
+/* header */
 .sm-header {
     display: flex;
     align-items: center;
@@ -828,7 +816,6 @@
 }
 .sm-close:hover { border-color: #f72585; color: #f72585; }
 
-/* Stage — zona cardului */
 .sm-stage {
     flex: 1;
     display: flex;
@@ -1297,7 +1284,8 @@
     font-weight: 700;
 }
 
-/* ── Mood change dropdown în header ─────────────────────────────────── */
+/* mood change dropdown in header */
+
 .sl-mood-change-wrap {
     position: relative;
 }
