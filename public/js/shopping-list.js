@@ -89,12 +89,23 @@ const confirmDesc     = document.getElementById('confirm-modal-desc');
 const confirmCancel   = document.getElementById('confirm-cancel');
 const confirmOk       = document.getElementById('confirm-ok');
 
-//shared view, o gestionam separat
+/* ================================================================== */
+/*  Shared view — interactiv cu polling la 3 secunde                  */
+/* ================================================================== */
 const sharedContent = document.getElementById('shared-content');
 if (sharedContent) {
-    const token = sharedContent.dataset.token;
+    const token       = sharedContent.dataset.token;
+    let sharedItems   = []; // starea curenta in memorie
+    let pollingActive = true;
 
+    // incarcam lista si pornim polling-ul
     (async () => {
+        await loadSharedView();
+        startPolling();
+    })();
+
+    // incarca toate datele si randeaza pagina
+    async function loadSharedView() {
         const res = await apiGet('shared_view', { token });
         if (!res.success) {
             sharedContent.innerHTML = `
@@ -103,44 +114,180 @@ if (sharedContent) {
                     <h2>Eroare</h2>
                     <p>${esc(res.message)}</p>
                 </div>`;
+            pollingActive = false;
             return;
         }
 
-        const { items } = res.data;
-        let total = 0;
-        const hasPrice = items.some(i => i.product_price !== null);
+        sharedItems = res.data.items;
+        renderSharedItems();
+    }
 
-        const itemsHtml = items.map(item => {
-            if (item.line_total) total += item.line_total;
-            const imgHtml = item.product_image
-                ? `<img src="${esc(item.product_image)}" alt="" class="shared-item-img" loading="lazy">`
-                : `<div class="shared-item-emoji">${productEmoji(item.product_name)}</div>`;
-            return `
-                <div class="shared-item${item.is_purchased ? ' purchased' : ''}">
-                    ${imgHtml}
-                    <div class="shared-item-info">
-                        <p class="shared-item-name">${esc(item.product_name)}</p>
-                        ${item.product_brand ? `<p class="shared-item-brand">${esc(item.product_brand)}</p>` : ''}
-                    </div>
-                    <div class="shared-item-right">
-                        <div class="shared-item-qty">× ${item.quantity}</div>
-                        ${item.line_total ? `<div class="shared-item-price">${formatPrice(item.line_total)}</div>` : ''}
-                    </div>
-                </div>`;
-        }).join('');
+    // randam lista de iteme interactiva
+    function renderSharedItems() {
+        const hasPrice = sharedItems.some(i => i.product_price !== null);
+        const total    = sharedItems.reduce((sum, i) => sum + (i.line_total ?? 0), 0);
+
+        const itemsHtml = sharedItems.length === 0
+            ? '<p style="color:#7a7d75;text-align:center;padding:3rem">Lista este goala.</p>'
+            : sharedItems.map(item => {
+                const imgHtml = item.product_image
+                    ? `<img src="${esc(item.product_image)}" alt="" class="shared-item-img" loading="lazy">`
+                    : `<div class="shared-item-emoji">${productEmoji(item.product_name)}</div>`;
+                return `
+                    <div class="shared-item${item.is_purchased ? ' purchased' : ''}" id="sv-item-${item.id}">
+                        <!-- checkbox interactiv -->
+                        <div class="sv-checkbox${item.is_purchased ? ' checked' : ''}"
+                             data-item-id="${item.id}"
+                             role="checkbox"
+                             aria-checked="${item.is_purchased}"
+                             tabindex="0"
+                             title="${item.is_purchased ? 'Debifaza' : 'Marcheaza ca cumparat'}">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        ${imgHtml}
+                        <div class="shared-item-info">
+                            <p class="shared-item-name">${esc(item.product_name)}</p>
+                            ${item.product_brand ? `<p class="shared-item-brand">${esc(item.product_brand)}</p>` : ''}
+                        </div>
+                        <div class="shared-item-right">
+                            <div class="shared-item-qty">× ${item.quantity}</div>
+                            ${item.line_total ? `<div class="shared-item-price">${formatPrice(item.line_total)}</div>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
 
         sharedContent.innerHTML = `
-            <div class="shared-items-list">
-                ${items.length === 0
-            ? '<p style="color:#7a7d75;text-align:center;padding:3rem">Lista este goala.</p>'
-            : itemsHtml}
+            <div class="sv-live-badge" id="sv-live-badge">
+                <span class="sv-live-dot"></span> Live
+            </div>
+            <div class="sv-progress-wrap">
+                <div class="sv-progress-bar">
+                    <div class="sv-progress-fill" id="sv-progress-fill"></div>
+                </div>
+                <span class="sv-progress-label" id="sv-progress-label"></span>
+            </div>
+            <div class="shared-items-list" id="sv-items-list">
+                ${itemsHtml}
             </div>
             ${hasPrice ? `
             <div class="shared-total">
                 <span class="shared-total-label">Total estimat</span>
-                <span class="shared-total-value">${formatPrice(total)}</span>
+                <span class="shared-total-value" id="sv-total">${formatPrice(total)}</span>
             </div>` : ''}`;
-    })();
+
+        updateSharedProgress();
+        attachSharedCheckboxes();
+    }
+
+    // actualizeaza bara de progres
+    function updateSharedProgress() {
+        const total     = sharedItems.length;
+        const purchased = sharedItems.filter(i => i.is_purchased).length;
+        const pct       = total > 0 ? Math.round((purchased / total) * 100) : 0;
+
+        const fill  = document.getElementById('sv-progress-fill');
+        const label = document.getElementById('sv-progress-label');
+        if (fill)  fill.style.width      = pct + '%';
+        if (label) label.textContent     = `${purchased} / ${total} cumparate`;
+    }
+
+    // ataseaza listener-ele pe checkbox-uri
+    function attachSharedCheckboxes() {
+        document.querySelectorAll('.sv-checkbox').forEach(cb => {
+            cb.addEventListener('click',   () => toggleSharedItem(cb));
+            cb.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') toggleSharedItem(cb); });
+        });
+    }
+
+    // bifa/debifa un item din pagina shared
+    async function toggleSharedItem(cb) {
+        const itemId    = parseInt(cb.dataset.itemId);
+        const purchased = !cb.classList.contains('checked');
+
+        // feedback vizual instant — nu asteptam raspunsul API
+        applySharedItemState(itemId, purchased);
+
+        const fd = new FormData();
+        fd.append('token',     token);
+        fd.append('item_id',   itemId);
+        fd.append('purchased', purchased ? 1 : 0);
+
+        const res = await fetch(`${API}?action=shared_mark`, { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (!data.success) {
+            // daca a esuat, revenim la starea anterioara
+            applySharedItemState(itemId, !purchased);
+            alert(data.message ?? 'Eroare.');
+        } else {
+            // actualizam in memorie
+            const item = sharedItems.find(i => i.id === itemId);
+            if (item) item.is_purchased = purchased;
+            updateSharedProgress();
+            updateSharedTotal();
+        }
+    }
+
+    // aplica starea vizuala pe un item (fara re-render complet)
+    function applySharedItemState(itemId, purchased) {
+        const card = document.getElementById(`sv-item-${itemId}`);
+        const cb   = document.querySelector(`.sv-checkbox[data-item-id="${itemId}"]`);
+        card?.classList.toggle('purchased', purchased);
+        cb?.classList.toggle('checked', purchased);
+        cb?.setAttribute('aria-checked', purchased);
+    }
+
+    // actualizeaza totalul din footer
+    function updateSharedTotal() {
+        const totalEl = document.getElementById('sv-total');
+        if (!totalEl) return;
+        const total = sharedItems.reduce((sum, i) => sum + (i.line_total ?? 0), 0);
+        totalEl.textContent = formatPrice(total);
+    }
+
+    // polling la 3 secunde — verifica daca s-a schimbat ceva
+    function startPolling() {
+        setInterval(async () => {
+            if (!pollingActive) return;
+
+            const res = await apiGet('shared_view', { token });
+            if (!res.success) return;
+
+            const newItems = res.data.items;
+
+            // comparam cu starea din memorie
+            let changed = false;
+            for (const newItem of newItems) {
+                const old = sharedItems.find(i => i.id === newItem.id);
+                if (!old || old.is_purchased !== newItem.is_purchased) {
+                    changed = true;
+                    break;
+                }
+            }
+
+            if (!changed) return;
+
+            // actualizam doar itemele care s-au schimbat (nu re-randam tot)
+            for (const newItem of newItems) {
+                const old = sharedItems.find(i => i.id === newItem.id);
+                if (old && old.is_purchased !== newItem.is_purchased) {
+                    old.is_purchased = newItem.is_purchased;
+                    applySharedItemState(newItem.id, newItem.is_purchased);
+                }
+            }
+
+            updateSharedProgress();
+            updateSharedTotal();
+
+            // clipim badge-ul Live ca sa se vada ca s-a actualizat
+            const badge = document.getElementById('sv-live-badge');
+            badge?.classList.add('pulse');
+            setTimeout(() => badge?.classList.remove('pulse'), 600);
+
+        }, 3000);
+    }
 }
 
 //pagina privata

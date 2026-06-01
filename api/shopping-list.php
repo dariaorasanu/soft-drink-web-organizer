@@ -118,6 +118,30 @@ if ($action === 'shared_view') {
 //toate actiunile de mai jos necesita autentificare
 $guard->requireAuth();
 
+//actiune publica — oricine cu tokenul poate bifa/debifa un item
+if ($action === 'shared_mark') {
+    $token     = trim($_POST['token']     ?? '');
+    $itemId    = (int)($_POST['item_id']  ?? 0);
+    $purchased = (bool)(int)($_POST['purchased'] ?? 0);
+
+    if ($token === '')  jsonErr('Token lipsa.');
+    if ($itemId <= 0)   jsonErr('item_id invalid.');
+
+    //verificam ca lista exista si e partajata
+    $list = $repo->findByToken($token);
+    if ($list === null) jsonErr('Lista nu exista sau nu este partajata.', 404);
+
+    //verificam ca itemul apartine acestei liste (nu alteia)
+    $item = $repo->findItemById($itemId);
+    if ($item === null)             jsonErr('Itemul nu exista.', 404);
+    if ($item->listId !== $list->id) jsonErr('Itemul nu apartine acestei liste.', 403);
+
+    $repo->markPurchased($itemId, $purchased);
+    $repo->touchList($list->id);
+
+    jsonOk(['is_purchased' => $purchased], 'Stare actualizata.');
+}
+
 //getCurrentUser() returneaza obiectul user sau null
 $currentUser = $userService->getCurrentUser();
 if ($currentUser === null) jsonErr('Neautentificat.', 401);

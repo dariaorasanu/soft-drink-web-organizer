@@ -1324,3 +1324,66 @@
 .sl-mood-change-btn:hover { background: rgba(141,240,192,0.05); border-color: #555753; }
 .sl-mood-change-btn span:first-child { font-size: 1.1rem; }
 .sl-mood-change-btn span:last-child  { font-size: 0.62rem; font-weight: 800; color: #7a7d75; }
+
+/* Shared view interactiv */
+.sv-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(6,214,160,0.1);
+    border: 1px solid rgba(6,214,160,0.3);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #06d6a0;
+    margin-bottom: 1rem;
+    transition: background 0.3s;
+}
+.sv-live-badge.pulse { background: rgba(6,214,160,0.25); }
+
+.sv-live-dot {
+    width: 7px; height: 7px;
+    background: #06d6a0;
+    border-radius: 50%;
+    animation: livePulse 1.5s ease infinite;
+}
+@keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.8); }
+}
+
+.sv-progress-wrap {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+.sv-progress-bar {
+    flex: 1; height: 6px; background: #3b3d3a;
+    border-radius: 99px; overflow: hidden;
+}
+.sv-progress-fill {
+    height: 100%; background: #8df0c0;
+    border-radius: 99px; transition: width 0.4s ease;
+}
+.sv-progress-label {
+    font-size: 0.8rem; color: #7a7d75; font-weight: 700; white-space: nowrap;
+}
+
+/* Checkbox shared */
+.sv-checkbox {
+    width: 24px; height: 24px;
+    border: 2px solid #555753;
+    border-radius: 7px;
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+    color: transparent;
+}
+.sv-checkbox:hover { border-color: #8df0c0; }
+.sv-checkbox.checked {
+    border-color: #8df0c0;
+    background: rgba(141,240,192,0.15);
+    color: #8df0c0;
+}
