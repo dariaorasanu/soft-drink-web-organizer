@@ -11,6 +11,8 @@ class ShoppingListItem
         public readonly bool    $isPurchased,
         public readonly string  $addedAt,
         public readonly ?string $productName  = null,
+        public readonly ?string $productBrand = null,
+        public readonly ?string $productSlug  = null,
         public readonly ?string $productImage = null,
         public readonly ?float  $productPrice = null,
     ) {}
@@ -21,13 +23,15 @@ class ShoppingListItem
             id:           (int)$row['id'],
             listId:       (int)$row['list_id'],
             productId:    (int)$row['product_id'],
-            quantity:     (int)($row['quantity']     ?? 1),
-            notes:        $row['notes']              ?? null,
+            quantity:     (int)($row['quantity']      ?? 1),
+            notes:        $row['notes']               ?? null,
             isPurchased:  (bool)($row['is_purchased'] ?? false),
-            addedAt:      $row['added_at']            ?? '',
-            productName:  $row['product_name']        ?? null,
-            productImage: $row['image_url']           ?? null,
-            productPrice: isset($row['price'])        ? (float)$row['price'] : null,
+            addedAt:      $row['added_at']             ?? '',
+            productName:  $row['product_name']         ?? null,
+            productBrand: $row['product_brand']        ?? null,
+            productSlug:  $row['product_slug']         ?? null,
+            productImage: $row['image_url']            ?? null,
+            productPrice: isset($row['price']) ? (float)$row['price'] : null,
         );
     }
 
@@ -42,6 +46,8 @@ class ShoppingListItem
             'is_purchased'  => $this->isPurchased,
             'added_at'      => $this->addedAt,
             'product_name'  => $this->productName,
+            'product_brand' => $this->productBrand,
+            'product_slug'  => $this->productSlug,
             'product_price' => $this->productPrice,
         ];
     }

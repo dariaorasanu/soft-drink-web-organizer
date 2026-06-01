@@ -72,6 +72,19 @@ require_once __DIR__ . '/../templates/navbar.php';
                             <div class="fav-count" id="fav-count"></div>
                         </div>
 
+                        <button class="add-to-list-btn" id="add-to-list-btn">
+                            <span>+ Adaugă la listă</span>
+                        </button>
+                        <div class="add-to-list-dropdown hidden" id="add-to-list-dropdown">
+                            <div class="atl-loading" id="atl-loading">Se încarcă…</div>
+                            <div class="atl-lists" id="atl-lists"></div>
+                            <div class="atl-separator"></div>
+                            <div class="atl-new">
+                                <input type="text" class="atl-input" id="atl-new-name" placeholder="Listă nouă…" maxlength="200">
+                                <button class="atl-create-btn" id="atl-create-btn">+</button>
+                            </div>
+                        </div>
+
                         <!-- Detalii rapide -->
                         <div class="product-details-card">
                             <h3>Detalii</h3>

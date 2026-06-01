@@ -2,6 +2,8 @@ CREATE TABLE shopping_lists (
                                 id          SERIAL       PRIMARY KEY,
                                 user_id     INT          NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                                 name        VARCHAR(200) NOT NULL,
+                                budget      NUMERIC(10,2),
+                                mood        VARCHAR(20)  NOT NULL DEFAULT 'general',
                                 is_shared   BOOLEAN      NOT NULL DEFAULT FALSE,
                                 share_token VARCHAR(64)  UNIQUE,
                                 created_at  TIMESTAMP    NOT NULL DEFAULT NOW(),

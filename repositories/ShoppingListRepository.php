@@ -1,188 +1,238 @@
 <?php
 
-require_once __DIR__ . '/Interfaces/ShoppingListRepositoryInterface.php';
-require_once __DIR__ . '/../models/ShoppingList.php';
-require_once __DIR__ . '/../models/ShoppingListItem.php';
-
-class ShoppingListRepository implements ShoppingListRepositoryInterface
+class ShoppingListRepository
 {
-    public function __construct(private PDO $db) {}
+    public function __construct(private readonly PDO $pdo) {}
 
-    public function findByUser(int $userId): array
+    //returneaza toate listele unui user cu numarul de iteme
+    public function findAllByUser(int $userId): array
     {
-        $stmt = $this->db->prepare("
-            SELECT sl.*,
-                   COUNT(sli.id) as item_count
-            FROM shopping_lists sl
-            LEFT JOIN shopping_list_items sli ON sli.list_id = sl.id
-            WHERE sl.user_id = :user_id
-            GROUP BY sl.id
-            ORDER BY sl.updated_at DESC
-        ");
-        $stmt->execute([':user_id' => $userId]);
-
-        return array_map(
-            fn($row) => ShoppingList::fromArray($row),
-            $stmt->fetchAll()
+        $stmt = $this->pdo->prepare(
+            'SELECT sl.*,
+                    COUNT(sli.id) AS item_count
+             FROM   shopping_lists sl
+             LEFT JOIN shopping_list_items sli ON sli.list_id = sl.id
+             WHERE  sl.user_id = :uid
+             GROUP  BY sl.id
+             ORDER  BY sl.updated_at DESC'
         );
+        $stmt->execute([':uid' => $userId]);
+
+        $lists = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $list    = ShoppingList::fromArray($row);
+            $lists[] = ['list' => $list, 'item_count' => (int)$row['item_count']];
+        }
+        return $lists;
     }
 
-    public function findById(int $id): ?ShoppingList
+    //gaseste o lista dupa id
+    public function findById(int $listId): ?ShoppingList
     {
-        $stmt = $this->db->prepare("SELECT * FROM shopping_lists WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $row = $stmt->fetch();
-
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM shopping_lists WHERE id = :id'
+        );
+        $stmt->execute([':id' => $listId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? ShoppingList::fromArray($row) : null;
     }
 
-    public function findByShareToken(string $token): ?ShoppingList
+    //gaseste o lista dupa share_token (fara autentificare)
+    public function findByToken(string $token): ?ShoppingList
     {
-        $stmt = $this->db->prepare("
-            SELECT * FROM shopping_lists WHERE share_token = :token AND is_shared = true
-        ");
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM shopping_lists WHERE share_token = :token AND is_shared = TRUE'
+        );
         $stmt->execute([':token' => $token]);
-        $row = $stmt->fetch();
-
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? ShoppingList::fromArray($row) : null;
     }
 
-    public function create(int $userId, string $name): int
+    //creeaza o lista noua cu mood si buget optional, returneaza id-ul
+    public function create(int $userId, string $name, string $mood = 'general', ?float $budget = null): int
     {
-        $stmt = $this->db->prepare("
-            INSERT INTO shopping_lists (user_id, name)
-            VALUES (:user_id, :name)
-            RETURNING id
-        ");
-        $stmt->execute([':user_id' => $userId, ':name' => $name]);
-
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO shopping_lists (user_id, name, mood, budget, created_at, updated_at)
+             VALUES (:uid, :name, :mood, :budget, NOW(), NOW())
+             RETURNING id'
+        );
+        $stmt->execute([':uid' => $userId, ':name' => $name, ':mood' => $mood, ':budget' => $budget]);
         return (int)$stmt->fetchColumn();
     }
 
-    public function delete(int $id): bool
+    //redenumeste o lista
+    public function rename(int $listId, string $name): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM shopping_lists WHERE id = :id");
-        return $stmt->execute([':id' => $id]);
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_lists SET name = :name, updated_at = NOW() WHERE id = :id'
+        );
+        return $stmt->execute([':name' => $name, ':id' => $listId]);
     }
 
-    // generează un token unic și activează partajarea
-    public function share(int $id): string
+    //sterge o lista (CASCADE sterge si itemele)
+    public function delete(int $listId): bool
     {
-        $token = bin2hex(random_bytes(16));
+        $stmt = $this->pdo->prepare('DELETE FROM shopping_lists WHERE id = :id');
+        return $stmt->execute([':id' => $listId]);
+    }
 
-        $stmt = $this->db->prepare("
-            UPDATE shopping_lists
-            SET is_shared = true, share_token = :token, updated_at = NOW()
-            WHERE id = :id
-        ");
-        $stmt->execute([':token' => $token, ':id' => $id]);
-
+    //activeaza partajarea, generam un token unic de 48 caractere
+    public function enableShare(int $listId): string
+    {
+        $token = bin2hex(random_bytes(24));
+        $stmt  = $this->pdo->prepare(
+            'UPDATE shopping_lists
+             SET is_shared = TRUE, share_token = :token, updated_at = NOW()
+             WHERE id = :id'
+        );
+        $stmt->execute([':token' => $token, ':id' => $listId]);
         return $token;
     }
 
-    public function unshare(int $id): void
+    //dezactiveaza partajarea si sterge tokenul
+    public function disableShare(int $listId): bool
     {
-        $stmt = $this->db->prepare("
-            UPDATE shopping_lists
-            SET is_shared = false, share_token = NULL, updated_at = NOW()
-            WHERE id = :id
-        ");
-        $stmt->execute([':id' => $id]);
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_lists
+             SET is_shared = FALSE, share_token = NULL, updated_at = NOW()
+             WHERE id = :id'
+        );
+        return $stmt->execute([':id' => $listId]);
     }
 
-    // items
-
-    public function getItems(int $listId): array
+    //actualizam mereu updated_at la orice modificare de item
+    public function touchList(int $listId): void
     {
-        // join cu products ca să avem numele și prețul direct
-        $stmt = $this->db->prepare("
-            SELECT sli.*,
-                   p.name  AS product_name,
-                   p.image_url,
-                   p.price,
-                   p.brand
-            FROM shopping_list_items sli
-            JOIN products p ON p.id = sli.product_id
-            WHERE sli.list_id = :list_id
-            ORDER BY sli.is_purchased ASC, sli.added_at DESC
-        ");
-        $stmt->execute([':list_id' => $listId]);
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_lists SET updated_at = NOW() WHERE id = :id'
+        );
+        $stmt->execute([':id' => $listId]);
+    }
 
+    //seteaza bugetul unei liste (null = sterge bugetul)
+    public function setBudget(int $listId, ?float $budget): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_lists SET budget = :budget, updated_at = NOW() WHERE id = :id'
+        );
+        return $stmt->execute([':budget' => $budget, ':id' => $listId]);
+    }
+
+    //seteaza mood-ul unei liste, verifica ca e o valoare valida
+    public function setMood(int $listId, string $mood): bool
+    {
+        $allowed = ['general', 'picnic', 'acasa', 'petrecere', 'sport', 'birou'];
+        if (!in_array($mood, $allowed, true)) return false;
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_lists SET mood = :mood, updated_at = NOW() WHERE id = :id'
+        );
+        return $stmt->execute([':mood' => $mood, ':id' => $listId]);
+    }
+
+    // ── Iteme ──────────────────────────────────────────────────────────
+
+    //returneaza itemele unei liste cu datele produsului join-uite
+    public function findItemsByList(int $listId): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT sli.*,
+                    p.name       AS product_name,
+                    p.brand      AS product_brand,
+                    p.slug       AS product_slug,
+                    p.image_url,
+                    p.price,
+                    p.is_vegan,
+                    p.is_gluten_free
+             FROM   shopping_list_items sli
+             JOIN   products p ON p.id = sli.product_id
+             WHERE  sli.list_id = :lid
+             ORDER  BY sli.added_at ASC'
+        );
+        $stmt->execute([':lid' => $listId]);
         return array_map(
-            fn($row) => ShoppingListItem::fromArray($row),
-            $stmt->fetchAll()
+            fn(array $row) => ShoppingListItem::fromArray($row),
+            $stmt->fetchAll(PDO::FETCH_ASSOC)
         );
     }
 
-    public function addItem(int $listId, int $productId, int $quantity = 1, ?string $notes = null): int
+    //gaseste un singur item dupa id
+    public function findItemById(int $itemId): ?ShoppingListItem
     {
-        // dacă produsul există deja în listă, doar crește cantitatea
-        $existing = $this->db->prepare("
-            SELECT id, quantity FROM shopping_list_items
-            WHERE list_id = :list_id AND product_id = :product_id
-        ");
-        $existing->execute([':list_id' => $listId, ':product_id' => $productId]);
-        $row = $existing->fetch();
+        $stmt = $this->pdo->prepare(
+            'SELECT sli.*, p.name AS product_name, p.image_url, p.price
+             FROM   shopping_list_items sli
+             JOIN   products p ON p.id = sli.product_id
+             WHERE  sli.id = :id'
+        );
+        $stmt->execute([':id' => $itemId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? ShoppingListItem::fromArray($row) : null;
+    }
 
-        if ($row) {
-            $update = $this->db->prepare("
-                UPDATE shopping_list_items SET quantity = :qty WHERE id = :id
-            ");
-            $update->execute([':qty' => $row['quantity'] + $quantity, ':id' => $row['id']]);
-            return (int)$row['id'];
-        }
+    //verifica daca produsul e deja in lista ca sa evitam duplicate
+    public function itemExistsInList(int $listId, int $productId): ?int
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id FROM shopping_list_items
+             WHERE list_id = :lid AND product_id = :pid'
+        );
+        $stmt->execute([':lid' => $listId, ':pid' => $productId]);
+        $id = $stmt->fetchColumn();
+        return $id !== false ? (int)$id : null;
+    }
 
-        $stmt = $this->db->prepare("
-            INSERT INTO shopping_list_items (list_id, product_id, quantity, notes)
-            VALUES (:list_id, :product_id, :quantity, :notes)
-            RETURNING id
-        ");
+    //adaugam un item nou in lista
+    public function addItem(int $listId, int $productId, int $quantity, ?string $notes): int
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO shopping_list_items (list_id, product_id, quantity, notes, added_at)
+             VALUES (:lid, :pid, :qty, :notes, NOW())
+             RETURNING id'
+        );
         $stmt->execute([
-            ':list_id'    => $listId,
-            ':product_id' => $productId,
-            ':quantity'   => $quantity,
-            ':notes'      => $notes,
+            ':lid'   => $listId,
+            ':pid'   => $productId,
+            ':qty'   => max(1, $quantity),
+            ':notes' => $notes,
         ]);
-
-        $this->touchList($listId);
-
         return (int)$stmt->fetchColumn();
     }
 
+    //actualizam cantitatea si/sau notita unui item
     public function updateItem(int $itemId, int $quantity, ?string $notes): bool
     {
-        $stmt = $this->db->prepare("
-            UPDATE shopping_list_items SET quantity = :qty, notes = :notes WHERE id = :id
-        ");
-        return $stmt->execute([':qty' => $quantity, ':notes' => $notes, ':id' => $itemId]);
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_list_items
+             SET quantity = :qty, notes = :notes
+             WHERE id = :id'
+        );
+        return $stmt->execute([':qty' => max(1, $quantity), ':notes' => $notes, ':id' => $itemId]);
     }
 
+    //marcheaza sau demarcheaza un item ca cumparat
+    public function markPurchased(int $itemId, bool $purchased): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE shopping_list_items SET is_purchased = :p WHERE id = :id'
+        );
+        return $stmt->execute([':p' => $purchased ? 'true' : 'false', ':id' => $itemId]);
+    }
+
+    //sterge un item
     public function removeItem(int $itemId): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM shopping_list_items WHERE id = :id");
+        $stmt = $this->pdo->prepare('DELETE FROM shopping_list_items WHERE id = :id');
         return $stmt->execute([':id' => $itemId]);
     }
 
-    public function markItemPurchased(int $itemId, bool $purchased): bool
+    //sterge toate itemele marcate ca cumparate dintr-o lista
+    public function clearPurchased(int $listId): int
     {
-        $stmt = $this->db->prepare("
-            UPDATE shopping_list_items SET is_purchased = :purchased WHERE id = :id
-        ");
-        return $stmt->execute([':purchased' => $purchased, ':id' => $itemId]);
-    }
-
-    public function clearPurchased(int $listId): void
-    {
-        $stmt = $this->db->prepare("
-            DELETE FROM shopping_list_items WHERE list_id = :list_id AND is_purchased = true
-        ");
-        $stmt->execute([':list_id' => $listId]);
-    }
-
-    // updatează updated_at pe listă când se modifică ceva
-    private function touchList(int $listId): void
-    {
-        $stmt = $this->db->prepare("UPDATE shopping_lists SET updated_at = NOW() WHERE id = :id");
-        $stmt->execute([':id' => $listId]);
+        $stmt = $this->pdo->prepare(
+            'DELETE FROM shopping_list_items
+             WHERE list_id = :lid AND is_purchased = TRUE'
+        );
+        $stmt->execute([':lid' => $listId]);
+        return $stmt->rowCount();
     }
 }

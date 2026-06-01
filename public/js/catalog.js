@@ -170,6 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+
+        document.querySelectorAll('.list-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                openListDropdown(btn, parseInt(btn.dataset.productId));
+            });
+        });
     }
 
     function updatePagination() {
@@ -240,4 +248,116 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     loadProducts();
+    // dropdown adauga la lista — se deschide sub butonul cardului
+    let openDropdown = null;
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.catalog-list-dropdown').forEach(d => d.remove());
+        openDropdown = null;
+    }
+
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.list-btn') && !e.target.closest('.catalog-list-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    async function openListDropdown(btn, productId) {
+        // daca e deja deschis acelasi, inchidem
+        if (openDropdown === btn) {
+            closeAllDropdowns();
+            return;
+        }
+        closeAllDropdowns();
+        openDropdown = btn;
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'catalog-list-dropdown';
+        dropdown.innerHTML = '<div class="catalog-atl-loading">Se incarca...</div>';
+
+        // pozitionam dropdown-ul sub buton
+        btn.parentElement.style.position = 'relative';
+        btn.parentElement.appendChild(dropdown);
+
+        try {
+            const res  = await fetch('/api/shopping-list.php?action=my_lists');
+            const data = await res.json();
+
+            if (!data.success || !data.data.length) {
+                dropdown.innerHTML = `
+                <p class="catalog-atl-empty">Nicio lista inca.</p>
+                <div class="catalog-atl-new">
+                    <input type="text" class="catalog-atl-input" placeholder="Lista noua..." maxlength="200">
+                    <button class="catalog-atl-create">+</button>
+                </div>`;
+            } else {
+                dropdown.innerHTML = `
+                <div class="catalog-atl-lists">
+                    ${data.data.map(list => `
+                        <button class="catalog-atl-row" data-list-id="${list.id}">
+                            <span>${escapeHtml(list.name)}</span>
+                            <span class="catalog-atl-count">${list.item_count} produse</span>
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="catalog-atl-new">
+                    <input type="text" class="catalog-atl-input" placeholder="Lista noua..." maxlength="200">
+                    <button class="catalog-atl-create">+</button>
+                </div>`;
+            }
+
+            // click pe o lista existenta
+            dropdown.querySelectorAll('.catalog-atl-row').forEach(row => {
+                row.addEventListener('click', () => addToList(parseInt(row.dataset.listId), productId, btn));
+            });
+
+            // creare lista noua si adaugare
+            const input     = dropdown.querySelector('.catalog-atl-input');
+            const createBtn = dropdown.querySelector('.catalog-atl-create');
+
+            const createAndAdd = async () => {
+                const name = input.value.trim();
+                if (!name) { input.focus(); return; }
+                const fd = new FormData();
+                fd.append('name', name);
+                const res  = await fetch('/api/shopping-list.php?action=create', { method: 'POST', body: fd });
+                const data = await res.json();
+                if (data.success) {
+                    await addToList(data.data.id, productId, btn);
+                } else {
+                    showCatalogToast(data.message ?? 'Eroare.', true);
+                }
+            };
+
+            createBtn?.addEventListener('click', createAndAdd);
+            input?.addEventListener('keydown', e => { if (e.key === 'Enter') createAndAdd(); });
+            input?.focus();
+
+        } catch {
+            dropdown.innerHTML = '<p class="catalog-atl-empty">Eroare la incarcare.</p>';
+        }
+    }
+
+    async function addToList(listId, productId, btn) {
+        const fd = new FormData();
+        fd.append('list_id',    listId);
+        fd.append('product_id', productId);
+        fd.append('quantity',   1);
+        const res  = await fetch('/api/shopping-list.php?action=add_item', { method: 'POST', body: fd });
+        const data = await res.json();
+        closeAllDropdowns();
+        showCatalogToast(data.success ? '✓ Adaugat in lista!' : (data.message ?? 'Eroare.'), !data.success);
+    }
+
+    function showCatalogToast(msg, isError = false) {
+        const t = document.createElement('div');
+        t.style.cssText = `position:fixed;bottom:2rem;right:2rem;background:#252824;
+        border:1px solid ${isError ? '#f72585' : '#8df0c0'};
+        color:${isError ? '#f72585' : '#f4f1ea'};
+        border-radius:14px;padding:.9rem 1.4rem;font-size:.9rem;font-weight:700;
+        z-index:9999;font-family:'Nunito',sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.4);`;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
 });

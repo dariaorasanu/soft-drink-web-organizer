@@ -586,3 +586,66 @@
     color: #8df0c0;
     font-weight: 700;
 }
+
+.add-to-list-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #555753;
+    color: #d8d2c7;
+    border-radius: 12px;
+    padding: 0.75rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: border-color 0.15s, color 0.15s;
+    position: relative;
+}
+.add-to-list-btn:hover { border-color: #8df0c0; color: #8df0c0; }
+
+.add-to-list-dropdown {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 14px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+.add-to-list-dropdown.hidden { display: none; }
+
+.atl-loading { padding: 0.75rem 1rem; color: #7a7d75; font-size: 0.85rem; }
+
+.atl-lists { display: flex; flex-direction: column; }
+.atl-list-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.65rem 1rem;
+    cursor: pointer;
+    transition: background 0.12s;
+    font-size: 0.88rem; font-weight: 700; color: #f4f1ea;
+    border: none; background: none; width: 100%; text-align: left;
+    font-family: 'Nunito', sans-serif;
+}
+.atl-list-row:hover { background: rgba(141,240,192,0.06); color: #8df0c0; }
+.atl-list-count { font-size: 0.75rem; color: #7a7d75; font-weight: 700; }
+
+.atl-separator { height: 1px; background: #3b3d3a; margin: 0.25rem 0; }
+
+.atl-new {
+    display: flex; gap: 0.5rem; padding: 0.65rem 0.75rem;
+}
+.atl-input {
+    flex: 1; background: #1e201e; border: 1px solid #3b3d3a;
+    border-radius: 8px; color: #f4f1ea;
+    font-family: 'Nunito', sans-serif; font-size: 0.85rem;
+    padding: 0.45rem 0.75rem; outline: none;
+}
+.atl-input:focus { border-color: #8df0c0; }
+.atl-input::placeholder { color: #7a7d75; }
+.atl-create-btn {
+    background: #8df0c0; color: #173629; border: none;
+    border-radius: 8px; width: 32px; height: 32px;
+    font-size: 1.1rem; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.atl-create-btn:hover { background: #d9fff0; }
