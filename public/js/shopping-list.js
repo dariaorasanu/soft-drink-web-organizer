@@ -15,7 +15,7 @@ async function apiGet(action, params = {}) {
     return res.json();
 }
 
-// afisam un toast de notificare
+//afisam notificarile
 function toast(msg, isError = false) {
     const el = document.createElement('div');
     el.className = 'sl-toast' + (isError ? ' error' : '');
@@ -89,16 +89,15 @@ const confirmDesc     = document.getElementById('confirm-modal-desc');
 const confirmCancel   = document.getElementById('confirm-cancel');
 const confirmOk       = document.getElementById('confirm-ok');
 
-/* ================================================================== */
-/*  Shared view — interactiv cu polling la 3 secunde                  */
-/* ================================================================== */
+
+//shared view, interactiv cu polling la 3 secunde
 const sharedContent = document.getElementById('shared-content');
 if (sharedContent) {
-    const token       = sharedContent.dataset.token;
-    let sharedItems   = []; // starea curenta in memorie
+    const token = sharedContent.dataset.token;
+    let sharedItems = []; // starea curenta in memorie
     let pollingActive = true;
 
-    // incarcam lista si pornim polling-ul
+    //incarcam lista si pornim pollingul
     (async () => {
         await loadSharedView();
         startPolling();
@@ -117,7 +116,6 @@ if (sharedContent) {
             pollingActive = false;
             return;
         }
-
         sharedItems = res.data.items;
         renderSharedItems();
     }
@@ -347,9 +345,6 @@ function renderListRow(list) {
         </div>`;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Incarcarea itemelor                                                 */
-/* ------------------------------------------------------------------ */
 async function loadItems(listId) {
     currentListId = listId;
     const listEl  = document.querySelector(`.sl-list-item[data-id="${listId}"]`);
@@ -455,9 +450,6 @@ function renderItemCard(item) {
         </div>`;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Progres si total                                                    */
-/* ------------------------------------------------------------------ */
 function updateProgress() {
     const total     = allItems.length;
     const purchased = allItems.filter(i => i.is_purchased).length;
@@ -466,7 +458,7 @@ function updateProgress() {
     progressLabel.textContent = `${purchased} / ${total} cumparate`;
 }
 
-// updateTotal cheama si updateBudgetTracker ca sa fie mereu in sync
+
 function updateTotal() {
     const total = allItems.reduce((sum, item) => {
         if (item.line_total) return sum + parseFloat(item.line_total);
@@ -476,11 +468,7 @@ function updateTotal() {
     updateBudgetTracker();
 }
 
-/* ------------------------------------------------------------------ */
-/*  Binding evenimente (event delegation)                              */
-/* ------------------------------------------------------------------ */
 function bindEvents() {
-
     // click pe randul unei liste
     listsContainer.addEventListener('click', async e => {
         const row       = e.target.closest('.sl-list-item');
@@ -624,9 +612,7 @@ function bindEvents() {
     });
 }
 
-/* ------------------------------------------------------------------ */
-/*  Actiuni pe liste                                                    */
-/* ------------------------------------------------------------------ */
+//actiuni pe liste
 
 // creeaza lista noua cu mood-ul selectat din picker
 async function createList() {
@@ -683,9 +669,7 @@ function startInlineRename(listId) {
     nameEl.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nameEl.blur(); } }, { once: true });
 }
 
-/* ------------------------------------------------------------------ */
-/*  Actiuni pe iteme                                                    */
-/* ------------------------------------------------------------------ */
+//actiuni pe iteme
 async function togglePurchased(itemId, purchased) {
     const res = await apiPost('mark_purchased', { item_id: itemId, purchased: purchased ? 1 : 0 });
     if (res.success) {
@@ -805,7 +789,10 @@ async function disableShare() {
 
 //export csv
 function exportCsv() {
-    if (!allItems.length) { toast('Lista este goala.'); return; }
+    if (!allItems.length) {
+        toast('Lista este goala.');
+        return;
+    }
     const rows = [['Produs', 'Brand', 'Cantitate', 'Pret unitar', 'Total', 'Cumparat', 'Notita']];
     for (const item of allItems) {
         rows.push([
@@ -829,9 +816,7 @@ function exportCsv() {
     toast('CSV descarcat.');
 }
 
-/* ------------------------------------------------------------------ */
-/*  Confirmare generica                                                 */
-/* ------------------------------------------------------------------ */
+
 let _confirmCallback = null;
 
 function confirmAction(title, desc, callback) {
@@ -849,16 +834,11 @@ confirmOk?.addEventListener('click', async () => {
     }
 });
 
-/* ------------------------------------------------------------------ */
-/*  Mobile sidebar                                                      */
-/* ------------------------------------------------------------------ */
+
 function openSidebar()  { sidebar?.classList.add('open'); }
 function closeSidebar() { sidebar?.classList.remove('open'); }
 
-/* ================================================================== */
-/*  Mod Cumparaturi                                                     */
-/* ================================================================== */
-
+//mod cumparaturi
 const shopOverlay = document.getElementById('shop-mode-overlay');
 const smCardInner = document.getElementById('sm-card-inner');
 const smCounter   = document.getElementById('sm-counter');

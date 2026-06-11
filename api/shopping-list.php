@@ -54,7 +54,7 @@ function requireItemOwner(ShoppingListRepository $repo, int $itemId, int $userId
     return $item;
 }
 
-//facem serializarea listei la un array curat (XSS safe), includem mood si budget
+//facem serializarea listei la un array curat, includem mood si budget
 function serializeList(\ShoppingList $list, int $itemCount = 0): array
 {
     return [
