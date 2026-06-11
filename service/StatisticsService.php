@@ -199,25 +199,30 @@ class StatisticsService
     {
         $chartData = $this->normalizeChartData($data);
 
-        $width = 760;
-        $height = 360;
+        $useLegend = count($chartData) > 6;
+
+        $width = 900;
+        $height = $useLegend ? 520 : 400;
+
         $paddingTop = 60;
-        $paddingRight = 30;
-        $paddingBottom = 80;
-        $paddingLeft = 55;
+        $paddingRight = 40;
+        $paddingBottom = $useLegend ? 210 : 95;
+        $paddingLeft = 60;
+
         $chartWidth = $width - $paddingLeft - $paddingRight;
         $chartHeight = $height - $paddingTop - $paddingBottom;
-        $barGap = 14;
+
+        $barGap = 16;
         $count = max(count($chartData), 1);
-        $barWidth = max(24, ($chartWidth - ($barGap * ($count - 1))) / $count);
+        $barWidth = max(35, ($chartWidth - ($barGap * ($count - 1))) / $count);
+
         $maxValue = max(array_column($chartData, 'value') ?: [1]);
         $maxValue = $maxValue > 0 ? $maxValue : 1;
 
         $svg = [];
         $svg[] = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $width . ' ' . $height . '" role="img" aria-label="' . $this->escapeXml($title) . '">';
         $svg[] = '<rect width="100%" height="100%" rx="24" fill="#171817"/>';
-        $svg[] = '<text x="' . ($width / 2) . '" y="32" text-anchor="middle" fill="#f7f7f2" font-size="22" font-family="Arial, sans-serif" font-weight="700">' . $this->escapeXml($title) . '</text>';
-        $svg[] = '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#3a3d3a" stroke-width="2"/>';
+        $svg[] = '<text x="' . ($width / 2) . '" y="36" text-anchor="middle" fill="#f7f7f2" font-size="24" font-family="Arial, sans-serif" font-weight="700">' . $this->escapeXml($title) . '</text>';
 
         if (empty($chartData)) {
             $svg[] = '<text x="' . ($width / 2) . '" y="' . ($height / 2) . '" text-anchor="middle" fill="#b9c7bd" font-size="16" font-family="Arial, sans-serif">Nu există date pentru acest grafic.</text>';
@@ -225,16 +230,37 @@ class StatisticsService
             return implode('', $svg);
         }
 
+        $axisY = $height - $paddingBottom;
+        $svg[] = '<line x1="' . $paddingLeft . '" y1="' . $axisY . '" x2="' . ($width - $paddingRight) . '" y2="' . $axisY . '" stroke="#3a3d3a" stroke-width="2"/>';
+
         foreach ($chartData as $index => $item) {
             $value = (float)$item['value'];
             $label = (string)$item['label'];
+
             $barHeight = ($value / $maxValue) * $chartHeight;
             $x = $paddingLeft + ($index * ($barWidth + $barGap));
-            $y = ($height - $paddingBottom) - $barHeight;
+            $y = $axisY - $barHeight;
+
+            $labelUnderBar = $useLegend ? (string)($index + 1) : $label;
 
             $svg[] = '<rect x="' . round($x, 2) . '" y="' . round($y, 2) . '" width="' . round($barWidth, 2) . '" height="' . round($barHeight, 2) . '" rx="10" fill="#8df0c0"/>';
-            $svg[] = '<text x="' . round($x + $barWidth / 2, 2) . '" y="' . round($y - 8, 2) . '" text-anchor="middle" fill="#f72585" font-size="13" font-family="Arial, sans-serif" font-weight="700">' . $this->escapeXml((string)$value) . '</text>';
-            $svg[] = '<text x="' . round($x + $barWidth / 2, 2) . '" y="' . ($height - 48) . '" text-anchor="middle" fill="#f7f7f2" font-size="12" font-family="Arial, sans-serif">' . $this->escapeXml($this->shortenLabel($label)) . '</text>';
+            $svg[] = '<text x="' . round($x + $barWidth / 2, 2) . '" y="' . round($y - 10, 2) . '" text-anchor="middle" fill="#f72585" font-size="14" font-family="Arial, sans-serif" font-weight="700">' . $this->escapeXml((string)$value) . '</text>';
+            $svg[] = '<text x="' . round($x + $barWidth / 2, 2) . '" y="' . ($axisY + 28) . '" text-anchor="middle" fill="#f7f7f2" font-size="13" font-family="Arial, sans-serif" font-weight="700">' . $this->escapeXml($labelUnderBar) . '</text>';
+        }
+
+        if ($useLegend) {
+            $legendY = $axisY + 65;
+            $leftColumnX = 80;
+            $rightColumnX = 470;
+
+            foreach ($chartData as $index => $item) {
+                $columnX = $index < 5 ? $leftColumnX : $rightColumnX;
+                $rowY = $legendY + (($index % 5) * 24);
+
+                $legendText = ($index + 1) . '. ' . $item['label'];
+
+                $svg[] = '<text x="' . $columnX . '" y="' . $rowY . '" fill="#f7f7f2" font-size="13" font-family="Arial, sans-serif">' . $this->escapeXml($legendText) . '</text>';
+            }
         }
 
         $svg[] = '</svg>';
@@ -325,7 +351,7 @@ class StatisticsService
 
     private function shortenLabel(string $label): string
     {
-        return mb_strlen($label) > 14 ? mb_substr($label, 0, 13) . '…' : $label;
+        return mb_strlen($label) > 11 ? mb_substr($label, 0, 10) . '…' : $label;
     }
 
     private function escape(?string $value): string
