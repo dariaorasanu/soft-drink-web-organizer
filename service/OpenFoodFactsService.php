@@ -65,10 +65,13 @@ class OpenFoodFactsService
         ]);
 
         $data = $this->getJson(self::BASE_URL . '/cgi/search.pl?' . $params);
+        if (!empty($data['products']) && is_array($data['products'])) {
+            return $this->sortBySearchRelevance($data['products'], $name);
+        }
 
-        return !empty($data['products']) && is_array($data['products'])
-            ? $data['products']
-            : [];
+        // Endpointul clasic de search poate raspunde intermitent cu 503.
+        // Folosim indexul de cautare Open Food Facts ca fallback.
+        return $this->searchByNameFallback($name);
     }
 
     public function mapToProduct(array $offData): array
@@ -86,12 +89,7 @@ class OpenFoodFactsService
                 'generic_name',
             ]) ?: 'Produs Open Food Facts',
 
-            'description' => $this->firstValue($offData, [
-                'generic_name_ro',
-                'generic_name_en',
-                'generic_name',
-                'categories',
-            ]),
+            'description' => $this->descriptionText($offData),
 
             'price' => null,
 
@@ -100,11 +98,7 @@ class OpenFoodFactsService
                 'image_url',
             ]),
 
-            'ingredients' => $this->firstValue($offData, [
-                'ingredients_text_ro',
-                'ingredients_text_en',
-                'ingredients_text',
-            ]),
+            'ingredients' => $this->ingredientsText($offData),
 
             'barcode' => $barcode,
             'brand' => $this->firstBrand($offData['brands'] ?? null),
@@ -159,8 +153,158 @@ class OpenFoodFactsService
         return null;
     }
 
+    private function ingredientsText(array $data): ?string
+    {
+        // Preferam ingrediente localizate. Daca exista doar text generic in franceza,
+        // il lasam gol ca adminul sa il completeze/verifice manual.
+        $localized = $this->firstValue($data, [
+            'ingredients_text_ro',
+            'ingredients_text_en',
+        ]);
+
+        if ($localized !== null) {
+            return $localized;
+        }
+
+        $generic = $this->firstValue($data, ['ingredients_text']);
+        if ($generic === null || $this->looksLikeFrench($generic)) {
+            return null;
+        }
+
+        return $generic;
+    }
+
+    private function descriptionText(array $data): ?string
+    {
+        // Descrierile din OFF pot fi in multe limbi. Pastram romana/engleza
+        // si evitam completarea automata cu texte in limbi greu de validat.
+        $localized = $this->firstValue($data, [
+            'generic_name_ro',
+            'generic_name_en',
+        ]);
+
+        if ($localized !== null) {
+            return $this->cleanImportedText($localized);
+        }
+
+        $generic = $this->firstValue($data, ['generic_name']);
+        if ($generic !== null && !$this->looksLikeUnsupportedLanguage($generic)) {
+            return $this->cleanImportedText($generic);
+        }
+
+        $categories = $this->firstValue($data, ['categories']);
+        if ($categories !== null && !$this->looksLikeUnsupportedLanguage($categories)) {
+            return $this->cleanImportedText($categories);
+        }
+
+        return null;
+    }
+
+    private function looksLikeFrench(string $text): bool
+    {
+        $text = strtolower($text);
+
+        return preg_match(
+            "/\\b(eau|sucre|acidifiants?|stabilisant|antioxydant|concentre|concentre|concentré|purée|arômes?|matières?|abricot|fraise)\\b|\\bd'|jus d'/u",
+            $text
+        ) === 1;
+    }
+
+    private function looksLikeUnsupportedLanguage(string $text): bool
+    {
+        $text = strtolower($text);
+
+        return $this->looksLikeFrench($text)
+            || preg_match('/[\\x{0600}-\\x{06FF}\\x{0400}-\\x{04FF}\\x{0590}-\\x{05FF}\\x{4E00}-\\x{9FFF}]/u', $text) === 1
+            || preg_match('/\\b(boisson|boissons|bebida|bebidas|zumo|jus|wasser|getrank|getränk|getränke|pflanzliche|lebensmittel|napoj|succo)\\b/u', $text) === 1;
+    }
+
+    private function cleanImportedText(string $text): string
+    {
+        $text = preg_replace('/\\b[a-z]{2}:/i', '', $text);
+        $text = str_replace('-', ' ', $text);
+        $text = preg_replace('/\\s+/', ' ', $text);
+
+        return trim($text ?? '');
+    }
+
+    private function searchByNameFallback(string $name): array
+    {
+        $url = 'https://search.openfoodfacts.org/search?' . http_build_query([
+            'q' => $name,
+        ]);
+
+        $data = $this->getJson($url);
+        if (empty($data['hits']) || !is_array($data['hits'])) {
+            return [];
+        }
+
+        return array_slice($this->sortBySearchRelevance($data['hits'], $name), 0, 10);
+    }
+
+    private function sortBySearchRelevance(array $products, string $query): array
+    {
+        usort($products, function (array $a, array $b) use ($query) {
+            return $this->relevanceScore($b, $query) <=> $this->relevanceScore($a, $query);
+        });
+
+        return array_values($products);
+    }
+
+    private function relevanceScore(array $product, string $query): int
+    {
+        // OFF intoarce uneori produse din acelasi brand, dar fara termenul cautat in nume.
+        // Scorul pune mai sus potrivirile din nume si produsele cu date mai complete.
+        $query = $this->normalizeSearchText($query);
+
+        $name = $this->normalizeSearchText((string)$this->firstValue($product, [
+            'product_name_ro',
+            'product_name_en',
+            'product_name',
+        ]));
+        $genericName = $this->normalizeSearchText((string)$this->firstValue($product, [
+            'generic_name_ro',
+            'generic_name_en',
+            'generic_name',
+        ]));
+        $brand = $this->normalizeSearchText((string)$this->firstBrand($product['brands'] ?? null));
+        $categories = $this->normalizeSearchText(
+            is_array($product['categories_tags'] ?? null)
+                ? implode(' ', $product['categories_tags'])
+                : (string)($product['categories'] ?? '')
+        );
+
+        $score = 0;
+
+        if ($name === $query) $score += 220;
+        if ($name !== '' && str_starts_with($name, $query)) $score += 160;
+        if ($name !== '' && str_contains($name, $query)) $score += 120;
+        if ($genericName !== '' && str_contains($genericName, $query)) $score += 60;
+        if ($brand === $query) $score += 45;
+        if ($brand !== '' && str_contains($brand, $query)) $score += 30;
+        if (str_contains($categories, 'cola') || str_contains($categories, 'soda')) $score += 15;
+        if (!empty($product['image_front_url']) || !empty($product['image_url'])) $score += 40;
+        if (!empty($product['quantity'])) $score += 15;
+        if (!empty($product['nutriments']) && is_array($product['nutriments'])) $score += 10;
+
+        return $score;
+    }
+
+    private function normalizeSearchText(string $value): string
+    {
+        $value = strtolower(trim($value));
+        $value = preg_replace('/[^a-z0-9]+/i', ' ', $value);
+        $value = preg_replace('/\s+/', ' ', $value);
+
+        return $value ?? '';
+    }
+
     private function firstBrand(mixed $brands): ?string
     {
+        if (is_array($brands)) {
+            $brands = implode(',', $brands);
+        }
+
         if (!is_string($brands) || trim($brands) === '') {
             return null;
         }

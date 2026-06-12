@@ -30,7 +30,6 @@ require_once __DIR__ . '/../templates/navbar.php';
 
     <main class="admin-layout">
 
-        <!-- sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
                 <span class="admin-sidebar-title">Admin Panel</span>
@@ -116,13 +115,14 @@ require_once __DIR__ . '/../templates/navbar.php';
             <div class="off-search-wrap">
                 <input type="text" id="off-search-input" class="admin-input"
                        placeholder="Caută pe Open Food Facts (opțional)…">
-                <button class="btn-secondary-sm" id="off-search-btn">Caută</button>
+                <button type="button" class="btn-secondary-sm" id="off-search-btn">Caută</button>
             </div>
             <div id="off-results" class="off-results"></div>
 
             <!-- formular produs -->
             <div class="admin-form" id="product-form">
                 <input type="hidden" id="f-id">
+                <input type="hidden" id="f-openfoodfacts-id">
 
                 <div class="form-group">
                     <label class="form-label">Nume *</label>
