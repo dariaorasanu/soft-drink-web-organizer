@@ -41,14 +41,13 @@ document.getElementById('btn-register').addEventListener('click', async () => {
     const password = document.getElementById('reg-password').value;
     if (!username || !email || !password) { showMsg('Completează toate câmpurile.', 'error'); return; }
     const btn = document.getElementById('btn-register');
-    const span = btn.querySelector('span');
-    btn.disabled = true; span.textContent = 'Se procesează...';
+    btn.disabled = true; btn.textContent = 'Se procesează...';  // ← fără span
     try {
         const res = await api('register', { username, email, password });
         if (res.success) { showMsg('Cont creat!', 'success'); setTimeout(() => window.location.href = '/pages/home.php', 1000); }
         else showMsg(res.message, 'error');
     } catch { showMsg('Eroare de conexiune.', 'error'); }
-    finally { btn.disabled = false; span.textContent = 'Creează cont ♥'; }
+    finally { btn.disabled = false; btn.textContent = 'Creează cont'; }  // ← fără span
 });
 
 async function api(action, data) {
