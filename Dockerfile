@@ -12,4 +12,4 @@ RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 8080
 
-CMD php /var/www/html/db/migrate.php migrate; php -S 0.0.0.0:${PORT:-80} -t /var/www/html
+CMD php /var/www/html/db/migrate.php migrate; php -S 0.0.0.0:${PORT:-8080} -t /var/www/html
