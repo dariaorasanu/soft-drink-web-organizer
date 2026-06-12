@@ -19,7 +19,7 @@ class CookieService
             'path'     => '/',
             'httponly' => true,   //protectie xss
             'samesite' => 'Lax',  //protecție csfr
-            // 'secure' => true,
+             'secure' => true,
         ]);
     }
 
