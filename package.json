@@ -1,0 +1,26 @@
+{
+  "name": "soft-drink-web-organizer",
+  "version": "1.0.0",
+  "description": "A web application for managing preferences and information related to non-alcoholic drinks, such as teas, dairy drinks, juices, syrups, and more.",
+  "main": "index.js",
+  "scripts": {
+    "lint:css": "stylelint \"public/css/**/*.css\"",
+    "lint:css:fix": "stylelint \"public/css/**/*.css\" --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dariaorasanu/soft-drink-web-organizer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dariaorasanu/soft-drink-web-organizer/issues"
+  },
+  "homepage": "https://github.com/dariaorasanu/soft-drink-web-organizer#readme",
+  "devDependencies": {
+    "stylelint": "^17.13.0",
+    "stylelint-config-standard": "^40.0.0"
+  }
+}

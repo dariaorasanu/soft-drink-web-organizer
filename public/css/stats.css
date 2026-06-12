@@ -19,24 +19,24 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem 1rem;
-    border: 1px solid rgba(141, 240, 192, 0.35);
+    border: 1px solid rgb(141 240 192 / 35%);
     border-radius: 999px;
     color: #8df0c0;
-    background: rgba(141, 240, 192, 0.08);
+    background: rgb(141 240 192 / 8%);
     font-weight: 800;
     transition: transform 0.15s, background 0.2s, border-color 0.2s;
 }
 
 .stats-action:hover {
     transform: translateY(-1px);
-    background: rgba(141, 240, 192, 0.16);
+    background: rgb(141 240 192 / 16%);
     border-color: #8df0c0;
 }
 
 .stats-action.rss {
     color: #f72585;
-    border-color: rgba(247, 37, 133, 0.35);
-    background: rgba(247, 37, 133, 0.08);
+    border-color: rgb(247 37 133 / 35%);
+    background: rgb(247 37 133 / 8%);
 }
 
 .stats-grid {
@@ -49,8 +49,8 @@
 .stats-card {
     min-width: 0;
     padding: 1.2rem;
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgb(255 255 255 / 3.5%);
+    border: 1px solid rgb(255 255 255 / 12%);
     border-radius: 24px;
 }
 
@@ -125,16 +125,16 @@
     align-items: center;
     gap: 0.9rem;
     padding: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgb(255 255 255 / 10%);
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(255 255 255 / 3%);
     transition: border-color 0.2s, background 0.2s, transform 0.15s;
 }
 
 .favorite-row:hover {
     transform: translateY(-1px);
-    border-color: rgba(141, 240, 192, 0.45);
-    background: rgba(141, 240, 192, 0.08);
+    border-color: rgb(141 240 192 / 45%);
+    background: rgb(141 240 192 / 8%);
 }
 
 .favorite-rank {
@@ -170,7 +170,7 @@
     color: #ff8fb8 !important;
 }
 
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .stats-grid {
         grid-template-columns: 1fr;
     }

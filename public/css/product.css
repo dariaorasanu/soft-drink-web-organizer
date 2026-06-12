@@ -46,7 +46,7 @@
 
 .btn-back:hover {
     border-color: #8df0c0;
-    background: rgba(141, 240, 192, 0.08);
+    background: rgb(141 240 192 / 8%);
 }
 
 
@@ -88,8 +88,8 @@
     inset: 0;
     background: linear-gradient(
             to top,
-            rgba(23, 24, 23, 0.95) 0%,
-            rgba(23, 24, 23, 0.5) 50%,
+            rgb(23 24 23 / 95%) 0%,
+            rgb(23 24 23 / 50%) 50%,
             transparent 100%
     );
     display: flex;
@@ -176,13 +176,13 @@
 .fav-btn:hover {
     border-color: #f72585;
     color: #f72585;
-    background: rgba(247, 37, 133, 0.08);
+    background: rgb(247 37 133 / 8%);
 }
 
 .fav-btn.active {
     border-color: #f72585;
     color: #f72585;
-    background: rgba(247, 37, 133, 0.12);
+    background: rgb(247 37 133 / 12%);
 }
 
 .fav-btn.active .fav-icon { content: '♥'; }
@@ -230,8 +230,8 @@
 
 .badge-allergen {
     padding: 0.35rem 0.75rem;
-    background: rgba(247, 37, 133, 0.12);
-    border: 1px solid rgba(247, 37, 133, 0.3);
+    background: rgb(247 37 133 / 12%);
+    border: 1px solid rgb(247 37 133 / 30%);
     border-radius: 999px;
     color: #f72585;
     font-size: 0.8rem;
@@ -241,8 +241,8 @@
 .badge-season,
 .badge-region {
     padding: 0.35rem 0.75rem;
-    background: rgba(141, 240, 192, 0.08);
-    border: 1px solid rgba(141, 240, 192, 0.2);
+    background: rgb(141 240 192 / 8%);
+    border: 1px solid rgb(141 240 192 / 20%);
     border-radius: 999px;
     color: #8df0c0;
     font-size: 0.8rem;
@@ -252,8 +252,8 @@
 
 .badge-category {
     padding: 0.35rem 0.75rem;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgb(255 255 255 / 12%);
+    border: 1px solid rgb(255 255 255 / 20%);
     border-radius: 999px;
     color: #f4f1ea;
     font-size: 0.8rem;
@@ -262,13 +262,13 @@
 }
 
 .badge-vegan {
-    background: rgba(141, 240, 192, 0.18);
+    background: rgb(141 240 192 / 18%);
     border-color: #8df0c0;
     color: #8df0c0;
 }
 
 .badge-gluten {
-    background: rgba(247, 37, 133, 0.18);
+    background: rgb(247 37 133 / 18%);
     border-color: #f72585;
     color: #f72585;
 }
@@ -378,7 +378,7 @@
     border: 1px solid #595c55;
     border-radius: 12px;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.95rem;
     resize: vertical;
     outline: none;
@@ -475,8 +475,8 @@
     padding: 1rem 0;
 }
 
-/* responsiv*/
-@media (max-width: 900px) {
+/* responsiv */
+@media (width <= 900px) {
     .product-body {
         grid-template-columns: 1fr;
     }
@@ -507,7 +507,7 @@
 
 .btn-back-top:hover {
     border-color: #8df0c0;
-    background: rgba(141, 240, 192, 0.08);
+    background: rgb(141 240 192 / 8%);
 }
 
 /* ── Hero meta (brand + rating) ──────────────────────── */
@@ -529,8 +529,8 @@
 /* ── Badge perisabil ─────────────────────────────────── */
 .badge-warn {
     padding: 0.25rem 0.6rem;
-    background: rgba(247, 37, 133, 0.12);
-    border: 1px solid rgba(247, 37, 133, 0.3);
+    background: rgb(247 37 133 / 12%);
+    border: 1px solid rgb(247 37 133 / 30%);
     border-radius: 999px;
     color: #f72585;
     font-size: 0.8rem;
@@ -563,7 +563,7 @@
 
 .nutrition-row:last-child { border-bottom: none; }
 
-.nutrition-row:hover { background: rgba(141, 240, 192, 0.04); }
+.nutrition-row:hover { background: rgb(141 240 192 / 4%); }
 
 .nutrition-label {
     color: #bcb5aa;
@@ -594,7 +594,7 @@
     color: #d8d2c7;
     border-radius: 12px;
     padding: 0.75rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.9rem;
     font-weight: 800;
     cursor: pointer;
@@ -616,6 +616,7 @@
 .atl-loading { padding: 0.75rem 1rem; color: #7a7d75; font-size: 0.85rem; }
 
 .atl-lists { display: flex; flex-direction: column; }
+
 .atl-list-row {
     display: flex; align-items: center; justify-content: space-between;
     padding: 0.65rem 1rem;
@@ -623,9 +624,9 @@
     transition: background 0.12s;
     font-size: 0.88rem; font-weight: 700; color: #f4f1ea;
     border: none; background: none; width: 100%; text-align: left;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
-.atl-list-row:hover { background: rgba(141,240,192,0.06); color: #8df0c0; }
+.atl-list-row:hover { background: rgb(141 240 192 / 6%); color: #8df0c0; }
 .atl-list-count { font-size: 0.75rem; color: #7a7d75; font-weight: 700; }
 
 .atl-separator { height: 1px; background: #3b3d3a; margin: 0.25rem 0; }
@@ -633,14 +634,16 @@
 .atl-new {
     display: flex; gap: 0.5rem; padding: 0.65rem 0.75rem;
 }
+
 .atl-input {
     flex: 1; background: #1e201e; border: 1px solid #3b3d3a;
     border-radius: 8px; color: #f4f1ea;
-    font-family: 'Nunito', sans-serif; font-size: 0.85rem;
+    font-family: Nunito, sans-serif; font-size: 0.85rem;
     padding: 0.45rem 0.75rem; outline: none;
 }
 .atl-input:focus { border-color: #8df0c0; }
 .atl-input::placeholder { color: #7a7d75; }
+
 .atl-create-btn {
     background: #8df0c0; color: #173629; border: none;
     border-radius: 8px; width: 32px; height: 32px;
