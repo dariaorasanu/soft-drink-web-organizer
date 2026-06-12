@@ -15,7 +15,7 @@ if (!defined('JWT_SECRET')) {
 }
 
 spl_autoload_register(function (string $class): void {
-    $dirs = ['models', 'repositories', 'repositories/Interfaces', 'service', 'controllers', 'config'];
+    $dirs = ['models', 'repositories', 'repositories/interfaces', 'service', 'controllers', 'config'];
     foreach ($dirs as $dir) {
         $file = dirname(__DIR__) . "/$dir/$class.php";
         if (file_exists($file)) {
