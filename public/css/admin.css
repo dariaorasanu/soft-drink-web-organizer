@@ -1,0 +1,982 @@
+
+.admin-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 80px);
+    gap: 0;
+}
+
+.admin-sidebar {
+    background: #1e201e;
+    border-right: 1px solid #3b3d3a;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.admin-sidebar-header {
+    padding: 0 1.25rem 1.25rem;
+    border-bottom: 1px solid #3b3d3a;
+    margin-bottom: 1rem;
+}
+
+.admin-sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #8df0c0;
+    font-weight: 700;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0 0.75rem;
+    flex: 1;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    color: #bcb5aa;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.15s, color 0.15s;
+    border: 1px solid transparent;
+}
+
+.admin-nav-link:hover {
+    background: #252824;
+    color: #f4f1ea;
+}
+
+.admin-nav-link.active {
+    background: rgba(141, 240, 192, 0.1);
+    border-color: rgba(141, 240, 192, 0.25);
+    color: #8df0c0;
+}
+
+.admin-nav-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.admin-sidebar-footer {
+    padding: 1rem 1.25rem 0;
+    border-top: 1px solid #3b3d3a;
+    margin-top: auto;
+}
+
+.admin-back-link {
+    color: #7a7d75;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: color 0.15s;
+}
+
+.admin-back-link:hover {
+    color: #8df0c0;
+}
+
+
+.admin-content {
+    padding: 2rem;
+    overflow-x: hidden;
+}
+
+.admin-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.admin-page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    color: #f4f1ea;
+    margin: 0;
+}
+
+.admin-page-sub {
+    color: #bcb5aa;
+    font-size: 0.9rem;
+}
+
+.admin-page-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.admin-stat-card {
+    background: #252824;
+    border: 1px solid #373a35;
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.15s;
+}
+
+.admin-stat-card:hover {
+    border-color: rgba(141, 240, 192, 0.3);
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #8df0c0;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #7a7d75;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Card generic ───────────────────────────────────────────── */
+.admin-card {
+    background: #252824;
+    border: 1px solid #373a35;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.admin-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #373a35;
+}
+
+.admin-card-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #f4f1ea;
+    margin: 0;
+}
+
+.admin-card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ── Top produse lista ──────────────────────────────────────── */
+.admin-top-list {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-top-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #1e201e;
+    border-radius: 10px;
+    border: 1px solid #3b3d3a;
+}
+
+.top-rank {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #8df0c0;
+    width: 28px;
+    text-align: center;
+}
+
+.top-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #3b3d3a;
+}
+
+.top-emoji {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: #3b3d3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.top-info {
+    flex: 1;
+}
+
+.top-name {
+    font-weight: 800;
+    color: #f4f1ea;
+    font-size: 0.9rem;
+}
+
+.top-brand {
+    font-size: 0.8rem;
+    color: #7a7d75;
+}
+
+.top-views {
+    font-size: 0.85rem;
+    color: #bcb5aa;
+    font-weight: 700;
+}
+
+/* ── Linkuri rapide ─────────────────────────────────────────── */
+.admin-quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.admin-quick-card {
+    background: #252824;
+    border: 1px solid #373a35;
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.admin-quick-card:hover {
+    border-color: rgba(141, 240, 192, 0.3);
+    background: #2a2d2a;
+}
+
+.quick-icon {
+    font-size: 1.75rem;
+}
+
+.quick-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #bcb5aa;
+    text-align: center;
+}
+
+/* ── Bara cautare ───────────────────────────────────────────── */
+.admin-search-bar {
+    margin-bottom: 1rem;
+}
+
+.admin-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #252824;
+    border: 1px solid #555753;
+    border-radius: 10px;
+    color: #f4f1ea;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+
+.admin-search-input:focus {
+    border-color: #8df0c0;
+}
+
+/* ── Tabel ──────────────────────────────────────────────────── */
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.admin-table th {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-weight: 800;
+    color: #7a7d75;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #373a35;
+    background: #1e201e;
+}
+
+.admin-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #2e302e;
+    color: #f4f1ea;
+    vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:hover td {
+    background: rgba(141, 240, 192, 0.03);
+}
+
+.admin-table-loading {
+    text-align: center;
+    padding: 3rem;
+    color: #7a7d75;
+}
+
+/* thumbnail in tabel */
+.tbl-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #3b3d3a;
+}
+
+.tbl-emoji {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #3b3d3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* badge rol user */
+.role-badge {
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.role-badge.admin {
+    background: rgba(247, 37, 133, 0.12);
+    border: 1px solid rgba(247, 37, 133, 0.3);
+    color: #f72585;
+}
+
+.role-badge.user {
+    background: rgba(141, 240, 192, 0.08);
+    border: 1px solid rgba(141, 240, 192, 0.2);
+    color: #8df0c0;
+}
+
+/* avatar initiale */
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(141, 240, 192, 0.15);
+    border: 1px solid rgba(141, 240, 192, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #8df0c0;
+    font-size: 0.9rem;
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ── Butoane actiuni tabel ──────────────────────────────────── */
+.tbl-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.tbl-btn {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    border: 1px solid #555753;
+    background: transparent;
+    color: #bcb5aa;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+}
+
+.tbl-btn:hover {
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.tbl-btn.danger:hover {
+    border-color: #f72585;
+    color: #f72585;
+}
+
+.tbl-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ── Paginare ───────────────────────────────────────────────── */
+.admin-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1rem;
+    border-top: 1px solid #373a35;
+}
+
+.page-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #555753;
+    background: transparent;
+    color: #bcb5aa;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+}
+
+.page-btn:hover {
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.page-btn.active {
+    background: rgba(141, 240, 192, 0.12);
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.page-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ── Panel lateral (formular produs) ────────────────────────── */
+.admin-panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.admin-panel-overlay.open {
+    display: block;
+}
+
+.admin-panel {
+    position: fixed;
+    top: 0;
+    right: -520px;
+    width: 500px;
+    max-width: 95vw;
+    height: 100vh;
+    background: #1e201e;
+    border-left: 1px solid #3b3d3a;
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+    overflow: hidden;
+}
+
+.admin-panel.open {
+    right: 0;
+}
+
+.admin-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #3b3d3a;
+    flex-shrink: 0;
+}
+
+.admin-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #f4f1ea;
+    margin: 0;
+}
+
+.admin-panel-close {
+    background: transparent;
+    border: none;
+    color: #7a7d75;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.15s;
+}
+
+.admin-panel-close:hover {
+    color: #f72585;
+}
+
+.admin-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ── Formular ───────────────────────────────────────────────── */
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #bcb5aa;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.admin-input {
+    padding: 0.65rem 0.9rem;
+    background: #252824;
+    border: 1px solid #555753;
+    border-radius: 8px;
+    color: #f4f1ea;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-input:focus {
+    border-color: #8df0c0;
+}
+
+.admin-textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.form-checks {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #bcb5aa;
+    cursor: pointer;
+}
+
+.form-check input[type="checkbox"] {
+    accent-color: #8df0c0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* multi-select cu checkboxuri */
+.form-multiselect {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.multiselect-option {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid #555753;
+    background: transparent;
+    color: #bcb5aa;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+}
+
+.multiselect-option:hover {
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.multiselect-option.selected {
+    background: rgba(141, 240, 192, 0.12);
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding-top: 0.5rem;
+    border-top: 1px solid #3b3d3a;
+}
+
+/* preview imagine */
+.image-preview {
+    margin-top: 0.5rem;
+}
+
+.image-preview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #3b3d3a;
+}
+
+/* ── Open Food Facts search ──────────────────────────────────── */
+.off-search-wrap {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.off-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.off-result-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.off-result-item:hover {
+    border-color: #8df0c0;
+}
+
+.off-result-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #3b3d3a;
+}
+
+.off-result-name {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #f4f1ea;
+}
+
+.off-result-brand {
+    font-size: 0.75rem;
+    color: #7a7d75;
+}
+
+/* ── Dropdown rol ───────────────────────────────────────────── */
+.role-select {
+    padding: 0.3rem 0.5rem;
+    background: #252824;
+    border: 1px solid #555753;
+    border-radius: 6px;
+    color: #f4f1ea;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    outline: none;
+}
+
+.role-select:focus {
+    border-color: #8df0c0;
+}
+
+/* ── Butoane globale ────────────────────────────────────────── */
+.btn-primary {
+    background: #8df0c0;
+    color: #173629;
+    border: none;
+    border-radius: 10px;
+    padding: 0.65rem 1.25rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    opacity: 0.88;
+}
+
+.btn-secondary {
+    border: 1px solid #555753;
+    background: transparent;
+    color: #d8d2c7;
+    border-radius: 10px;
+    padding: 0.65rem 1.25rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.btn-secondary-sm {
+    border: 1px solid #555753;
+    background: transparent;
+    color: #bcb5aa;
+    border-radius: 8px;
+    padding: 0.4rem 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary-sm:hover {
+    border-color: #8df0c0;
+    color: #8df0c0;
+}
+
+.btn-danger {
+    background: rgba(247, 37, 133, 0.15);
+    border: 1px solid rgba(247, 37, 133, 0.4);
+    color: #f72585;
+    border-radius: 10px;
+    padding: 0.65rem 1.25rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-danger:hover {
+    background: rgba(247, 37, 133, 0.25);
+}
+
+/* ── Modal ──────────────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    background: #252824;
+    border: 1px solid #3b3d3a;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-box--sm {
+    max-width: 340px;
+}
+
+.modal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #f4f1ea;
+    margin: 0 0 0.5rem;
+}
+
+.modal-desc {
+    color: #bcb5aa;
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.admin-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #252824;
+    border: 1px solid #8df0c0;
+    color: #8df0c0;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 9999;
+    animation: toast-in 0.3s ease;
+}
+
+.admin-toast.error {
+    border-color: #f72585;
+    color: #f72585;
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Spinner ────────────────────────────────────────────────── */
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #3b3d3a;
+    border-top-color: #8df0c0;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.admin-loading {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* ── Responsiv ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        height: 100vh;
+        z-index: 50;
+        transition: left 0.3s ease;
+        width: 220px;
+    }
+
+    .admin-sidebar.open {
+        left: 0;
+    }
+
+    .admin-content {
+        padding: 1rem;
+    }
+
+    .admin-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-panel {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
