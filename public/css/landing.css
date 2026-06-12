@@ -1,8 +1,9 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
+
 body {
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     background: #171817;
     color: #f4f1ea;
     min-height: 100vh;
@@ -15,11 +16,11 @@ body {
     top: 0;
     z-index: 100;
     padding: 1rem 2rem;
-    background: rgba(23,24,23,0.85);
+    background: rgb(23 24 23 / 85%);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid #2e312c;
 }
+
 .topbar-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -27,6 +28,7 @@ body {
     align-items: center;
     justify-content: space-between;
 }
+
 .nav-logo {
     display: flex;
     align-items: center;
@@ -38,8 +40,9 @@ body {
 .logo-s { color: #f4f1ea; }
 .logo-o { color: #8df0c0; }
 .logo-r { color: #f72585; }
+
 .logo-label {
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.72rem;
     color: #7a7d75;
     letter-spacing: 1.5px;
@@ -47,13 +50,14 @@ body {
     font-weight: 700;
     margin-left: 0.2rem;
 }
+
 .btn-nav {
     padding: 0.6rem 1.2rem;
     border: 1px solid #555753;
     border-radius: 10px;
     background: #252824;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.85rem;
     text-decoration: none;
@@ -68,6 +72,7 @@ body {
     text-align: center;
     overflow: hidden;
 }
+
 .hero-inner {
     position: relative;
     z-index: 1;
@@ -78,19 +83,21 @@ body {
     align-items: center;
     gap: 1.4rem;
 }
+
 .hero-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     padding: 0.4rem 1rem;
-    background: rgba(141,240,192,0.07);
-    border: 1px solid rgba(141,240,192,0.2);
+    background: rgb(141 240 192 / 7%);
+    border: 1px solid rgb(141 240 192 / 20%);
     border-radius: 999px;
     font-size: 0.8rem;
     font-weight: 800;
     color: #8df0c0;
     letter-spacing: 0.3px;
 }
+
 .hero-title {
     font-family: 'Playfair Display', serif;
     font-size: clamp(2.6rem, 6vw, 4.2rem);
@@ -106,6 +113,7 @@ body {
     line-height: 1.6;
     max-width: 540px;
 }
+
 .hero-cta {
     display: flex;
     gap: 0.8rem;
@@ -123,14 +131,16 @@ body {
     pointer-events: none;
     filter: blur(100px);
 }
+
 .hero-glow--green {
-    background: rgba(141,240,192,0.07);
+    background: rgb(141 240 192 / 7%);
     top: -100px;
     left: 50%;
     transform: translateX(-50%);
 }
+
 .hero-glow--pink {
-    background: rgba(247,37,133,0.05);
+    background: rgb(247 37 133 / 5%);
     bottom: -150px;
     right: -100px;
 }
@@ -143,7 +153,7 @@ body {
     color: #173629;
     border: none;
     border-radius: 12px;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.95rem;
     text-decoration: none;
@@ -161,7 +171,7 @@ body {
     color: #bcb5aa;
     border: 1px solid #555753;
     border-radius: 12px;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.95rem;
     text-decoration: none;
@@ -173,6 +183,7 @@ body {
 .stats-bar {
     padding: 0 2rem;
 }
+
 .stats-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -186,24 +197,28 @@ body {
     gap: 1rem;
     flex-wrap: wrap;
 }
+
 .stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.2rem;
 }
+
 .stat-num {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
     color: #8df0c0;
     line-height: 1;
 }
+
 .stat-lbl {
     font-size: 0.75rem;
     color: #7a7d75;
     font-weight: 700;
     letter-spacing: 0.5px;
 }
+
 .stat-divider {
     width: 1px;
     height: 36px;
@@ -216,6 +231,7 @@ body {
     margin: 0 auto;
     padding: 0 2rem;
 }
+
 .section-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -224,6 +240,7 @@ body {
     align-items: center;
     gap: 0.5rem;
 }
+
 .section-eyebrow {
     font-size: 0.72rem;
     font-weight: 800;
@@ -231,11 +248,13 @@ body {
     text-transform: uppercase;
     color: #8df0c0;
 }
+
 .section-title {
     font-family: 'Playfair Display', serif;
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     color: #f4f1ea;
 }
+
 .section-sub {
     font-size: 0.9rem;
     color: #7a7d75;
@@ -245,12 +264,14 @@ body {
 .top-section {
     padding: 5rem 2rem;
 }
+
 .drinks-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
     margin-bottom: 2.5rem;
 }
+
 .drink-card {
     background: #1d1f1c;
     border: 1px solid #2e312c;
@@ -262,21 +283,24 @@ body {
     position: relative;
     transition: border-color 0.18s, transform 0.18s;
 }
+
 .drink-card:hover {
     border-color: #373a35;
     transform: translateY(-2px);
 }
+
 .drink-card--top {
-    border-color: rgba(141,240,192,0.25);
+    border-color: rgb(141 240 192 / 25%);
 }
+
 .drink-card--top::before {
     content: '🏆 #1 acest sezon';
     position: absolute;
     top: -1px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(141,240,192,0.1);
-    border: 1px solid rgba(141,240,192,0.25);
+    background: rgb(141 240 192 / 10%);
+    border: 1px solid rgb(141 240 192 / 25%);
     border-top: none;
     border-radius: 0 0 8px 8px;
     font-size: 0.62rem;
@@ -286,6 +310,7 @@ body {
     white-space: nowrap;
     letter-spacing: 0.5px;
 }
+
 .drink-card-rank {
     font-size: 0.7rem;
     font-weight: 800;
@@ -293,6 +318,7 @@ body {
     letter-spacing: 0.5px;
 }
 .drink-card--top .drink-card-rank { color: #8df0c0; }
+
 .drink-card-img {
     width: 52px;
     height: 52px;
@@ -305,6 +331,7 @@ body {
     overflow: hidden;
     flex-shrink: 0;
 }
+
 .drink-card-img img {
     width: 100%;
     height: 100%;
@@ -312,6 +339,7 @@ body {
 }
 .drink-emoji { font-size: 1.6rem; line-height: 1; }
 .drink-card-body { flex: 1; }
+
 .drink-card-name {
     font-size: 0.92rem;
     font-weight: 800;
@@ -321,11 +349,13 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 .drink-card-brand {
     font-size: 0.75rem;
     color: #7a7d75;
     margin-bottom: 0.5rem;
 }
+
 .drink-card-meta {
     display: flex;
     align-items: center;
@@ -335,15 +365,18 @@ body {
 .star { font-size: 0.75rem; }
 .star--full  { color: #8df0c0; }
 .star--empty { color: #373a35; }
+
 .drink-rating-num {
     font-size: 0.8rem;
     font-weight: 800;
     color: #f4f1ea;
 }
+
 .drink-rating-count {
     font-size: 0.72rem;
     color: #7a7d75;
 }
+
 .drink-card-price {
     font-size: 0.82rem;
     font-weight: 800;
@@ -359,11 +392,13 @@ body {
     border-top: 1px solid #2e312c;
     border-bottom: 1px solid #2e312c;
 }
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
 }
+
 .feature-card {
     background: #1d1f1c;
     border: 1px solid #2e312c;
@@ -376,11 +411,13 @@ body {
 }
 .feature-card:hover { border-color: #373a35; }
 .feature-icon { font-size: 1.8rem; line-height: 1; }
+
 .feature-card h3 {
     font-size: 0.95rem;
     font-weight: 800;
     color: #f4f1ea;
 }
+
 .feature-card p {
     font-size: 0.82rem;
     color: #7a7d75;
@@ -393,6 +430,7 @@ body {
     text-align: center;
     overflow: hidden;
 }
+
 .final-cta-inner {
     position: relative;
     z-index: 1;
@@ -401,11 +439,13 @@ body {
     align-items: center;
     gap: 1rem;
 }
+
 .final-cta h2 {
     font-family: 'Playfair Display', serif;
     font-size: clamp(1.8rem, 4vw, 2.8rem);
     color: #f4f1ea;
 }
+
 .final-cta p {
     font-size: 1rem;
     color: #bcb5aa;
@@ -417,6 +457,7 @@ body {
     border-top: 1px solid #2e312c;
     padding: 1.8rem 2rem;
 }
+
 .footer-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -426,14 +467,17 @@ body {
     flex-wrap: wrap;
     gap: 0.8rem;
 }
+
 .footer-logo {
     font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
 }
+
 .footer-copy {
     font-size: 0.78rem;
     color: #7a7d75;
 }
+
 .footer-rss {
     font-size: 0.78rem;
     color: #7a7d75;
@@ -444,7 +488,7 @@ body {
 .footer-rss:hover { color: #8df0c0; }
 
 /* ───── Responsiv ───── */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .logo-label { display: none; }
     .hero { padding: 4rem 1.5rem 3.5rem; }
     .stats-inner { padding: 1.2rem 1.5rem; gap: 1.5rem; }
@@ -455,7 +499,7 @@ body {
     .footer-inner { justify-content: center; text-align: center; }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .drinks-grid, .features-grid { grid-template-columns: 1fr; }
     .hero-cta { flex-direction: column; width: 100%; }
     .btn-primary, .btn-ghost { text-align: center; }

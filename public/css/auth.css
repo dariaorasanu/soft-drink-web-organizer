@@ -2,7 +2,7 @@
 
 html, body {
     min-height: 100vh;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     background: #171817;
     color: #f4f1ea;
     display: flex;
@@ -17,7 +17,7 @@ body::before {
     width: 600px;
     height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(141,240,192,0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgb(141 240 192 / 5%) 0%, transparent 70%);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -60,7 +60,7 @@ body::before {
     gap: 1.5rem;
 }
 
-/* logo*/
+/* logo */
 .auth-logo {
     font-family: 'Playfair Display', serif;
     font-size: 2.2rem;
@@ -92,6 +92,7 @@ body::before {
     padding: 4px;
     gap: 0;
 }
+
 .tab {
     flex: 1;
     padding: 11px 16px;
@@ -99,7 +100,7 @@ body::before {
     background: transparent;
     color: #7a7d75;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.88rem;
     font-weight: 800;
     border-radius: 9px;
@@ -116,8 +117,8 @@ body::before {
     font-weight: 700;
 }
 .msg.hidden  { display: none; }
-.msg.error   { background: rgba(247,37,133,0.08); color: #f72585; border: 1px solid rgba(247,37,133,0.2); }
-.msg.success { background: rgba(141,240,192,0.08); color: #8df0c0; border: 1px solid rgba(141,240,192,0.2); }
+.msg.error   { background: rgb(247 37 133 / 8%); color: #f72585; border: 1px solid rgb(247 37 133 / 20%); }
+.msg.success { background: rgb(141 240 192 / 8%); color: #8df0c0; border: 1px solid rgb(141 240 192 / 20%); }
 
 /* formularul */
 .auth-form { display: flex; flex-direction: column; gap: 1.1rem; }
@@ -132,12 +133,13 @@ body::before {
     letter-spacing: 1px;
     text-transform: uppercase;
 }
+
 .fg input {
     width: 100%;
     padding: 16px 20px;
     border: 1px solid #373a35;
     border-radius: 12px;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.92rem;
     color: #f4f1ea;
     background: #252824;
@@ -153,7 +155,7 @@ body::before {
     padding: 16px;
     border: none;
     border-radius: 12px;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.95rem;
     cursor: pointer;
@@ -172,6 +174,7 @@ body::before {
     font-size: 0.85rem;
     color: #7a7d75;
 }
+
 .auth-switch a {
     color: #8df0c0;
     font-weight: 800;
@@ -182,7 +185,7 @@ body::before {
 .auth-switch a:hover { color: #d9fff0; }
 
 /* responsiv */
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .auth-card { max-width: 100%; }
     .auth-back { position: static; margin-bottom: 0.5rem; align-self: flex-start; }
 }
