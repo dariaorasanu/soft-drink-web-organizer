@@ -14,4 +14,4 @@ RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
 
-CMD php /var/www/html/db/migrate.php migrate; php-fpm & nginx -t && nginx -g 'daemon off;'
+CMD php /var/www/html/db/migrate.php migrate; php -S 0.0.0.0:80 -t /var/www/html /var/www/html/index.php
