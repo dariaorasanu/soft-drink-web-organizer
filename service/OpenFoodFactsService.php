@@ -167,7 +167,7 @@ class OpenFoodFactsService
         }
 
         $generic = $this->firstValue($data, ['ingredients_text']);
-        if ($generic === null || $this->looksLikeFrench($generic)) {
+        if ($generic === null || $this->looksLikeUnsupportedLanguage($generic)) {
             return null;
         }
 
@@ -200,23 +200,12 @@ class OpenFoodFactsService
         return null;
     }
 
-    private function looksLikeFrench(string $text): bool
-    {
-        $text = strtolower($text);
-
-        return preg_match(
-            "/\\b(eau|sucre|acidifiants?|stabilisant|antioxydant|concentre|concentre|concentré|purée|arômes?|matières?|abricot|fraise)\\b|\\bd'|jus d'/u",
-            $text
-        ) === 1;
-    }
-
     private function looksLikeUnsupportedLanguage(string $text): bool
     {
         $text = strtolower($text);
 
-        return $this->looksLikeFrench($text)
-            || preg_match('/[\\x{0600}-\\x{06FF}\\x{0400}-\\x{04FF}\\x{0590}-\\x{05FF}\\x{4E00}-\\x{9FFF}]/u', $text) === 1
-            || preg_match('/\\b(boisson|boissons|bebida|bebidas|zumo|jus|wasser|getrank|getränk|getränke|pflanzliche|lebensmittel|napoj|succo)\\b/u', $text) === 1;
+        return preg_match('/[\\x{0600}-\\x{06FF}\\x{0400}-\\x{04FF}\\x{0590}-\\x{05FF}\\x{4E00}-\\x{9FFF}]/u', $text) === 1
+            || preg_match("/\\b(eau|sucre|acidifiants?|stabilisant|antioxydant|concentr[ée]?|purée|arômes?|matières?|abricot|fraise|boissons?|bebidas?|zumo|jus|wasser|getr[aä]nke?|pflanzliche|lebensmittel|napoj|succo)\\b|\\bd'|jus d'/u", $text) === 1;
     }
 
     private function cleanImportedText(string $text): string
