@@ -22,8 +22,7 @@ $initials    ??= '?';
         <a href="/pages/home.php"          class="nav-link <?= $activePage === 'home'          ? 'active' : '' ?>">Acasă</a>
         <a href="/pages/catalog.php"       class="nav-link <?= $activePage === 'catalog'       ? 'active' : '' ?>">Explorează</a>
         <a href="/pages/shopping-list.php" class="nav-link <?= $activePage === 'shopping-list' ? 'active' : '' ?>">Listele mele</a>
-        <a href="#"                        class="nav-link <?= $activePage === 'stats'          ? 'active' : '' ?>">Statistici</a>
-        <?php if ($currentUser?->isAdmin()): ?>
+        <a href="/pages/stats.php"         class="nav-link <?= $activePage === 'stats'          ? 'active' : '' ?>">Statistici</a>        <?php if ($currentUser?->isAdmin()): ?>
             <a href="/admin/index.php"     class="nav-link <?= $activePage === 'admin'         ? 'active' : '' ?>">Admin</a>
         <?php endif; ?>
     </nav>
