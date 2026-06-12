@@ -24,19 +24,14 @@ if ($currentUser === null) {
 }
 
 $adminId = $currentUser->id;
-
 $adminRepo   = new AdminRepository($pdo);
 $userRepo    = new UserRepository($pdo);
 $productRepo = new ProductRepository($pdo);
 $service     = new AdminService($adminRepo, $userRepo, $productRepo);
 $controller  = new AdminController($service);
-
 $action = $_GET['action'] ?? '';
 
-$postActions = [
-    'create_product', 'update_product', 'delete_product',
-    'import_csv', 'update_role', 'delete_user'
-];
+$postActions = ['create_product', 'update_product', 'delete_product', 'import_csv', 'update_role', 'delete_user'];
 
 if (in_array($action, $postActions, true) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

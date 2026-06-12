@@ -68,6 +68,7 @@ match ($action) {
     })(),
     'toggle_favorite' => $controller->toggleFavorite(),
     'rate' => $controller->rate(),
+    'increment_view'   => $controller->incrementView(),
     'get_ratings' => $controller->getRatings(),
     'create' => $controller->create(),
     'update' => $controller->update(),

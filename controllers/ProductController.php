@@ -11,7 +11,6 @@ class ProductController
             $page = max(1, (int)($_GET['page'] ?? 1));
             $limit = max(1, min((int)($_GET['limit'] ?? 12), 50));
             $offset = ($page - 1) * $limit;
-
             $filters = [
                 'category_id' => $_GET['category_id'] ?? null,
                 'category' => $_GET['category'] ?? null,
@@ -22,10 +21,7 @@ class ProductController
                 'search' => $_GET['q'] ?? null,
                 'brand' => $_GET['brand'] ?? null,
             ];
-
-
             $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
-
             $result = $this->productService->getAll($filters, $limit, $offset, $userId);
 
             $this->jsonSuccess([
@@ -194,6 +190,17 @@ class ProductController
         }
     }
 
+    public function incrementView(): void
+    {
+        $productId = (int)($_POST['product_id'] ?? 0);
+        if ($productId <= 0) {
+            $this->jsonError('product_id invalid.');
+            return;
+        }
+        $this->productService->incrementView($productId);
+        $this->jsonSuccess(['incremented' => true]);
+    }
+
     public function create(): void
     {
         try {
@@ -268,7 +275,6 @@ class ProductController
             $this->jsonError('Trebuie să fii autentificat.', 401);
             exit;
         }
-
         if (($_SESSION['role'] ?? '') !== 'admin') {
             $this->jsonError('Ai nevoie de rol de admin.', 403);
             exit;

@@ -132,7 +132,6 @@ require_once __DIR__ . '/../templates/navbar.php';
 
         <!-- continut dreapta cu itemele listei selectate -->
         <section class="sl-main" id="sl-main">
-
             <!-- stare initiala, nicio lista selectata -->
             <div class="sl-empty-state" id="sl-empty-state">
                 <span class="sl-empty-icon">🛒</span>
@@ -144,7 +143,6 @@ require_once __DIR__ . '/../templates/navbar.php';
             <!-- header lista selectata, ascuns initial -->
             <div class="sl-list-header" id="sl-list-header" style="display:none">
                 <div class="sl-list-header-left">
-
                     <!-- numele listei si badge-ul de mood -->
                     <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
                         <h2 class="sl-list-name" id="sl-list-name">—</h2>

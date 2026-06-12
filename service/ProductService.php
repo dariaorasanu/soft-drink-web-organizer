@@ -285,4 +285,9 @@ class ProductService
             'openfoodfacts_id'   => trim((string)($data['openfoodfacts_id'] ?? '')),
         ];
     }
+
+    public function incrementView(int $productId): void
+    {
+        $this->productRepository->incrementViewCount($productId);
+    }
 }
