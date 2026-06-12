@@ -66,6 +66,7 @@
     justify-content: center;
     padding: 2rem;
 }
+
 .spinner {
     width: 28px; height: 28px;
     border: 2.5px solid #3b3d3a;
@@ -73,6 +74,7 @@
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
 }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .sl-list-item {
@@ -85,9 +87,10 @@
     transition: background 0.15s, border-color 0.15s;
     position: relative;
 }
-.sl-list-item:hover { background: rgba(141,240,192,0.04); }
+.sl-list-item:hover { background: rgb(141 240 192 / 4%); }
+
 .sl-list-item.active {
-    background: rgba(141,240,192,0.08);
+    background: rgb(141 240 192 / 8%);
     border-left-color: #8df0c0;
 }
 
@@ -116,7 +119,7 @@
     text-align: left;
     padding: 0;
     width: 100%;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
 .sl-list-item-name:hover { color: #8df0c0; }
 
@@ -148,7 +151,6 @@
     background: #8df0c0;
     border-radius: 50%;
     display: inline-block;
-    title: "Partajată";
 }
 
 .sl-list-actions {
@@ -156,6 +158,7 @@
     gap: 0.25rem;
     flex-shrink: 0;
 }
+
 .sl-list-item:hover .sl-list-actions,
 .sl-list-item.active .sl-list-actions {
     display: flex;
@@ -172,7 +175,7 @@
     transition: color 0.15s, background 0.15s;
     line-height: 1;
 }
-.sl-action-btn:hover { color: #f4f1ea; background: rgba(255,255,255,0.06); }
+.sl-action-btn:hover { color: #f4f1ea; background: rgb(255 255 255 / 6%); }
 .sl-action-btn.danger:hover { color: #f72585; }
 
 /* formular lista noua */
@@ -181,17 +184,19 @@
     border-top: 1px solid #3b3d3a;
     flex-shrink: 0;
 }
+
 .sl-new-list-input-wrap {
     display: flex;
     gap: 0.5rem;
 }
+
 .sl-input {
     flex: 1;
     background: #1e201e;
     border: 1px solid #3b3d3a;
     border-radius: 10px;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.88rem;
     padding: 0.6rem 0.9rem;
     outline: none;
@@ -276,7 +281,7 @@
     border: 1px solid #3b3d3a;
     border-radius: 10px;
     color: #bcb5aa;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.82rem;
     font-weight: 700;
     padding: 0.55rem 0.9rem;
@@ -289,7 +294,7 @@
 .sl-btn-icon.sl-btn-clear:hover  { border-color: #f72585; color: #f72585; }
 .sl-btn-icon.sl-btn-export:hover { border-color: #8df0c0; color: #8df0c0; }
 
-/* cosul*/
+/* cosul */
 .sl-items-container {
     display: flex;
     flex-direction: column;
@@ -297,7 +302,7 @@
     flex: 1;
 }
 
-/* item din cos*/
+/* item din cos */
 .sl-item-card {
     background: #252824;
     border: 1px solid #3b3d3a;
@@ -309,11 +314,13 @@
     transition: border-color 0.15s, opacity 0.2s;
     animation: itemIn 0.25s ease;
 }
+
 @keyframes itemIn {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-.sl-item-card:hover { border-color: rgba(141,240,192,0.2); }
+.sl-item-card:hover { border-color: rgb(141 240 192 / 20%); }
+
 .sl-item-card.purchased {
     opacity: 0.5;
     border-style: dashed;
@@ -322,6 +329,7 @@
 
 /* checkbox */
 .sl-checkbox-wrap { flex-shrink: 0; padding-top: 0.15rem; }
+
 .sl-checkbox {
     width: 22px; height: 22px;
     border: 2px solid #555753;
@@ -332,9 +340,10 @@
     transition: border-color 0.15s, background 0.15s;
     flex-shrink: 0;
 }
+
 .sl-checkbox.checked {
     border-color: #8df0c0;
-    background: rgba(141,240,192,0.15);
+    background: rgb(141 240 192 / 15%);
     color: #8df0c0;
 }
 .sl-checkbox svg { display: none; }
@@ -348,6 +357,7 @@
     flex-shrink: 0;
     background: #1e201e;
 }
+
 .sl-item-emoji {
     width: 50px; height: 50px;
     border-radius: 12px;
@@ -367,6 +377,7 @@
     margin: 0 0 0.15rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+
 .sl-item-brand {
     font-size: 0.78rem;
     color: #7a7d75;
@@ -376,18 +387,20 @@
 
 /* notitele */
 .sl-item-notes-wrap { margin-top: 0.35rem; }
+
 .sl-item-notes-toggle {
     background: none; border: none; cursor: pointer;
-    color: #7a7d75; font-size: 0.78rem; font-family: 'Nunito', sans-serif;
+    color: #7a7d75; font-size: 0.78rem; font-family: Nunito, sans-serif;
     font-weight: 700; padding: 0; transition: color 0.15s;
 }
 .sl-item-notes-toggle:hover { color: #8df0c0; }
+
 .sl-item-notes-text {
     font-size: 0.82rem; color: #bcb5aa;
     background: #1e201e; border: 1px solid #3b3d3a;
     border-radius: 8px; padding: 0.4rem 0.7rem;
     margin-top: 0.3rem; width: 100%;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     resize: none; outline: none;
     transition: border-color 0.15s;
 }
@@ -409,15 +422,17 @@
     border-radius: 10px;
     overflow: hidden;
 }
+
 .sl-stepper-btn {
     width: 30px; height: 30px;
     background: none; border: none;
     color: #bcb5aa; font-size: 1.1rem;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: background 0.12s, color 0.12s;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
-.sl-stepper-btn:hover { background: rgba(141,240,192,0.1); color: #8df0c0; }
+.sl-stepper-btn:hover { background: rgb(141 240 192 / 10%); color: #8df0c0; }
+
 .sl-stepper-qty {
     min-width: 32px;
     text-align: center;
@@ -425,12 +440,13 @@
     font-weight: 800;
     color: #f4f1ea;
     padding: 0 0.2rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     background: none; border: none; outline: none;
-    -moz-appearance: textfield;
+    appearance: textfield;
 }
+
 .sl-stepper-qty::-webkit-inner-spin-button,
-.sl-stepper-qty::-webkit-outer-spin-button { -webkit-appearance: none; }
+.sl-stepper-qty::-webkit-outer-spin-button { appearance: none; }
 
 .sl-item-price {
     font-size: 0.92rem;
@@ -438,6 +454,7 @@
     color: #8df0c0;
     text-align: right;
 }
+
 .sl-item-price-sub {
     font-size: 0.72rem;
     color: #7a7d75;
@@ -454,7 +471,7 @@
 }
 .sl-item-remove:hover { color: #f72585; }
 
-/* footer*/
+/* footer */
 .sl-footer {
     position: sticky;
     bottom: 0;
@@ -462,6 +479,7 @@
     padding: 1.5rem 0 0.5rem;
     margin-top: auto;
 }
+
 .sl-footer-inner {
     background: #252824;
     border: 1px solid #8df0c0;
@@ -471,11 +489,13 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .sl-total-label {
     font-size: 0.88rem;
     color: #bcb5aa;
     font-weight: 700;
 }
+
 .sl-total-value {
     font-size: 1.3rem;
     font-weight: 800;
@@ -492,13 +512,13 @@
     border: none;
     border-radius: 16px;
     padding: 0.75rem 1.1rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.88rem;
     font-weight: 800;
     cursor: pointer;
     align-items: center;
     gap: 0.4rem;
-    box-shadow: 0 4px 20px rgba(141,240,192,0.25);
+    box-shadow: 0 4px 20px rgb(141 240 192 / 25%);
     z-index: 50;
     transition: background 0.15s, transform 0.1s;
 }
@@ -506,12 +526,13 @@
 
 .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.65);
+    background: rgb(0 0 0 / 65%);
     backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center;
     z-index: 100;
     animation: fadeIn 0.2s ease;
 }
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-box {
@@ -529,6 +550,7 @@
     gap: 0.6rem;
 }
 .modal-box--sm { width: min(340px, 90vw); }
+
 @keyframes modalIn {
     from { opacity: 0; transform: translateY(12px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -543,6 +565,7 @@
 .modal-close:hover { color: #f4f1ea; }
 
 .modal-icon { font-size: 2.5rem; line-height: 1; }
+
 .modal-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.3rem; color: #f4f1ea; margin: 0;
@@ -553,6 +576,7 @@
     display: flex; gap: 0.5rem;
     width: 100%; margin-top: 0.5rem;
 }
+
 .share-link-input {
     flex: 1;
     background: #1e201e;
@@ -562,15 +586,16 @@
     font-size: 0.82rem;
     padding: 0.6rem 0.8rem;
     outline: none;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 .share-link-copy {
     background: #8df0c0; color: #173629;
     border: none; border-radius: 10px;
     padding: 0.6rem 1rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.82rem; font-weight: 800;
     cursor: pointer;
     display: flex; align-items: center; gap: 0.35rem;
@@ -583,36 +608,38 @@
 .btn-danger-outline {
     margin-top: 0.5rem;
     background: transparent;
-    border: 1px solid rgba(247,37,133,0.4);
+    border: 1px solid rgb(247 37 133 / 40%);
     color: #f72585;
     border-radius: 10px;
     padding: 0.6rem 1.2rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.85rem; font-weight: 700;
     cursor: pointer; width: 100%;
     transition: background 0.15s, border-color 0.15s;
 }
-.btn-danger-outline:hover { background: rgba(247,37,133,0.08); border-color: #f72585; }
+.btn-danger-outline:hover { background: rgb(247 37 133 / 8%); border-color: #f72585; }
 
 .modal-actions { display: flex; gap: 0.75rem; width: 100%; margin-top: 0.5rem; }
+
 .btn-secondary {
     flex: 1;
     background: #1e201e; border: 1px solid #3b3d3a;
     color: #bcb5aa; border-radius: 10px;
-    padding: 0.65rem; font-family: 'Nunito', sans-serif;
+    padding: 0.65rem; font-family: Nunito, sans-serif;
     font-size: 0.88rem; font-weight: 700; cursor: pointer;
     transition: border-color 0.15s;
 }
 .btn-secondary:hover { border-color: #8df0c0; color: #f4f1ea; }
+
 .btn-danger {
     flex: 1;
-    background: rgba(247,37,133,0.1); border: 1px solid rgba(247,37,133,0.4);
+    background: rgb(247 37 133 / 10%); border: 1px solid rgb(247 37 133 / 40%);
     color: #f72585; border-radius: 10px;
-    padding: 0.65rem; font-family: 'Nunito', sans-serif;
+    padding: 0.65rem; font-family: Nunito, sans-serif;
     font-size: 0.88rem; font-weight: 700; cursor: pointer;
     transition: background 0.15s;
 }
-.btn-danger:hover { background: rgba(247,37,133,0.2); }
+.btn-danger:hover { background: rgb(247 37 133 / 20%); }
 
 /* pagina publica shared */
 .shared-page {
@@ -630,6 +657,7 @@
     border-bottom: 1px solid #3b3d3a;
     flex-wrap: wrap;
 }
+
 .brand-link {
     font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
@@ -638,15 +666,17 @@
     font-weight: 700;
 }
 .shared-title-wrap { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
 .shared-list-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.6rem;
     color: #f4f1ea;
     margin: 0;
 }
+
 .shared-badge {
-    background: rgba(141,240,192,0.1);
-    border: 1px solid rgba(141,240,192,0.25);
+    background: rgb(141 240 192 / 10%);
+    border: 1px solid rgb(141 240 192 / 25%);
     color: #8df0c0;
     border-radius: 999px;
     padding: 0.25rem 0.75rem;
@@ -662,7 +692,7 @@
 .shared-empty h2 { color: #f4f1ea; font-family: 'Playfair Display', serif; }
 .shared-empty p  { color: #bcb5aa; }
 
-/* lista sharuita*/
+/* lista sharuita */
 .shared-items-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
 .shared-item {
@@ -674,6 +704,7 @@
     align-items: center;
     gap: 0.9rem;
 }
+
 .shared-item.purchased {
     opacity: 0.5;
     border-style: dashed;
@@ -681,6 +712,7 @@
 .shared-item.purchased .shared-item-name { text-decoration: line-through; }
 
 .shared-item-img  { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: #1e201e; }
+
 .shared-item-emoji {
     width: 44px; height: 44px; border-radius: 10px;
     background: #1e201e;
@@ -707,14 +739,14 @@
 .shared-total-label { color: #bcb5aa; font-weight: 700; font-size: 0.9rem; }
 .shared-total-value { color: #8df0c0; font-weight: 800; font-size: 1.25rem; font-family: 'Playfair Display', serif; }
 
-/* butoane*/
+/* butoane */
 .btn-primary {
     background: #8df0c0;
     color: #173629;
     border: none;
     border-radius: 12px;
     padding: 0.75rem 1.5rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.9rem;
     font-weight: 800;
     cursor: pointer;
@@ -724,7 +756,7 @@
 }
 .btn-primary:hover { background: #d9fff0; transform: translateY(-1px); }
 
-/* notificari*/
+/* notificari */
 .sl-toast {
     position: fixed;
     bottom: 2rem; right: 2rem;
@@ -738,9 +770,10 @@
     z-index: 200;
     animation: toastIn 0.3s ease;
     max-width: 320px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 32px rgb(0 0 0 / 40%);
 }
-.sl-toast.error { border-color: #f72585; color: #f5157b; }
+.sl-toast.error { border-color: #f72585; color: #f72585; }
+
 @keyframes toastIn {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -748,6 +781,7 @@
 
 /* mod cumparaturi */
 .sl-btn-shop-mode:hover { border-color: #8df0c0; color: #8df0c0; }
+
 .sl-btn-shop-mode.active {
     background: #8df0c0;
     color: #173629;
@@ -763,6 +797,7 @@
     flex-direction: column;
     animation: smFadeIn 0.3s ease;
 }
+
 @keyframes smFadeIn {
     from { opacity: 0; }
     to   { opacity: 1; }
@@ -777,18 +812,21 @@
     border-bottom: 1px solid #1e201e;
     flex-shrink: 0;
 }
+
 .sm-progress-info {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
+
 .sm-counter {
     font-size: 0.9rem;
     font-weight: 800;
     color: #7a7d75;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     white-space: nowrap;
 }
+
 .sm-progress-track {
     width: 160px;
     height: 4px;
@@ -796,19 +834,21 @@
     border-radius: 99px;
     overflow: hidden;
 }
+
 .sm-progress-fill {
     height: 100%;
     background: #8df0c0;
     border-radius: 99px;
     transition: width 0.4s ease;
 }
+
 .sm-close {
     background: #1e201e;
     border: 1px solid #3b3d3a;
     color: #bcb5aa;
     border-radius: 10px;
     padding: 0.5rem 1rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
@@ -844,19 +884,24 @@
     position: relative;
     overflow: hidden;
 }
+
 @keyframes smCardIn {
     from { opacity: 0; transform: scale(0.9) translateY(20px); }
     to   { opacity: 1; transform: scale(1) translateY(0); }
 }
+
 .sm-card-inner.exit-left {
     animation: smExitLeft 0.25s ease forwards;
 }
+
 .sm-card-inner.exit-right {
     animation: smExitRight 0.25s ease forwards;
 }
+
 @keyframes smExitLeft {
     to { opacity: 0; transform: translateX(-80px) rotate(-5deg); }
 }
+
 @keyframes smExitRight {
     to { opacity: 0; transform: translateX(80px) rotate(5deg); }
 }
@@ -868,7 +913,7 @@
     top: -60px; left: 50%;
     transform: translateX(-50%);
     width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(141,240,192,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgb(141 240 192 / 6%) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -878,6 +923,7 @@
     object-fit: cover;
     background: #1e201e;
 }
+
 .sm-card-emoji {
     width: 140px; height: 140px;
     border-radius: 20px;
@@ -886,17 +932,19 @@
     font-size: 5rem;
     line-height: 1;
 }
+
 .sm-card-purchased-badge {
     position: absolute;
     top: 1rem; right: 1rem;
-    background: rgba(141,240,192,0.15);
-    border: 1px solid rgba(141,240,192,0.3);
+    background: rgb(141 240 192 / 15%);
+    border: 1px solid rgb(141 240 192 / 30%);
     color: #8df0c0;
     border-radius: 999px;
     padding: 0.2rem 0.7rem;
     font-size: 0.75rem;
     font-weight: 800;
 }
+
 .sm-card-name {
     font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
@@ -904,18 +952,21 @@
     margin: 0;
     line-height: 1.2;
 }
+
 .sm-card-brand {
     font-size: 0.88rem;
     color: #7a7d75;
     font-weight: 700;
     margin: 0;
 }
+
 .sm-card-price {
     font-size: 1.3rem;
     font-weight: 800;
     color: #8df0c0;
     font-family: 'Playfair Display', serif;
 }
+
 .sm-card-notes {
     font-size: 0.85rem;
     color: #bcb5aa;
@@ -936,6 +987,7 @@
     overflow: hidden;
     gap: 0;
 }
+
 .sm-qty-btn {
     width: 48px; height: 48px;
     background: none; border: none;
@@ -944,16 +996,17 @@
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.12s, color 0.12s;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
-.sm-qty-btn:hover { background: rgba(141,240,192,0.1); color: #8df0c0; }
+.sm-qty-btn:hover { background: rgb(141 240 192 / 10%); color: #8df0c0; }
+
 .sm-qty-val {
     min-width: 48px;
     text-align: center;
     font-size: 1.2rem;
     font-weight: 800;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
 
 /* Butoane acțiuni */
@@ -977,7 +1030,7 @@
     width: 90px; height: 90px;
     cursor: pointer;
     color: #bcb5aa;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.78rem;
     font-weight: 800;
     transition: transform 0.15s, border-color 0.15s, color 0.15s, background 0.15s;
@@ -988,17 +1041,19 @@
 .sm-btn-skip:hover {
     border-color: #f72585;
     color: #f72585;
-    background: rgba(247,37,133,0.08);
+    background: rgb(247 37 133 / 8%);
 }
+
 .sm-btn-check:hover {
     border-color: #8df0c0;
     color: #8df0c0;
-    background: rgba(141,240,192,0.08);
+    background: rgb(141 240 192 / 8%);
 }
+
 .sm-btn-check.pressed {
     border-color: #8df0c0;
     color: #8df0c0;
-    background: rgba(141,240,192,0.15);
+    background: rgb(141 240 192 / 15%);
     transform: scale(0.95);
 }
 
@@ -1015,6 +1070,7 @@
     animation: smFadeIn 0.4s ease;
 }
 .sm-done-icon  { font-size: 4rem; line-height: 1; }
+
 .sm-done-title {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
@@ -1022,12 +1078,14 @@
     margin: 0;
 }
 .sm-done-sub   { color: #bcb5aa; font-size: 1rem; margin: 0; }
+
 .sm-done-total {
     font-size: 1.5rem;
     font-weight: 800;
     color: #8df0c0;
     font-family: 'Playfair Display', serif;
 }
+
 .sm-done-btn {
     margin-top: 1rem;
     background: #8df0c0;
@@ -1035,7 +1093,7 @@
     border: none;
     border-radius: 14px;
     padding: 0.9rem 2.5rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 1rem;
     font-weight: 800;
     cursor: pointer;
@@ -1054,11 +1112,11 @@
     font-weight: 700;
     white-space: nowrap;
     pointer-events: none;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .sl-layout {
         grid-template-columns: 1fr;
         padding: 1rem 1rem 7rem;
@@ -1075,9 +1133,10 @@
         margin-right: 0;
         height: 100dvh;
     }
+
     .sl-sidebar.open {
         transform: translateX(0);
-        box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+        box-shadow: 4px 0 24px rgb(0 0 0 / 50%);
     }
 
     .sl-mobile-close { display: block; }
@@ -1104,12 +1163,13 @@
 /* ── CSS Variables mood (setate din JS) ─────────────────────────────── */
 :root {
     --mood-accent: #8df0c0;
-    --mood-glow:   rgba(141,240,192,0.15);
+    --mood-glow:   rgb(141 240 192 / 15%);
 }
 
 /* Aplică accent-ul mood-ului dinamic */
 .sl-list-header       { border-color: var(--mood-accent, #3b3d3a) !important; transition: border-color 0.4s; }
 .sl-progress-fill     { background: var(--mood-accent, #8df0c0) !important; }
+
 .sl-btn-shop-mode:hover,
 .sl-btn-share:hover,
 .sl-btn-export:hover  { border-color: var(--mood-accent) !important; color: var(--mood-accent) !important; }
@@ -1121,7 +1181,7 @@
     align-items: center;
     gap: 0.3rem;
     padding: 0.25rem 0.75rem;
-    border: 1px solid rgba(141,240,192,0.3);
+    border: 1px solid rgb(141 240 192 / 30%);
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 800;
@@ -1129,15 +1189,16 @@
     cursor: pointer;
     transition: border-color 0.2s, color 0.2s;
     background: none;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
-.sl-mood-badge:hover { background: rgba(141,240,192,0.06); }
+.sl-mood-badge:hover { background: rgb(141 240 192 / 6%); }
 
 /* ── Mood picker în sidebar (la creare) ─────────────────────────────── */
 .sl-mood-picker-wrap {
     padding: 0.5rem 0.75rem 0.25rem;
     border-bottom: 1px solid #2a2c2a;
 }
+
 .sl-mood-picker-label {
     font-size: 0.72rem;
     font-weight: 800;
@@ -1147,11 +1208,13 @@
     margin-bottom: 0.4rem;
     display: block;
 }
+
 #sl-mood-picker {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.35rem;
 }
+
 .mood-option {
     display: flex;
     flex-direction: column;
@@ -1163,12 +1226,13 @@
     border-radius: 10px;
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
-.mood-option:hover { background: rgba(141,240,192,0.05); border-color: #555753; }
+.mood-option:hover { background: rgb(141 240 192 / 5%); border-color: #555753; }
+
 .mood-option.selected {
     border-color: var(--mood-accent, #8df0c0);
-    background: var(--mood-glow, rgba(141,240,192,0.08));
+    background: var(--mood-glow, rgb(141 240 192 / 8%));
 }
 .mood-icon  { font-size: 1.2rem; line-height: 1; }
 .mood-label { font-size: 0.65rem; font-weight: 800; color: #bcb5aa; }
@@ -1185,8 +1249,8 @@
     font-size: 0.7rem;
     font-weight: 800;
     color: #ffd166;
-    background: rgba(255,209,102,0.1);
-    border: 1px solid rgba(255,209,102,0.25);
+    background: rgb(255 209 102 / 10%);
+    border: 1px solid rgb(255 209 102 / 25%);
     border-radius: 999px;
     padding: 0.1rem 0.5rem;
 }
@@ -1201,12 +1265,14 @@
     padding-top: 0.5rem;
     border-top: 1px solid #2a2c2a;
 }
+
 .sl-budget-track {
     height: 8px;
     background: #1e201e;
     border-radius: 999px;
     overflow: hidden;
 }
+
 .sl-budget-fill {
     height: 100%;
     background: var(--mood-accent, #8df0c0);
@@ -1220,7 +1286,7 @@
     font-size: 0.78rem;
     font-weight: 700;
     color: #bcb5aa;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
 }
 .sl-budget-label.close { color: #ffd166; }
 .sl-budget-label.over  { color: #f72585; }
@@ -1238,7 +1304,7 @@
     font-weight: 800;
     padding: 0.3rem 0.6rem;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     transition: border-color 0.15s, color 0.15s;
     white-space: nowrap;
 }
@@ -1250,28 +1316,31 @@
     gap: 0.4rem;
     margin-top: 0.35rem;
 }
+
 .sl-budget-input {
     width: 120px;
     background: #1e201e;
     border: 1px solid #8df0c0;
     border-radius: 8px;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.85rem;
     padding: 0.4rem 0.7rem;
     outline: none;
 }
+
 .sl-budget-save-btn {
     background: #8df0c0;
     color: #173629;
     border: none;
     border-radius: 8px;
     padding: 0.4rem 0.8rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.82rem;
     font-weight: 800;
     cursor: pointer;
 }
+
 .sl-budget-clear-btn {
     background: none;
     border: 1px solid #555753;
@@ -1280,7 +1349,7 @@
     padding: 0.4rem 0.6rem;
     font-size: 0.82rem;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 700;
 }
 
@@ -1289,6 +1358,7 @@
 .sl-mood-change-wrap {
     position: relative;
 }
+
 .sl-mood-change-dropdown {
     position: absolute;
     top: calc(100% + 0.5rem);
@@ -1302,12 +1372,14 @@
     gap: 0.35rem;
     z-index: 50;
     min-width: 200px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 32px rgb(0 0 0 / 40%);
 }
+
 .sl-mood-change-wrap:hover .sl-mood-change-dropdown,
 .sl-mood-badge:focus + .sl-mood-change-dropdown {
     display: grid;
 }
+
 .sl-mood-change-btn {
     display: flex;
     flex-direction: column;
@@ -1318,10 +1390,10 @@
     border: 1px solid #3b3d3a;
     border-radius: 10px;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     transition: border-color 0.15s, background 0.15s;
 }
-.sl-mood-change-btn:hover { background: rgba(141,240,192,0.05); border-color: #555753; }
+.sl-mood-change-btn:hover { background: rgb(141 240 192 / 5%); border-color: #555753; }
 .sl-mood-change-btn span:first-child { font-size: 1.1rem; }
 .sl-mood-change-btn span:last-child  { font-size: 0.62rem; font-weight: 800; color: #7a7d75; }
 
@@ -1331,8 +1403,8 @@
     align-items: center;
     gap: 0.4rem;
     padding: 0.3rem 0.8rem;
-    background: rgba(6,214,160,0.1);
-    border: 1px solid rgba(6,214,160,0.3);
+    background: rgb(6 214 160 / 10%);
+    border: 1px solid rgb(6 214 160 / 30%);
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 800;
@@ -1340,7 +1412,7 @@
     margin-bottom: 1rem;
     transition: background 0.3s;
 }
-.sv-live-badge.pulse { background: rgba(6,214,160,0.25); }
+.sv-live-badge.pulse { background: rgb(6 214 160 / 25%); }
 
 .sv-live-dot {
     width: 7px; height: 7px;
@@ -1348,6 +1420,7 @@
     border-radius: 50%;
     animation: livePulse 1.5s ease infinite;
 }
+
 @keyframes livePulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50%       { opacity: 0.4; transform: scale(0.8); }
@@ -1357,14 +1430,17 @@
     display: flex; align-items: center; gap: 0.75rem;
     margin-bottom: 1.25rem;
 }
+
 .sv-progress-bar {
     flex: 1; height: 6px; background: #3b3d3a;
     border-radius: 99px; overflow: hidden;
 }
+
 .sv-progress-fill {
     height: 100%; background: #8df0c0;
     border-radius: 99px; transition: width 0.4s ease;
 }
+
 .sv-progress-label {
     font-size: 0.8rem; color: #7a7d75; font-weight: 700; white-space: nowrap;
 }
@@ -1382,8 +1458,9 @@
     color: transparent;
 }
 .sv-checkbox:hover { border-color: #8df0c0; }
+
 .sv-checkbox.checked {
     border-color: #8df0c0;
-    background: rgba(141,240,192,0.15);
+    background: rgb(141 240 192 / 15%);
     color: #8df0c0;
 }

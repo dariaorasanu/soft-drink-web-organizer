@@ -6,8 +6,8 @@
 }
 
 .catalog-filters {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(141, 240, 192, 0.18);
+    background: rgb(255 255 255 / 3%);
+    border: 1px solid rgb(141 240 192 / 18%);
     border-radius: 28px;
     padding: 24px;
     height: fit-content;
@@ -34,13 +34,13 @@
     width: 100%;
     padding: 12px 14px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgb(255 255 255 / 18%);
     background: #171817;
     color: #f7f4ea;
 }
 
 .category-pill {
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgb(255 255 255 / 18%);
     background: transparent;
     color: #f7f4ea;
     border-radius: 999px;
@@ -68,8 +68,8 @@
 }
 
 .product-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgb(255 255 255 / 3%);
+    border: 1px solid rgb(255 255 255 / 12%);
     border-radius: 28px;
     padding: 24px;
 }
@@ -120,7 +120,7 @@
     padding: 8px 12px;
     border-radius: 999px;
     color: #8df0c0;
-    background: rgba(141, 240, 192, 0.08);
+    background: rgb(141 240 192 / 8%);
     font-weight: 800;
 }
 
@@ -134,7 +134,7 @@
 .product-badge {
     padding: 6px 10px;
     border-radius: 999px;
-    background: rgba(141, 240, 192, 0.12);
+    background: rgb(141 240 192 / 12%);
     color: #8df0c0;
     font-size: 0.85rem;
     font-weight: 800;
@@ -149,7 +149,7 @@
 
 .product-actions button,
 .pagination button {
-    border: 1px solid rgba(141, 240, 192, 0.3);
+    border: 1px solid rgb(141 240 192 / 30%);
     background: transparent;
     color: #8df0c0;
     border-radius: 999px;
@@ -160,7 +160,7 @@
 
 .product-actions button:hover,
 .pagination button:hover {
-    background: rgba(141, 240, 192, 0.12);
+    background: rgb(141 240 192 / 12%);
 }
 
 .pagination {
@@ -182,9 +182,10 @@
     grid-column: 1 / -1;
     color: #d8d4ca;
     padding: 32px;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgb(255 255 255 / 20%);
     border-radius: 24px;
 }
+
 .catalog-list-dropdown {
     position: absolute;
     bottom: calc(100% + 0.5rem);
@@ -195,41 +196,46 @@
     padding: 0.5rem;
     z-index: 50;
     min-width: 220px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 32px rgb(0 0 0 / 40%);
     animation: fadeIn .15s ease;
 }
+
 .catalog-atl-loading, .catalog-atl-empty {
     padding: 0.5rem 0.75rem;
     color: #7a7d75;
     font-size: 0.82rem;
 }
 .catalog-atl-lists { display: flex; flex-direction: column; margin-bottom: 0.35rem; }
+
 .catalog-atl-row {
     display: flex; justify-content: space-between; align-items: center;
     padding: 0.6rem 0.75rem; background: none; border: none;
-    color: #f4f1ea; font-family: 'Nunito',sans-serif; font-size: 0.85rem;
+    color: #f4f1ea; font-family: Nunito,sans-serif; font-size: 0.85rem;
     font-weight: 700; cursor: pointer; border-radius: 8px; text-align: left;
     transition: background .12s;
 }
-.catalog-atl-row:hover { background: rgba(141,240,192,0.07); color: #8df0c0; }
+.catalog-atl-row:hover { background: rgb(141 240 192 / 7%); color: #8df0c0; }
 .catalog-atl-count { font-size: 0.72rem; color: #7a7d75; font-weight: 700; }
+
 .catalog-atl-new {
     display: flex; gap: 0.4rem; padding: 0.4rem 0.35rem 0.35rem;
     border-top: 1px solid #2a2c2a;
 }
+
 .catalog-atl-input {
     flex: 1; background: #1e201e; border: 1px solid #3b3d3a; border-radius: 8px;
-    color: #f4f1ea; font-family: 'Nunito',sans-serif; font-size: 0.82rem;
+    color: #f4f1ea; font-family: Nunito,sans-serif; font-size: 0.82rem;
     padding: 0.4rem 0.6rem; outline: none;
 }
 .catalog-atl-input:focus { border-color: #8df0c0; }
+
 .catalog-atl-create {
     background: #8df0c0; color: #173629; border: none; border-radius: 8px;
     width: 30px; height: 30px; font-size: 1.1rem; font-weight: 800;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .catalog-layout {
         grid-template-columns: 1fr;
     }
@@ -247,7 +253,7 @@
     }
 
     .favorite-btn.active {
-        background: rgba(247, 37, 133, 0.16);
+        background: rgb(247 37 133 / 16%);
         border-color: #f72585;
         color: #f72585;
     }
