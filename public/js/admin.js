@@ -289,12 +289,23 @@ function bindProductEvents() {
         e.target.value = ''; // resetam input-ul de fisier
     });
 
-    // cautare Open Food Facts
-    document.getElementById('off-search-btn')?.addEventListener('click', searchOFF);
-    document.getElementById('off-search-input')?.addEventListener('keydown', e => {
-        if (e.key === 'Enter') searchOFF();
-    });
+    // cautarea Open Food Facts este legata global mai jos, ca sa ramana stabila
+    // si daca panelul este redeschis sau DOM-ul este refacut partial.
 }
+
+document.addEventListener('click', e => {
+    if (e.target.closest('#off-search-btn')) {
+        e.preventDefault();
+        searchOFF();
+    }
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target?.id === 'off-search-input') {
+        e.preventDefault();
+        searchOFF();
+    }
+});
 
 // deschide panel-ul lateral pentru adaugare sau editare
 // productId = null inseamna adaugare, un numar inseamna editare
@@ -334,7 +345,7 @@ function closePanel() {
 
 // goleste toate campurile din formular
 function resetForm() {
-    ['f-id','f-name','f-brand','f-price','f-volume','f-image',
+    ['f-id','f-openfoodfacts-id','f-name','f-brand','f-price','f-volume','f-image',
         'f-description','f-ingredients','f-calories','f-sugar',
         'f-shelf-life','f-barcode'].forEach(id => {
         const el = document.getElementById(id);
@@ -363,6 +374,7 @@ function populateForm(p) {
     document.getElementById('f-sugar').value         = p.sugar_per_100ml   ?? '';
     document.getElementById('f-shelf-life').value    = p.shelf_life_days   ?? '';
     document.getElementById('f-barcode').value       = p.barcode           ?? '';
+    document.getElementById('f-openfoodfacts-id').value = p.openfoodfacts_id ?? '';
 
     // !! converteste orice valoare la boolean (true/false)
     document.getElementById('f-vegan').checked       = !!p.is_vegan;
@@ -432,6 +444,7 @@ async function saveProduct() {
         sugar_per_100ml:    document.getElementById('f-sugar').value,
         shelf_life_days:    document.getElementById('f-shelf-life').value,
         barcode:            document.getElementById('f-barcode').value.trim(),
+        openfoodfacts_id:   document.getElementById('f-openfoodfacts-id').value.trim(),
         // pentru checkboxuri: '1' daca e bifat, '' daca nu
         is_vegan:           document.getElementById('f-vegan').checked       ? '1' : '',
         is_gluten_free:     document.getElementById('f-gluten-free').checked  ? '1' : '',
@@ -463,50 +476,87 @@ async function searchOFF() {
     const results = document.getElementById('off-results');
     if (!query) return;
 
+    const searchBtn = document.getElementById('off-search-btn');
+    searchBtn.disabled = true;
+    searchBtn.textContent = 'Caut...';
     results.innerHTML = '<div class="admin-loading"><div class="spinner"></div></div>';
 
-    const res = await apiGet('off_search', { q: query });
+    try {
+        const params = new URLSearchParams({ action: 'off_search' });
+        if (/^\d{6,}$/.test(query)) {
+            params.set('barcode', query);
+        } else {
+            params.set('q', query);
+        }
 
-    if (!res.success || !res.data?.length) {
-        results.innerHTML = '<p style="color:#7a7d75;font-size:.85rem;padding:.5rem">Niciun rezultat.</p>';
-        return;
-    }
+        const response = await fetch(`/api/product.php?${params.toString()}`);
+        const res = await response.json();
+        const products = res.products ?? [];
 
-    // afisam rezultatele
-    results.innerHTML = res.data.map((item, i) => `
-        <div class="off-result-item" data-index="${i}">
-            ${item.image_url ? `<img src="${esc(item.image_url)}" class="off-result-img" alt="">` : ''}
-            <div>
-                <div class="off-result-name">${esc(item.name)}</div>
-                ${item.brand ? `<div class="off-result-brand">${esc(item.brand)}</div>` : ''}
-            </div>
-        </div>`).join('');
+        if (!res.success || products.length === 0) {
+            results.innerHTML = `<p style="color:#7a7d75;font-size:.85rem;padding:.5rem">${esc(res.message ?? 'Niciun rezultat.')}</p>`;
+            return;
+        }
 
-    // cand dai click pe un rezultat, il importam in formular
-    results.querySelectorAll('.off-result-item').forEach((el, i) => {
-        el.addEventListener('click', () => {
-            const item = res.data[i];
+        const firstName = String(products[0]?.name ?? '').toLowerCase();
+        const normalizedQuery = query.toLowerCase();
+        const shouldAutoFill = firstName.includes(normalizedQuery);
+        if (shouldAutoFill) {
+            populateFormFromOFF(products[0]);
+        }
 
-            // populam campurile cu datele de la Open Food Facts
-            document.getElementById('f-name').value        = item.name        ?? '';
-            document.getElementById('f-brand').value       = item.brand       ?? '';
-            document.getElementById('f-image').value       = item.image_url   ?? '';
-            document.getElementById('f-ingredients').value = item.ingredients ?? '';
-            document.getElementById('f-calories').value    = item.calories    ?? '';
-            document.getElementById('f-sugar').value       = item.sugar       ?? '';
-            document.getElementById('f-barcode').value     = item.barcode     ?? '';
+        // afisam rezultatele
+        results.innerHTML = `
+            <p class="off-result-status">${shouldAutoFill ? 'Formular completat cu primul rezultat. Alege alt rezultat daca vrei.' : 'Alege produsul potrivit din rezultatele de mai jos.'}</p>
+            ${products.map((item, i) => `
+            <button type="button" class="off-result-item" data-index="${i}">
+                ${item.image_url ? `<img src="${esc(item.image_url)}" class="off-result-img" alt="">` : ''}
+                <span class="off-result-info">
+                    <span class="off-result-name">${esc(item.name)}</span>
+                    ${item.brand ? `<span class="off-result-brand">${esc(item.brand)}</span>` : ''}
+                    ${item.volume_ml ? `<span class="off-result-meta">${item.volume_ml} ml</span>` : ''}
+                </span>
+            </button>`).join('')}`;
 
-            if (item.image_url) {
-                document.getElementById('f-image-preview').innerHTML =
-                    `<img src="${esc(item.image_url)}" alt="">`;
-            }
+        // cand dai click pe un rezultat, il importam in formular
+        results.querySelectorAll('.off-result-item').forEach((el, i) => {
+            el.addEventListener('click', () => {
+                populateFormFromOFF(products[i]);
 
-            // curatam rezultatele si inputul de cautare
-            results.innerHTML = '';
-            document.getElementById('off-search-input').value = '';
-            toast('Produs importat din Open Food Facts!');
+                // curatam rezultatele si inputul de cautare
+                results.innerHTML = '';
+                document.getElementById('off-search-input').value = '';
+                toast('Produs importat din Open Food Facts!');
+            });
         });
-    });
+    } catch (err) {
+        results.innerHTML = `<p style="color:#f72585;font-size:.85rem;padding:.5rem">Eroare la cautarea in Open Food Facts: ${esc(err.message)}</p>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'Caută';
+    }
+}
+
+function populateFormFromOFF(item) {
+    document.getElementById('f-openfoodfacts-id').value = item.openfoodfacts_id ?? item.barcode ?? '';
+    document.getElementById('f-name').value             = item.name ?? '';
+    document.getElementById('f-brand').value            = item.brand ?? '';
+    document.getElementById('f-price').value            = item.price ?? '';
+    document.getElementById('f-volume').value           = item.volume_ml ?? '';
+    document.getElementById('f-image').value            = item.image_url ?? '';
+    document.getElementById('f-description').value      = item.description ?? '';
+    document.getElementById('f-ingredients').value      = item.ingredients ?? '';
+    document.getElementById('f-calories').value         = item.calories_per_100ml ?? '';
+    document.getElementById('f-sugar').value            = item.sugar_per_100ml ?? '';
+    document.getElementById('f-shelf-life').value       = item.shelf_life_days ?? '';
+    document.getElementById('f-barcode').value          = item.barcode ?? '';
+    document.getElementById('f-vegan').checked          = !!item.is_vegan;
+    document.getElementById('f-gluten-free').checked    = !!item.is_gluten_free;
+    document.getElementById('f-perishable').checked     = !!item.is_perishable;
+
+    document.getElementById('f-image-preview').innerHTML = item.image_url
+        ? `<img src="${esc(item.image_url)}" alt="">`
+        : '';
 }
 
 // ─────────────────────────────────────────────────────────────

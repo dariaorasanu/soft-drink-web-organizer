@@ -1,5 +1,10 @@
 <?php foreach ($extraJs ?? [] as $js): ?>
-    <script src="<?= htmlspecialchars($js) ?>"></script>
+    <?php
+    $jsPath = parse_url($js, PHP_URL_PATH);
+    $jsFile = $jsPath ? dirname(__DIR__) . $jsPath : null;
+    $jsVersion = $jsFile && file_exists($jsFile) ? '?v=' . filemtime($jsFile) : '';
+    ?>
+    <script src="<?= htmlspecialchars($js . $jsVersion) ?>"></script>
 <?php endforeach; ?>
 
 <footer class="site-footer">
