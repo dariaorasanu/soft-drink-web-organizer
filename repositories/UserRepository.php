@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/Interfaces/UserRepositoryInterface.php';
+require_once __DIR__ . '/interfaces/UserRepositoryInterface.php';
 require_once __DIR__ . '/../models/User.php';
 
 class UserRepository implements UserRepositoryInterface
