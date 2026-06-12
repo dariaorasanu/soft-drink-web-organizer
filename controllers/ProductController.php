@@ -5,7 +5,6 @@ require_once __DIR__ . '/../service/ProductService.php';
 class ProductController
 {
     public function __construct(private readonly ProductService $productService) {}
-
     public function list(): void
     {
         try {

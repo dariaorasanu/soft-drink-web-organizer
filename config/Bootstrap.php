@@ -11,6 +11,10 @@ foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line)
 }
 
 
+if (!defined('JWT_SECRET')) {
+    define('JWT_SECRET', $_ENV['JWT_SECRET'] ?? 'fallback_secret_schimba_in_env');
+}
+
 spl_autoload_register(function (string $class): void {
     $dirs = ['models', 'repositories', 'repositories/Interfaces', 'service', 'controllers', 'config'];
     foreach ($dirs as $dir) {
@@ -21,10 +25,11 @@ spl_autoload_register(function (string $class): void {
         }
     }
 });
+
 require_once __DIR__ . '/../middleware/AuthGuard.php';
 require_once __DIR__ . '/Database.php';
-$pdo = Database::connect();
 
-$userRepo = new UserRepository($pdo);
+$pdo         = Database::connect();
+$userRepo    = new UserRepository($pdo);
 $userService = new UserService($userRepo);
-$guard = new AuthGuard($userService);
+$guard       = new AuthGuard($userService);

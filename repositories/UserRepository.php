@@ -6,7 +6,6 @@ require_once __DIR__ . '/../models/User.php';
 class UserRepository implements UserRepositoryInterface
 {
     public function __construct(private PDO $db) {}
-
     public function findAll(): array
     {
         $stmt = $this->db->query("SELECT * FROM users ORDER BY created_at DESC");
@@ -16,7 +15,6 @@ class UserRepository implements UserRepositoryInterface
             $stmt->fetchAll()
         );
     }
-
     public function findById(int $id): ?User
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
@@ -34,7 +32,6 @@ class UserRepository implements UserRepositoryInterface
 
         return $row ? User::fromArray($row) : null;
     }
-
     public function findByUsername(string $username): ?User
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
@@ -43,7 +40,6 @@ class UserRepository implements UserRepositoryInterface
 
         return $row ? User::fromArray($row) : null;
     }
-
     public function create(array $data): int
     {
         $stmt = $this->db->prepare("

@@ -1,10 +1,20 @@
 <?php
 
 require_once __DIR__ . '/../repositories/UserRepository.php';
+require_once __DIR__ . '/JWTService.php';
+require_once __DIR__ . '/CookieService.php';
 
 class UserService
 {
-    public function __construct(private readonly UserRepositoryInterface $userRepository) {}
+    private JWTService    $jwt;
+    private CookieService $cookie;
+
+    public function __construct(private readonly UserRepositoryInterface $userRepository)
+    {
+        $this->jwt    = new JWTService(JWT_SECRET);
+        $this->cookie = new CookieService();
+    }
+
 
     public function register(string $username, string $email, string $password): int
     {
@@ -29,52 +39,90 @@ class UserService
         }
 
         return $this->userRepository->create([
-            'username'      => htmlspecialchars(trim($username), ENT_QUOTES, 'UTF-8'),
+            'username'      => trim($username),
             'email'         => strtolower(trim($email)),
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
             'role'          => 'user',
         ]);
     }
 
+
     public function login(string $email, string $password): ?User
     {
         if (empty($email) || empty($password)) {
             return null;
         }
+
         $user = $this->userRepository->findByEmail(strtolower(trim($email)));
+
         if ($user === null) {
             return null;
         }
+
         if (!password_verify($password, $user->passwordHash)) {
             return null;
         }
+
         return $user;
     }
 
+
     public function startSession(User $user): void
     {
-        $_SESSION['user_id']   = $user->id;
-        $_SESSION['username']  = $user->username;
-        $_SESSION['role']      = $user->role;
+        $token = $this->jwt->encode($user->id, $user->role);
+        $this->cookie->set($token);
     }
+
 
     public function logout(): void
     {
-        session_destroy();
-        session_start();
-        session_regenerate_id(true);
+        $this->cookie->delete();
     }
+
 
     public function getCurrentUser(): ?User
     {
-        if (empty($_SESSION['user_id'])) {
+        $token = $this->cookie->get();
+        if ($token === null) {
             return null;
         }
-        return $this->userRepository->findById((int) $_SESSION['user_id']);
+        try {
+            $payload = $this->jwt->decode($token);
+        } catch (RuntimeException $e) {
+            $this->cookie->delete();
+            return null;
+        }
+        return $this->userRepository->findById((int) $payload->user_id);
     }
+
 
     public function isLoggedIn(): bool
     {
-        return !empty($_SESSION['user_id']);
+        $token = $this->cookie->get();
+        if ($token === null) {
+            return false;
+        }
+
+        try {
+            $this->jwt->decode($token);
+            return true;
+        } catch (RuntimeException $e) {
+            return false;
+        }
+    }
+
+    public function getCurrentRole(): ?string
+    {
+        $token = $this->cookie->get();
+        if ($token === null) {
+            return null;
+        }
+
+        try {
+            $payload = $this->jwt->decode($token);
+            return $payload->role ?? null;
+        } catch (RuntimeException $e) {
+            return null;
+        }
     }
 }

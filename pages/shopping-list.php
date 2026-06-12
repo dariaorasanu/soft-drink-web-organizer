@@ -1,13 +1,4 @@
 <?php
-
-/**
- * pages/shopping-list.php
- *
- * Doua moduri:
- *  1. ?token=xxx  → pagina publica read-only (fara auth)
- *  2. normal      → pagina privata cu liste, iteme, share etc.
- */
-
 session_start();
 error_reporting(E_ALL);
 
@@ -20,8 +11,17 @@ require_once __DIR__ . '/../repositories/ShoppingListRepository.php';
 /** @var UserService $userService */
 /** @var PDO        $pdo */
 
-$sharedToken  = trim($_GET['token'] ?? '');
-$isSharedView = $sharedToken !== '';
+if (isset($_GET['token'])) {
+    $sharedToken = trim($_GET['token']);
+} else {
+    $sharedToken = '';
+}
+
+if ($sharedToken != '') {
+    $isSharedView = true;
+} else {
+    $isSharedView = false;
+}
 
 // modul public cu share token
 if ($isSharedView) {
