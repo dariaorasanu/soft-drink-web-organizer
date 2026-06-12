@@ -1,6 +1,5 @@
 const API = '/api/shopping-list.php';
 
-// POST spre API cu FormData, returneaza JSON
 async function apiPost(action, params = {}) {
     const fd = new FormData();
     for (const [k, v] of Object.entries(params)) fd.append(k, v);
@@ -8,7 +7,6 @@ async function apiPost(action, params = {}) {
     return res.json();
 }
 
-// GET spre API, returneaza JSON
 async function apiGet(action, params = {}) {
     const qs = new URLSearchParams({ action, ...params }).toString();
     const res = await fetch(`${API}?${qs}`);
@@ -35,13 +33,13 @@ function esc(str) {
         .replace(/'/g, '&#39;');
 }
 
-// formatare pret in RON
+
 function formatPrice(val) {
     if (val === null || val === undefined) return '—';
     return Number(val).toFixed(2).replace('.', ',') + ' RON';
 }
 
-// emoji fallback pe baza numelui produsului
+
 function productEmoji(name = '') {
     const n = name.toLowerCase();
     if (n.includes('ceai') || n.includes('tea'))     return '🍵';
@@ -54,9 +52,9 @@ function productEmoji(name = '') {
 }
 
 
-let currentListId   = null;
-let currentListData = null; // obiectul listei selectate
-let allItems        = [];   // itemele listei curente
+let currentListId = null;
+let currentListData = null;
+let allItems = [];   // itemele listei curente
 
 
 const sidebar         = document.getElementById('sl-sidebar');
@@ -94,10 +92,9 @@ const confirmOk       = document.getElementById('confirm-ok');
 const sharedContent = document.getElementById('shared-content');
 if (sharedContent) {
     const token = sharedContent.dataset.token;
-    let sharedItems = []; // starea curenta in memorie
+    let sharedItems=[];
     let pollingActive = true;
 
-    //incarcam lista si pornim pollingul
     (async () => {
         await loadSharedView();
         startPolling();
@@ -195,16 +192,40 @@ if (sharedContent) {
     function attachSharedCheckboxes() {
         document.querySelectorAll('.sv-checkbox').forEach(cb => {
             cb.addEventListener('click',   () => toggleSharedItem(cb));
-            cb.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') toggleSharedItem(cb); });
+            cb.addEventListener('keydown', e => {
+                if (e.key === ' ' || e.key === 'Enter') toggleSharedItem(cb);
+            });
+        });
+
+        // swipe pe mobile pentru fiecare item
+        document.querySelectorAll('.shared-item').forEach(item => {
+            let touchX = 0;
+
+            item.addEventListener('touchstart', e => {
+                touchX = e.touches[0].clientX;
+            }, { passive: true });
+
+            item.addEventListener('touchend', e => {
+                const diff = e.changedTouches[0].clientX - touchX;
+                if (Math.abs(diff) < 60) return;
+                const itemId = parseInt(item.id.replace('sv-item-', ''));
+                const cb     = document.querySelector(`.sv-checkbox[data-item-id="${itemId}"]`);
+                if (!cb) return;
+
+                const currentlyPurchased = cb.classList.contains('checked');
+                const shouldBePurchased  = diff > 0;
+
+                if (currentlyPurchased === shouldBePurchased) return;
+                toggleSharedItem(cb);
+            }, { passive: true });
         });
     }
 
-    // bifa/debifa un item din pagina shared
     async function toggleSharedItem(cb) {
         const itemId    = parseInt(cb.dataset.itemId);
         const purchased = !cb.classList.contains('checked');
 
-        // feedback vizual instant — nu asteptam raspunsul API
+        // feedback vizual instant
         applySharedItemState(itemId, purchased);
 
         const fd = new FormData();
@@ -245,17 +266,15 @@ if (sharedContent) {
         totalEl.textContent = formatPrice(total);
     }
 
-    // polling la 3 secunde — verifica daca s-a schimbat ceva
+    // polling la 3 secunde, verifica daca s a schimbat ceva
     function startPolling() {
         setInterval(async () => {
-            if (!pollingActive) return;
-
+            if (!pollingActive)
+                return;
             const res = await apiGet('shared_view', { token });
             if (!res.success) return;
-
             const newItems = res.data.items;
 
-            // comparam cu starea din memorie
             let changed = false;
             for (const newItem of newItems) {
                 const old = sharedItems.find(i => i.id === newItem.id);
@@ -265,9 +284,9 @@ if (sharedContent) {
                 }
             }
 
-            if (!changed) return;
+            if (!changed)
+                return;
 
-            // actualizam doar itemele care s-au schimbat (nu re-randam tot)
             for (const newItem of newItems) {
                 const old = sharedItems.find(i => i.id === newItem.id);
                 if (old && old.is_purchased !== newItem.is_purchased) {
@@ -311,7 +330,6 @@ async function loadLists() {
         return;
     }
     listsContainer.innerHTML = res.data.map(list => renderListRow(list)).join('');
-    // re-selecteaza lista curenta daca exista
     if (currentListId) {
         document.querySelector(`.sl-list-item[data-id="${currentListId}"]`)?.classList.add('active');
     }

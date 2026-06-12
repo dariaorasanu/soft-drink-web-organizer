@@ -1,19 +1,9 @@
-/**
- * product.js — Logica paginii de produs SOr
- */
 
-const CATEGORY_EMOJI = {
-    ceaiuri: '🍵', sucuri: '🍊', lactate: '🥛',
-    siropuri: '🍓', ape: '💧', sezoniere: '✦',
-};
+const CATEGORY_EMOJI = {ceaiuri: '🍵', sucuri: '🍊', lactate: '🥛', siropuri: '🍓', ape: '💧', sezoniere: '✦',};
+const SEASON_LABEL = {spring: '🌸 Primăvară', summer: '☀️ Vară', autumn: '🍂 Toamnă',   winter: '❄️ Iarnă',};
 
-const SEASON_LABEL = {
-    spring: '🌸 Primăvară', summer: '☀️ Vară',
-    autumn: '🍂 Toamnă',   winter: '❄️ Iarnă',
-};
-
-let productId           = null;
-let selectedRating      = 0;
+let productId= null;
+let selectedRating= 0;
 let ingredientsExpanded = false;
 
 const show    = id => document.getElementById(id)?.classList.remove('hidden');
@@ -34,7 +24,6 @@ function starsHtml(rating) {
     return '★'.repeat(r) + '☆'.repeat(5 - r);
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
 function showProductToast(msg, isError = false) {
     const t = document.createElement('div');
     t.style.cssText = `
@@ -53,7 +42,7 @@ function showProductToast(msg, isError = false) {
     setTimeout(() => t.remove(), 3000);
 }
 
-// ── Încarcă produsul ──────────────────────────────────────────────────────────
+
 async function loadProduct(slug) {
     try {
         const res  = await fetch(`/api/product.php?action=get&slug=${encodeURIComponent(slug)}`);
@@ -68,7 +57,6 @@ async function loadProduct(slug) {
         renderProduct(data.product);
         await loadRatings(data.product.id);
 
-        // increment_view — ignoră eroarea dacă acțiunea nu există încă
         fetch('/api/product.php?action=increment_view', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -82,12 +70,11 @@ async function loadProduct(slug) {
     }
 }
 
-// ── Randează produsul ─────────────────────────────────────────────────────────
+
 function renderProduct(p) {
     productId = p.id;
     document.title = `SOr — ${p.name}`;
 
-    // Hero imagine
     const heroImg = el('product-hero-img');
     if (p.image_url) {
         heroImg.style.backgroundImage = `url('${p.image_url}')`;
@@ -186,7 +173,7 @@ function renderProduct(p) {
     show('product-content');
 }
 
-// ── Valori nutriționale ───────────────────────────────────────────────────────
+
 function renderNutrition(p) {
     const rows = [];
     if (p.calories_per_100ml) rows.push({ label: '🔥 Calorii',    value: `${p.calories_per_100ml} kcal` });
@@ -219,7 +206,7 @@ function renderNutrition(p) {
     }
 }
 
-// ── Favorite ──────────────────────────────────────────────────────────────────
+
 function updateFavBtn(isFav, count) {
     const btn   = el('fav-btn');
     const icon  = btn.querySelector('.fav-icon');
@@ -242,7 +229,7 @@ async function toggleFavorite() {
     } catch (err) { console.error('Eroare favorite:', err); }
 }
 
-// ── Rating stele ──────────────────────────────────────────────────────────────
+
 function initStars() {
     const stars = document.querySelectorAll('#stars-input .star');
     stars.forEach(star => {
@@ -298,7 +285,7 @@ async function submitRating() {
     }
 }
 
-// ── Recenzii ──────────────────────────────────────────────────────────────────
+//recenzii
 async function loadRatings(id) {
     try {
         const res  = await fetch(`/api/product.php?action=get_ratings&product_id=${id}`);
@@ -332,7 +319,7 @@ function renderReviews(ratings) {
     }).join(''));
 }
 
-// ── Adaugă la listă ───────────────────────────────────────────────────────────
+//adauga lista
 function initAddToList() {
     const btn      = el('add-to-list-btn');
     const dropdown = el('add-to-list-dropdown');
@@ -376,7 +363,6 @@ function initAddToList() {
         }
     });
 
-    // Închide la click în afară
     document.addEventListener('click', () => {
         open = false;
         dropdown.classList.add('hidden');
@@ -414,7 +400,7 @@ function initAddToList() {
     newName?.addEventListener('keydown', e => { if (e.key === 'Enter') createAndAdd(); });
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', () => {
     const slug = new URLSearchParams(window.location.search).get('slug');
     if (!slug) { hide('product-loading'); show('product-error'); return; }

@@ -55,6 +55,11 @@ class ProductRepository implements ProductRepositoryInterface
         return array_map(fn(array $row) => Product::fromArray($row), $stmt->fetchAll());
     }
 
+    public function incrementView(int $productId): void
+    {
+        $this->productRepository->incrementViewCount($productId);
+    }
+
     public function countAll(array $filters = []): int
     {
         [$where, $params] = $this->buildFilters($filters);
@@ -154,8 +159,6 @@ class ProductRepository implements ProductRepositoryInterface
         $stmt->execute([':id' => $id]);
     }
 
-    // ── Categorii ─────────────────────────────────────────────────────────────
-
     public function findCategories(int $productId): array
     {
         $stmt = $this->db->prepare("
@@ -174,7 +177,6 @@ class ProductRepository implements ProductRepositoryInterface
         foreach ($categoryIds as $cid) $ins->execute([':pid' => $productId, ':cid' => $cid]);
     }
 
-    // ── Alergeni ──────────────────────────────────────────────────────────────
 
     public function findAllergens(int $productId): array
     {
@@ -194,7 +196,6 @@ class ProductRepository implements ProductRepositoryInterface
         foreach ($allergenIds as $aid) $ins->execute([':pid' => $productId, ':aid' => $aid]);
     }
 
-    // ── Sezoane ───────────────────────────────────────────────────────────────
 
     public function findSeasons(int $productId): array
     {
@@ -208,7 +209,6 @@ class ProductRepository implements ProductRepositoryInterface
         return $stmt->fetchAll();
     }
 
-    // ── Regiuni ───────────────────────────────────────────────────────────────
 
     public function findRegions(int $productId): array
     {
@@ -222,7 +222,6 @@ class ProductRepository implements ProductRepositoryInterface
         return $stmt->fetchAll();
     }
 
-    // ── Localuri ──────────────────────────────────────────────────────────────
 
     public function findVenues(int $productId): array
     {
@@ -238,7 +237,6 @@ class ProductRepository implements ProductRepositoryInterface
         return $stmt->fetchAll();
     }
 
-    // ── Favorite ──────────────────────────────────────────────────────────────
 
     public function isFavorite(int $userId, int $productId): bool
     {
@@ -266,7 +264,6 @@ class ProductRepository implements ProductRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
-    // ── Ratinguri ─────────────────────────────────────────────────────────────
 
     public function addRating(int $userId, int $productId, int $rating, ?string $review = null): void
     {
@@ -309,7 +306,7 @@ class ProductRepository implements ProductRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+
 
     private function buildFilters(array $filters): array
     {

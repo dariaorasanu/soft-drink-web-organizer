@@ -322,7 +322,6 @@ class ShoppingListController
         ];
     }
 
-
     private function jsonSuccess(mixed $data, string $message = 'OK', int $status = 200): void
     {
         http_response_code($status);
