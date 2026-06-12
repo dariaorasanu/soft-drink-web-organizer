@@ -1,9 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
-   admin.css — SOr Admin Panel
-   Dark theme consistent cu restul aplicatiei
-   ═══════════════════════════════════════════════════════════ */
 
-/* ── Layout principal ──────────────────────────────────────── */
 .admin-layout {
     display: grid;
     grid-template-columns: 220px 1fr;
@@ -11,7 +6,6 @@
     gap: 0;
 }
 
-/* ── Sidebar ────────────────────────────────────────────────── */
 .admin-sidebar {
     background: #1e201e;
     border-right: 1px solid #3b3d3a;
@@ -93,7 +87,7 @@
     color: #8df0c0;
 }
 
-/* ── Continut principal ─────────────────────────────────────── */
+
 .admin-content {
     padding: 2rem;
     overflow-x: hidden;
@@ -127,7 +121,7 @@
     align-items: center;
 }
 
-/* ── Carduri statistici dashboard ───────────────────────────── */
+
 .admin-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -897,7 +891,6 @@
     justify-content: center;
 }
 
-/* ── Toast ──────────────────────────────────────────────────── */
 .admin-toast {
     position: fixed;
     bottom: 2rem;

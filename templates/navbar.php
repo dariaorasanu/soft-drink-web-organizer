@@ -1,11 +1,4 @@
 <?php
-/**
- * Variabile așteptate:
- *   string      $activePage  — 'home' | 'catalog' | 'shopping-list' | 'stats' | 'admin'
- *   object|null $currentUser — userul curent
- *   string      $username    — numele userului
- *   string      $initials    — inițiala
- */
 $activePage  ??= '';
 $currentUser ??= null;
 $username    ??= '';
