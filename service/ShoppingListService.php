@@ -21,7 +21,6 @@ class ShoppingListService
 
     public function create(int $userId, string $name, string $mood = 'general', ?float $budget = null): ShoppingList
     {
-
         $name = trim($name);
         if ($name === '') {
             throw new InvalidArgumentException('Numele listei este obligatoriu.');
