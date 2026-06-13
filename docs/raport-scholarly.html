@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ro" prefix="schema: http://schema.org/ sa: https://ns.science.ai/">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SOr — Raport Scholarly HTML</title>
+    <meta name="description" content="Raport Scholarly HTML pentru proiectul Soft Drink Web Organizer.">
+    <style>
+        :root {
+            --bg: #171817;
+            --card: #252824;
+            --nav: #262826;
+            --border: #3b3d3a;
+            --green: #8df0c0;
+            --pink: #f72585;
+            --text: #f4f1ea;
+            --muted: #bcb5aa;
+            --placeholder: #7a7d75;
+            --light: #d9fff0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+        article {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 32px 0 64px;
+        }
+        header[role="banner"], section, .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            margin: 22px 0;
+        }
+        header[role="banner"] {
+            background: linear-gradient(135deg, rgba(141, 240, 192, 0.12), rgba(247, 37, 133, 0.08)), var(--card);
+        }
+        h1, h2, h3, h4 { line-height: 1.2; }
+        h1 { font-size: clamp(2rem, 4vw, 4rem); margin: 0 0 12px; }
+        h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); color: var(--green); margin-top: 0; }
+        h3 { color: var(--light); margin-top: 1.4rem; }
+        a { color: var(--green); }
+        .subtitle { color: var(--muted); font-size: 1.1rem; max-width: 780px; }
+        .meta { color: var(--muted); display: grid; gap: 4px; margin-top: 18px; }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(141, 240, 192, 0.08);
+            border: 1px solid rgba(141, 240, 192, 0.25);
+            color: var(--green);
+            font-weight: 700;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+        }
+        .badge.pink {
+            background: rgba(247, 37, 133, 0.12);
+            border-color: rgba(247, 37, 133, 0.3);
+            color: var(--pink);
+        }
+        nav[role="doc-toc"] ol { columns: 2; padding-left: 1.25rem; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; overflow: hidden; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; vertical-align: top; }
+        th { background: #20221f; color: var(--green); text-align: left; }
+        code, pre {
+            font-family: "Consolas", "Monaco", monospace;
+            background: #111211;
+            color: #f4f1ea;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        code { padding: 0.15rem 0.35rem; }
+        pre { padding: 1rem; overflow-x: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .mini-card { background: #1d1f1c; border: 1px solid var(--border); border-radius: 18px; padding: 16px; }
+        .diagram {
+            display: grid;
+            gap: 14px;
+            margin: 1rem 0;
+        }
+        .layer {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #1e211d;
+        }
+        .layer strong { color: var(--green); }
+        .arrow { text-align: center; color: var(--pink); font-weight: 800; }
+        .note { border-left: 4px solid var(--pink); padding-left: 1rem; color: var(--muted); }
+        .ok { color: var(--green); font-weight: 800; }
+        .warn { color: #ffd166; font-weight: 800; }
+        figure { margin: 1.2rem 0; }
+        figcaption { color: var(--muted); font-size: 0.95rem; margin-top: 0.5rem; }
+        footer { color: var(--muted); margin-top: 32px; }
+        @media (max-width: 760px) {
+            article { width: min(100% - 20px, 1100px); padding-top: 16px; }
+            header[role="banner"], section, .card { padding: 18px; border-radius: 18px; }
+            nav[role="doc-toc"] ol { columns: 1; }
+            table { display: block; overflow-x: auto; }
+        }
+         figure {
+             margin: 2rem auto;
+             text-align: center;
+         }
+
+        figure img {
+            display: block;
+            width: 80%;
+            max-width: 900px;
+            height: auto;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        figcaption {
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+            color: #bcb5aa;
+        }
+    </style>
+</head>
+<body>
+<article typeof="schema:ScholarlyArticle" resource="#sor-report">
+    <header role="banner">
+        <p class="badge">Raport Scholarly HTML</p>
+        <p class="badge pink">IEEE SRS-inspired</p>
+        <h1 property="schema:name">SOr — Soft Drink Web Organizer</h1>
+        <p class="subtitle" property="schema:description">
+            Specificația cerințelor, designul interfeței, arhitectura, modelarea datelor și progresul dezvoltării pentru aplicația Web de organizare a băuturilor non-alcoolice.
+        </p>
+        <div class="meta">
+            <span><strong>Autori:</strong> Bercea Denisa-Ariana și Daria Orășanu</span>
+            <span><strong>Proiect:</strong> Soft Drink Web Organizer</span>
+            <span><strong>Format:</strong> HTML Scholarly</span>
+        </div>
+    </header>
+
+    <section typeof="sa:Abstract" id="abstract" role="doc-abstract">
+        <h2>Rezumat</h2>
+        <p>
+            SOr este o aplicație Web full-stack, implementată fără framework-uri, pentru gestionarea informațiilor și preferințelor despre băuturi non-alcoolice. Sistemul oferă catalog de produse, pagini detaliate, autentificare, favorite, ratinguri, liste de cumpărături private sau partajate, statistici, exporturi, feed RSS și administrare de produse/utilizatori. Backend-ul este scris în PHP și comunică prin PDO cu PostgreSQL, iar interfața folosește HTML, CSS și JavaScript vanilla.
+        </p>
+    </section>
+
+    <nav role="doc-toc" id="toc">
+        <h2>Cuprins</h2>
+        <ol>
+            <li><a href="#introduction">Introducere</a></li>
+            <li><a href="#overall-description">Descriere generală</a></li>
+            <li><a href="#requirements">Cerințe funcționale și nonfuncționale</a></li>
+            <li><a href="#interaction">Interacțiunea cu utilizatorul</a></li>
+            <li><a href="#ui-design">Designul interfeței</a></li>
+            <li><a href="#architecture">Arhitectura sistemului</a></li>
+            <li><a href="#data-model">Modelarea și proveniența datelor</a></li>
+            <li><a href="#api">API și formate de răspuns</a></li>
+            <li><a href="#security">Securitate</a></li>
+            <li><a href="#development">Etape intermediare ale dezvoltării</a></li>
+            <li><a href="#testing">Testare și validare</a></li>
+            <li><a href="#deployment">Deployment</a></li>
+            <li><a href="#references">Bibliografie</a></li>
+        </ol>
+    </nav>
+
+    <section id="introduction" role="doc-introduction">
+        <h2>1. Introducere</h2>
+        <h3>1.1 Scop</h3>
+        <p>
+            Documentul descrie cerințele principale, structura aplicației, deciziile de design, arhitectura, modelul de date, sursele de date și etapele de dezvoltare pentru proiectul SOr. Structura raportului urmărește ideea unei specificații de cerințe de sistem: introducere, descriere generală, cerințe specifice, design, arhitectură, model de date și validare.
+        </p>
+        <h3>1.2 Domeniul aplicației</h3>
+        <p>
+            Aplicația este orientată către utilizatori care vor să descopere, salveze, evalueze și organizeze băuturi non-alcoolice. Domeniul include ceaiuri, sucuri, lactate, siropuri, ape și băuturi sezoniere. Sistemul păstrează informații despre ingrediente, alergeni, valori nutriționale, prețuri, disponibilitate pe regiuni/sezoane și localuri unde produsul poate fi găsit.
+        </p>
+        <h3>1.3 Public țintă</h3>
+        <ul>
+            <li>utilizatori obișnuiți care caută băuturi și își fac liste de cumpărături;</li>
+            <li>administratori care gestionează catalogul și utilizatorii;</li>
+            <li>evaluatori/profesori care verifică funcționalitățile, arhitectura și respectarea cerințelor Web.</li>
+        </ul>
+        <h3>1.4 Definiții</h3>
+        <table>
+            <thead><tr><th>Termen</th><th>Descriere</th></tr></thead>
+            <tbody>
+            <tr><td>JWT</td><td>Token semnat folosit pentru autentificare și păstrarea rolului utilizatorului.</td></tr>
+            <tr><td>RSS</td><td>Format XML prin care se publică un feed cu produse populare.</td></tr>
+            <tr><td>Shared view</td><td>Vizualizare publică a unei liste de cumpărături prin token unic.</td></tr>
+            <tr><td>Open Food Facts</td><td>API public folosit pentru importul unor informații despre produse.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="overall-description">
+        <h2>2. Descriere generală</h2>
+        <h3>2.1 Perspectiva produsului</h3>
+        <p>
+            SOr este o aplicație Web independentă, rulată local cu serverul PHP built-in sau în producție prin Docker/Railway. Aplicația are interfață server-rendered prin pagini PHP, dar majoritatea acțiunilor dinamice sunt realizate prin JavaScript și endpointuri API care întorc JSON, CSV, SVG sau RSS.
+        </p>
+        <h3>2.2 Clase de utilizatori</h3>
+        <table>
+            <thead><tr><th>Utilizator</th><th>Permisiuni</th><th>Exemple de acțiuni</th></tr></thead>
+            <tbody>
+            <tr><td>Vizitator</td><td>Acces limitat</td><td>vede landing page, accesează autentificarea, poate consulta RSS-ul public.</td></tr>
+            <tr><td>Utilizator autentificat</td><td>Acces la funcționalitățile principale</td><td>explorează produse, adaugă favorite, evaluează produse, creează liste.</td></tr>
+            <tr><td>Administrator</td><td>Acces complet la zona de administrare</td><td>gestionează produse, utilizatori, import/export și statistici admin.</td></tr>
+            </tbody>
+        </table>
+        <h3>2.3 Constrângeri</h3>
+        <ul>
+            <li>nu se folosesc framework-uri backend sau frontend;</li>
+            <li>interfața trebuie să fie responsive și să respecte HTML/CSS actual;</li>
+            <li>operațiile cu baza de date trebuie să folosească prepared statements;</li>
+            <li>răspunsurile dinamice se consumă prin AJAX/fetch, fără refresh complet pentru operațiile importante;</li>
+            <li>datele trebuie să poată fi exportate în formate cerute: CSV, JSON, SVG și RSS.</li>
+        </ul>
+    </section>
+
+    <section id="requirements">
+        <h2>3. Cerințe funcționale și nonfuncționale</h2>
+        <h3>3.1 Cerințe funcționale</h3>
+        <table>
+            <thead><tr><th>ID</th><th>Cerință</th><th>Prioritate</th><th>Status</th></tr></thead>
+            <tbody>
+            <tr><td>FR-01</td><td>Sistemul permite înregistrarea, autentificarea și ieșirea din cont.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-02</td><td>Sistemul protejează paginile private și zona de admin pe baza rolului.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-03</td><td>Utilizatorul poate explora catalogul de produse și poate folosi filtre.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-04</td><td>Utilizatorul poate vedea detaliile unui produs.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-05</td><td>Utilizatorul poate adăuga/elimina produse favorite.</td><td>Medie</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-06</td><td>Utilizatorul poate acorda rating și review.</td><td>Medie</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-07</td><td>Utilizatorul poate crea și gestiona liste de cumpărături.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-08</td><td>Listele pot fi partajate prin token și sincronizate periodic.</td><td>Medie</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-09</td><td>Sistemul oferă statistici și exporturi CSV/JSON/SVG.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-10</td><td>Sistemul oferă feed RSS pentru produse populare.</td><td>Medie</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-11</td><td>Administratorul poate gestiona produse și utilizatori.</td><td>Ridicată</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-12</td><td>Mod de cumpărături interactiv, cu afișarea produselor sub formă de carduri și suport pentru swipe pe mobil.</td><td>Bonus</td><td class="ok">Implementat</td></tr>
+            <tr><td>FR-13</td><td>Administratorul poate importa informații din Open Food Facts.</td><td>Bonus</td><td class="ok">Implementat</td></tr>
+            </tbody>
+        </table>
+
+        <h3>3.2 Cerințe nonfuncționale</h3>
+        <table>
+            <thead><tr><th>ID</th><th>Cerință</th><th>Implementare</th></tr></thead>
+            <tbody>
+            <tr><td>NFR-01</td><td>Securitate</td><td>JWT semnat, cookie HttpOnly/SameSite, prepared statements, password hashing, escaping la output.</td></tr>
+            <tr><td>NFR-02</td><td>Usability</td><td>navigare clară, carduri, badge-uri, feedback prin mesaje/toast, shop mode.</td></tr>
+            <tr><td>NFR-03</td><td>Responsive design</td><td>CSS adaptat pentru desktop și mobile, inclusiv shared view și swipe pe mobil.</td></tr>
+            <tr><td>NFR-04</td><td>Mentenabilitate</td><td>separare pe controllers, services, repositories, models și templates.</td></tr>
+            <tr><td>NFR-05</td><td>Portabilitate</td><td>rulează local cu PHP built-in și în deployment cu Docker/Railway.</td></tr>
+            <tr><td>NFR-06</td><td>Validare</td><td>Stylelint pentru CSS, HTML semantic și testare manuală a fluxurilor principale.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="interaction">
+        <h2>4. Interacțiunea cu utilizatorul</h2>
+        <h3>4.1 Flux principal utilizator</h3>
+        <ol>
+            <li>Utilizatorul intră pe landing page și alege autentificare sau cont nou.</li>
+            <li>După autentificare, ajunge pe pagina Home, unde poate căuta produse sau naviga spre catalog.</li>
+            <li>În catalog, aplică filtre sau caută după text.</li>
+            <li>Deschide pagina unui produs, unde poate vedea detalii, ratinguri și opțiunea de favorite.</li>
+            <li>Adaugă produsul într-o listă de cumpărături sau creează o listă nouă.</li>
+            <li>În pagina listelor, poate bifa produse, edita cantități, seta buget, partaja lista sau intra în shop mode.</li>
+        </ol>
+        <h3>4.2 Flux administrator</h3>
+        <ol>
+            <li>Administratorul se autentifică și accesează pagina Admin.</li>
+            <li>Poate vedea dashboardul cu statistici generale.</li>
+            <li>În pagina Produse, poate crea, edita, șterge, importa sau exporta produse.</li>
+            <li>În pagina Utilizatori, poate lista utilizatori, schimba roluri și șterge conturi.</li>
+        </ol>
+    </section>
+
+    <section id="ui-design">
+        <h2>5. Designul interfeței</h2>
+        <p>
+            Interfața folosește un design întunecat, cu accent verde pentru acțiuni pozitive/principale și accent roz pentru elemente care trebuie evidențiate, precum alergeni, badge-uri importante sau valori din grafice. Alegerea este potrivită pentru o aplicație de catalog deoarece imaginile produselor, cardurile și badge-urile ies mai clar în evidență pe fundal închis.
+        </p>
+        <h3>5.1 Paletă cromatică</h3>
+        <table>
+            <thead><tr><th>Rol</th><th>Valoare</th><th>Motivație</th></tr></thead>
+            <tbody>
+            <tr><td>Background principal</td><td><code>#171817</code></td><td>reduce oboseala vizuală și oferă contrast.</td></tr>
+            <tr><td>Carduri</td><td><code>#252824</code></td><td>separă clar informațiile fără contrast agresiv.</td></tr>
+            <tr><td>Accent verde</td><td><code>#8df0c0</code></td><td>sugerează prospețime, potrivit pentru băuturi și produse alimentare.</td></tr>
+            <tr><td>Accent roz</td><td><code>#f72585</code></td><td>creează contrast pentru badge-uri și informații importante.</td></tr>
+            <tr><td>Text principal</td><td><code>#f4f1ea</code></td><td>lizibilitate ridicată pe fundal închis.</td></tr>
+            </tbody>
+        </table>
+        <h3>5.2 Tipografie</h3>
+        <p>
+            Fontul <code>Nunito</code> este folosit pentru text curent, label-uri și butoane, deoarece are forme rotunjite și prietenoase. <code>Playfair Display</code> este folosit pentru titluri și brand, pentru a oferi identitate vizuală aplicației.
+        </p>
+        <h3>5.3 Componente reutilizabile</h3>
+        <div class="grid">
+            <div class="mini-card"><strong>Navbar sticky</strong><br>menține accesul rapid la Home, Catalog, Liste, Statistici și Admin.</div>
+            <div class="mini-card"><strong>Carduri</strong><br>grupează produse, statistici și acțiuni într-un format scanabil.</div>
+            <div class="mini-card"><strong>Badge-uri</strong><br>marchează categorii, alergeni, statusuri și valori importante.</div>
+            <div class="mini-card"><strong>Butoane</strong><br>diferențiază acțiunile primare de cele secundare.</div>
+        </div>
+        <h3>5.4 Responsivitate</h3>
+        <p>
+            Layoutul este gândit pentru desktop și mobil. Pe mobile, listele partajate au interacțiuni adaptate, inclusiv swipe pentru bifarea produselor. Cardurile și tabelele folosesc layouturi flexibile sau scroll orizontal unde este necesar.
+        </p>
+    </section>
+
+    <section id="diagrame-c4">
+        <h2>Arhitectură și diagrame C4</h2>
+
+        <figure>
+            <img src="diagrams/c4-context.png"
+                 alt="Diagrama C4 Context pentru aplicația SOr">
+            <figcaption>Figura 1. Diagrama C4 — Context.</figcaption>
+        </figure>
+
+        <figure>
+            <img src="diagrams/c4-container.png"
+                 alt="Diagrama C4 Container pentru aplicația SOr">
+            <figcaption>Figura 2. Diagrama C4 — Container.</figcaption>
+        </figure>
+
+        <figure>
+            <img src="diagrams/c4-component.png"
+                 alt="Diagrama C4 Component pentru backend-ul PHP">
+            <figcaption>Figura 3. Diagrama C4 — Component.</figcaption>
+        </figure>
+    </section>
+
+    <section id="data-model">
+        <h2>7. Modelarea și proveniența datelor</h2>
+        <h3>7.1 Tabele principale</h3>
+        <table>
+            <thead><tr><th>Tabel</th><th>Rol</th></tr></thead>
+            <tbody>
+            <tr><td><code>users</code></td><td>conturi, roluri, parole hashuite, avatar.</td></tr>
+            <tr><td><code>products</code></td><td>produse, preț, imagine, ingrediente, brand, volum, valori nutriționale, view count.</td></tr>
+            <tr><td><code>categories</code>, <code>allergens</code>, <code>seasons</code>, <code>regions</code>, <code>venues</code></td><td>date de clasificare și disponibilitate.</td></tr>
+            <tr><td><code>shopping_lists</code>, <code>shopping_list_items</code></td><td>liste de cumpărături, buget, mood, share token și produse adăugate.</td></tr>
+            <tr><td><code>user_favorites</code></td><td>relație many-to-many între utilizatori și produse favorite.</td></tr>
+            <tr><td><code>product_ratings</code></td><td>rating și review pentru produse, cu unicitate pe utilizator-produs.</td></tr>
+            <tr><td><code>product_views</code></td><td>istoric de vizualizări pentru produse.</td></tr>
+            <tr><td><code>schema_migrations</code></td><td>urmărirea migrațiilor aplicate.</td></tr>
+            </tbody>
+        </table>
+        <h3>7.2 Relații importante</h3>
+        <ul>
+            <li><code>products</code> are relații many-to-many cu <code>categories</code>, <code>allergens</code>, <code>seasons</code>, <code>regions</code> și <code>venues</code>.</li>
+            <li><code>users</code> are relație one-to-many cu <code>shopping_lists</code>.</li>
+            <li><code>shopping_lists</code> are relație one-to-many cu <code>shopping_list_items</code>.</li>
+            <li><code>product_ratings</code> impune rating unic pentru perechea utilizator-produs.</li>
+            <li><code>share_token</code> permite acces public controlat la o listă partajată.</li>
+        </ul>
+        <h3>7.3 Proveniența datelor</h3>
+        <table>
+            <thead><tr><th>Sursă</th><th>Date furnizate</th><th>Utilizare</th></tr></thead>
+            <tbody>
+            <tr><td><code>db/seeds/seed.sql</code></td><td>20 produse, utilizatori, categorii, alergeni, sezoane, regiuni, localuri.</td><td>date inițiale pentru demo și testare.</td></tr>
+            <tr><td>Interacțiuni utilizator</td><td>favorite, ratinguri, view count, liste.</td><td>statistici, clasamente, personalizare.</td></tr>
+            <tr><td>Admin panel</td><td>produse create/editate manual, import CSV.</td><td>administrarea catalogului.</td></tr>
+            <tr><td>Open Food Facts</td><td>nume, brand, ingrediente, cantitate, valori nutriționale.</td><td>import asistat pentru produse.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="api">
+        <h2>8. API și formate de răspuns</h2>
+        <p>
+            Endpointurile API sunt fișiere PHP din directorul <code>api/</code>. Rutarea se face prin parametrul <code>action</code>, folosind <code>match($action)</code> pentru separarea acțiunilor.
+        </p>
+        <h3>8.1 Endpointuri principale</h3>
+        <table>
+            <thead><tr><th>Fișier</th><th>Acțiuni reprezentative</th><th>Format</th></tr></thead>
+            <tbody>
+            <tr><td><code>api/users.php</code></td><td>register, login, logout, me</td><td>JSON</td></tr>
+            <tr><td><code>api/product.php</code></td><td>list, get, top, search, toggle_favorite, rate, get_ratings, increment_view, off_search</td><td>JSON</td></tr>
+            <tr><td><code>api/shopping-list.php</code></td><td>my_lists, create, share, shared_view, shared_mark, add_item, mark_purchased</td><td>JSON</td></tr>
+            <tr><td><code>api/stats.php</code></td><td>top_products, most_favorited, category_distribution, avg_rating, products_over_time, export_csv, export_json, export_svg</td><td>JSON/CSV/SVG</td></tr>
+            <tr><td><code>api/rss.php</code></td><td>feed produse populare</td><td>RSS XML</td></tr>
+            <tr><td><code>api/admin.php</code></td><td>stats, form_data, list_products, create_product, import_csv, list_users, update_role</td><td>JSON/CSV/JSON download</td></tr>
+            </tbody>
+        </table>
+        <h3>8.2 Motivația formatelor</h3>
+        <ul>
+            <li><strong>JSON</strong> este folosit pentru comunicarea dintre frontend și backend.</li>
+            <li><strong>CSV</strong> este folosit pentru export tabelar ușor de deschis în Excel/Sheets.</li>
+            <li><strong>SVG</strong> este folosit pentru grafice portabile, randabile direct în browser.</li>
+            <li><strong>RSS</strong> permite citirea automată a clasamentului de către aplicații externe sau feed readers.</li>
+        </ul>
+    </section>
+
+    <section id="security">
+        <h2>9. Securitate</h2>
+        <h3>9.1 Autentificare JWT</h3>
+        <p>
+            Autentificarea a fost refactorizată de la sesiuni PHP spre JWT implementat manual. <code>JWTService</code> creează și verifică tokenuri HS256, folosind HMAC-SHA256 și Base64URL. Payload-ul conține <code>user_id</code>, <code>role</code>, <code>iat</code> și <code>exp</code>.
+        </p>
+        <h3>9.2 Cookie securizat</h3>
+        <p>
+            <code>CookieService</code> salvează tokenul într-un cookie <code>HttpOnly</code>, cu <code>SameSite=Lax</code> și <code>secure=true</code> pentru HTTPS. <code>HttpOnly</code> reduce riscul ca JavaScript malițios să citească tokenul, iar <code>SameSite=Lax</code> reduce riscul unor atacuri CSRF obișnuite.
+        </p>
+        <h3>9.3 Autorizare</h3>
+        <p>
+            <code>AuthGuard</code> expune metodele <code>requireAuth()</code>, <code>requireAdmin()</code> și <code>requireGuest()</code>. Pentru admin, rolul este citit din JWT prin <code>UserService::getCurrentRole()</code>, fără query suplimentar către baza de date.
+        </p>
+        <h3>9.4 Protecții suplimentare</h3>
+        <ul>
+            <li>Parolele sunt hash-uite cu <code>password_hash</code>.</li>
+            <li>SQL injection este limitat prin PDO prepared statements.</li>
+            <li>XSS este limitat prin <code>htmlspecialchars</code> la output.</li>
+            <li>Valorile sunt validate în servicii și controllere.</li>
+        </ul>
+        <p class="note">
+            Observație: în arhiva analizată mai există apeluri <code>session_start()</code> în mai multe fișiere istorice, inclusiv pagini, admin și câteva endpointuri API. Autentificarea este bazată pe JWT, dar pentru coerență cu afirmația „sesiunile au fost eliminate complet”, aceste apeluri ar trebui șterse înainte de predare.
+        </p>
+    </section>
+
+    <section id="development">
+        <h2>10. Etape intermediare ale dezvoltării</h2>
+        <table>
+            <thead><tr><th>Etapă</th><th>Conținut</th><th>Rezultat</th></tr></thead>
+            <tbody>
+            <tr><td>Fundație</td><td>structură proiect, migrații, modele, repositories, env config.</td><td>bază tehnică pentru aplicație.</td></tr>
+            <tr><td>Autentificare și home</td><td>login/register, pagină home, navigație.</td><td>flux inițial utilizator.</td></tr>
+            <tr><td>Catalog</td><td>API produse, filtre, favorite persistente, ratinguri.</td><td>catalog dinamic prin AJAX.</td></tr>
+            <tr><td>Templates și produs</td><td>header/navbar/footer reutilizabile, pagină detaliată produs.</td><td>UI coerent și reutilizabil.</td></tr>
+            <tr><td>Shopping list</td><td>liste, itemi, mood, buget, shop mode, partajare.</td><td>funcționalitate completă de organizare cumpărături.</td></tr>
+            <tr><td>Shared view</td><td>polling la 3 secunde, badge Live, swipe mobile.</td><td>sincronizare periodică pentru liste partajate.</td></tr>
+            <tr><td>Statistici</td><td>service statistici, endpointuri, grafice, exporturi.</td><td>JSON/CSV/SVG pentru date agregate.</td></tr>
+            <tr><td>RSS</td><td>feed cu produse populare.</td><td>interoperabilitate cu feed readers.</td></tr>
+            <tr><td>Admin panel</td><td>dashboard, CRUD produse, user management, import/export.</td><td>administrare completă a aplicației.</td></tr>
+            <tr><td>JWT și modularizare</td><td>JWTService, CookieService, AdminService, AdminController, ShoppingListService.</td><td>separare mai bună și autentificare fără dependență de sesiuni pentru roluri.</td></tr>
+            <tr><td>Open Food Facts</td><td>căutare după nume/cod de bare și mapare spre produs intern.</td><td>funcționalitate bonus de import date.</td></tr>
+            <tr><td>Deploy și validare</td><td>Dockerfile, Railway, Stylelint.</td><td>proiect hostabil și CSS verificabil.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="testing">
+        <h2>11. Testare și validare</h2>
+        <h3>11.1 Testare manuală recomandată</h3>
+        <ul>
+            <li>înregistrare cont nou și login/logout;</li>
+            <li>login cu admin și acces la paginile admin;</li>
+            <li>catalog: filtre, căutare, paginare;</li>
+            <li>pagină produs: favorite, rating, recenzii, incrementare vizualizări;</li>
+            <li>liste: creare, redenumire, adăugare produse, bifare, ștergere, buget, mood;</li>
+            <li>shared view: acces prin token, polling, bifare produs;</li>
+            <li>statistici: JSON, CSV, SVG, RSS;</li>
+            <li>admin: CRUD produs, import CSV, export, schimbare rol utilizator;</li>
+            <li>Open Food Facts: căutare după nume/cod de bare și preluare date.</li>
+        </ul>
+        <h3>11.2 Validare CSS</h3>
+        <pre><code>npm install
+npm run lint:css
+npm run lint:css:fix</code></pre>
+        <h3>11.3 Validare HTML</h3>
+        <p>
+            Paginile principale pot fi verificate cu validatorul W3C. Pentru testare completă, se recomandă validarea paginilor randate în browser, nu doar fișierele PHP sursă.
+        </p>
+    </section>
+
+    <section id="deployment">
+        <h2>12. Deployment</h2>
+        <p>
+            Proiectul este pregătit pentru Railway prin <code>Dockerfile</code> și <code>railway.json</code>. Dockerfile instalează extensiile necesare pentru PostgreSQL, copiază aplicația în container, rulează migrațiile și pornește serverul PHP pe portul furnizat prin variabila <code>PORT</code>.
+        </p>
+        <pre><code>CMD php /var/www/html/db/migrate.php migrate; php -S 0.0.0.0:${PORT:-8080} -t /var/www/html</code></pre>
+        <p>
+            Baza de date folosește variabilele PostgreSQL expuse de Railway: <code>PGHOST</code>, <code>PGPORT</code>, <code>PGDATABASE</code>, <code>PGUSER</code>, <code>PGPASSWORD</code>.
+        </p>
+    </section>
+
+    <section id="references" role="doc-bibliography">
+        <h2>Bibliografie</h2>
+        <ol>
+            <li>Schema.org, <em>ScholarlyArticle</em>, <a href="https://schema.org/ScholarlyArticle">https://schema.org/ScholarlyArticle</a>.</li>
+            <li>Vivliostyle sample, <em>Scholarly HTML — Markedly Smart</em>, <a href="https://vivliostyle.github.io/vivliostyle_doc/samples/scholarly/index.html">https://vivliostyle.github.io/vivliostyle_doc/samples/scholarly/index.html</a>.</li>
+            <li>IEEE SRS template example, <em>Software Requirements Specification Template</em>, <a href="https://web.cs.dal.ca/~hawkey/3130/srs_template-ieee.doc">https://web.cs.dal.ca/~hawkey/3130/srs_template-ieee.doc</a>.</li>
+            <li>Open Food Facts, <em>Public food products database/API</em>, <a href="https://world.openfoodfacts.org/">https://world.openfoodfacts.org/</a>.</li>
+            <li>Railway, <em>Deployment platform</em>, <a href="https://railway.app/">https://railway.app/</a>.</li>
+        </ol>
+    </section>
+
+    <footer>
+        <p>Document generat pentru proiectul SOr — Soft Drink Web Organizer. Versiune pregătită pentru includere în directorul <code>docs/</code> al proiectului.</p>
+    </footer>
+</article>
+</body>
+</html>
