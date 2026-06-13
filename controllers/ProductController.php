@@ -1,36 +1,46 @@
 <?php
 
 require_once __DIR__ . '/../service/ProductService.php';
+require_once __DIR__ . '/../service/UserService.php';
 
 class ProductController
 {
-    public function __construct(private readonly ProductService $productService) {}
+    public function __construct(
+        private readonly ProductService $productService,
+        private readonly UserService    $userService
+    ) {}
+
     public function list(): void
     {
         try {
-            $page = max(1, (int)($_GET['page'] ?? 1));
-            $limit = max(1, min((int)($_GET['limit'] ?? 12), 50));
+            $page   = max(1, (int)($_GET['page']  ?? 1));
+            $limit  = max(1, min((int)($_GET['limit'] ?? 12), 50));
             $offset = ($page - 1) * $limit;
+
             $filters = [
-                'category_id' => $_GET['category_id'] ?? null,
-                'category' => $_GET['category'] ?? null,
-                'season' => $_GET['season'] ?? null,
-                'region' => $_GET['region'] ?? null,
-                'is_vegan' => $_GET['vegan'] ?? null,
-                'is_gluten_free' => $_GET['gluten_free'] ?? null,
-                'search' => $_GET['q'] ?? null,
-                'brand' => $_GET['brand'] ?? null,
+                'category_id'   => $_GET['category_id']  ?? null,
+                'category'      => $_GET['category']      ?? null,
+                'season'        => $_GET['season']        ?? null,
+                'region'        => $_GET['region']        ?? null,
+                'is_vegan'      => $_GET['vegan']         ?? null,
+                'is_gluten_free'=> $_GET['gluten_free']   ?? null,
+                'search'        => $_GET['q']             ?? null,
+                'brand'         => $_GET['brand']         ?? null,
             ];
-            $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+
+            // citim userul din JWT — null dacă nu e logat
+            $user   = $this->userService->getCurrentUser();
+            $userId = $user?->id;
+
             $result = $this->productService->getAll($filters, $limit, $offset, $userId);
 
             $this->jsonSuccess([
-                'products' => $result['products'],
+                'products'   => $result['products'],
                 'pagination' => [
-                    'page' => $page,
-                    'limit' => $result['limit'],
-                    'offset' => $result['offset'],
-                    'total' => $result['total'],
+                    'page'        => $page,
+                    'limit'       => $result['limit'],
+                    'offset'      => $result['offset'],
+                    'total'       => $result['total'],
                     'total_pages' => (int)ceil($result['total'] / $result['limit']),
                 ],
             ]);
@@ -64,9 +74,8 @@ class ProductController
     public function top(): void
     {
         try {
-            $limit = max(1, min((int)($_GET['limit'] ?? 10), 20));
+            $limit    = max(1, min((int)($_GET['limit'] ?? 10), 20));
             $products = $this->productService->getTopViewed($limit);
-
             $this->jsonSuccess(['products' => $products]);
         } catch (Throwable $e) {
             $this->jsonError('Eroare la încărcarea topului.', 500);
@@ -79,29 +88,11 @@ class ProductController
         $this->list();
     }
 
-    private function jsonSuccess(array $data = [], int $status = 200): void
-    {
-        http_response_code($status);
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['success' => true, ...$data], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    private function jsonError(string $message, int $status = 400): void
-    {
-        http_response_code($status);
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode([
-            'success' => false,
-            'message' => $message,
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
     public function toggleFavorite(): void
     {
         try {
-            if (empty($_SESSION['user_id'])) {
+            $user = $this->userService->getCurrentUser();
+            if ($user === null) {
                 $this->jsonError('Trebuie să fii autentificat.', 401);
                 return;
             }
@@ -112,18 +103,14 @@ class ProductController
             }
 
             $productId = (int)($_POST['product_id'] ?? 0);
-
             if ($productId <= 0) {
                 $this->jsonError('Produs invalid.', 400);
                 return;
             }
 
-            $result = $this->productService->toggleFavorite(
-                (int)$_SESSION['user_id'],
-                $productId
-            );
-
+            $result = $this->productService->toggleFavorite($user->id, $productId);
             $this->jsonSuccess($result);
+
         } catch (InvalidArgumentException $e) {
             $this->jsonError($e->getMessage(), 400);
         } catch (RuntimeException $e) {
@@ -136,7 +123,9 @@ class ProductController
     public function rate(): void
     {
         try {
-            if (empty($_SESSION['user_id'])) {
+            // verificăm autentificarea via JWT
+            $user = $this->userService->getCurrentUser();
+            if ($user === null) {
                 $this->jsonError('Trebuie să fii autentificat.', 401);
                 return;
             }
@@ -147,22 +136,17 @@ class ProductController
             }
 
             $productId = (int)($_POST['product_id'] ?? 0);
-            $rating = (int)($_POST['rating'] ?? 0);
-            $review = $_POST['review'] ?? null;
+            $rating    = (int)($_POST['rating']     ?? 0);
+            $review    = $_POST['review']           ?? null;
 
             if ($productId <= 0) {
                 $this->jsonError('Produs invalid.', 400);
                 return;
             }
 
-            $result = $this->productService->addRating(
-                (int)$_SESSION['user_id'],
-                $productId,
-                $rating,
-                $review
-            );
-
+            $result = $this->productService->addRating($user->id, $productId, $rating, $review);
             $this->jsonSuccess($result);
+
         } catch (InvalidArgumentException $e) {
             $this->jsonError($e->getMessage(), 400);
         } catch (RuntimeException $e) {
@@ -176,15 +160,14 @@ class ProductController
     {
         try {
             $productId = (int)($_GET['product_id'] ?? 0);
-
             if ($productId <= 0) {
                 $this->jsonError('Produs invalid.', 400);
                 return;
             }
 
             $ratings = $this->productService->getRatings($productId);
-
             $this->jsonSuccess(['ratings' => $ratings]);
+
         } catch (Throwable $e) {
             $this->jsonError('Eroare la încărcarea ratingurilor.', 500);
         }
@@ -204,20 +187,20 @@ class ProductController
     public function create(): void
     {
         try {
-            $this->requireAdmin();
+            $user = $this->requireAdmin();
 
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 $this->jsonError('Metodă invalidă.', 405);
                 return;
             }
 
-            $product = $this->productService->create($_POST, (int)$_SESSION['user_id']);
-
+            $product = $this->productService->create($_POST, $user->id);
             $this->jsonSuccess(['product' => $product], 201);
+
         } catch (InvalidArgumentException $e) {
             $this->jsonError($e->getMessage(), 400);
         } catch (Throwable $e) {
-            $this->jsonError('Eroare la crearea produsului: ', 500);
+            $this->jsonError('Eroare la crearea produsului.', 500);
         }
     }
 
@@ -231,11 +214,10 @@ class ProductController
                 return;
             }
 
-            $id = (int)($_POST['id'] ?? 0);
-
+            $id      = (int)($_POST['id'] ?? 0);
             $product = $this->productService->update($id, $_POST);
-
             $this->jsonSuccess(['product' => $product]);
+
         } catch (InvalidArgumentException $e) {
             $this->jsonError($e->getMessage(), 400);
         } catch (RuntimeException $e) {
@@ -256,10 +238,9 @@ class ProductController
             }
 
             $id = (int)($_POST['id'] ?? 0);
-
             $this->productService->delete($id);
-
             $this->jsonSuccess(['message' => 'Produs șters cu succes.']);
+
         } catch (InvalidArgumentException $e) {
             $this->jsonError($e->getMessage(), 400);
         } catch (RuntimeException $e) {
@@ -269,16 +250,44 @@ class ProductController
         }
     }
 
-    private function requireAdmin(): void
+    // -------------------------------------------------------------------------
+    // HELPERS PRIVATE
+    // -------------------------------------------------------------------------
+
+    /**
+     * Verifică că userul e logat și are rol de admin via JWT.
+     * Returnează obiectul User dacă e admin.
+     */
+    private function requireAdmin(): \User
     {
-        if (empty($_SESSION['user_id'])) {
+        $user = $this->userService->getCurrentUser();
+
+        if ($user === null) {
             $this->jsonError('Trebuie să fii autentificat.', 401);
             exit;
         }
-        if (($_SESSION['role'] ?? '') !== 'admin') {
+
+        if ($user->role !== 'admin') {
             $this->jsonError('Ai nevoie de rol de admin.', 403);
             exit;
         }
+
+        return $user;
     }
 
+    private function jsonSuccess(array $data = [], int $status = 200): void
+    {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['success' => true, ...$data], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    private function jsonError(string $message, int $status = 400): void
+    {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['success' => false, 'message' => $message], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 }

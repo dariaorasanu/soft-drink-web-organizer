@@ -243,7 +243,7 @@ function initStars() {
         star.addEventListener('mouseleave', () => {
             stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating));
         });
-        
+
         star.addEventListener('click', () => {
             selectedRating = parseInt(star.dataset.value);
             stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating));
