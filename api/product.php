@@ -29,6 +29,11 @@ match ($action) {
         $barcode = trim($_GET['barcode'] ?? '');
         $query = trim($_GET['q'] ?? $_GET['name'] ?? '');
 
+        if ($barcode === '' && preg_match('/^\d{6,}$/', $query) === 1) {
+            $barcode = $query;
+            $query = '';
+        }
+
         if ($barcode === '' && $query === '') {
             http_response_code(400);
             echo json_encode([

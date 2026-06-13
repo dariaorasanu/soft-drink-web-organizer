@@ -482,8 +482,9 @@ async function searchOFF() {
     results.innerHTML = '<div class="admin-loading"><div class="spinner"></div></div>';
 
     try {
+        const isBarcodeSearch = /^\d{6,}$/.test(query);
         const params = new URLSearchParams({ action: 'off_search' });
-        if (/^\d{6,}$/.test(query)) {
+        if (isBarcodeSearch) {
             params.set('barcode', query);
         } else {
             params.set('q', query);
@@ -500,7 +501,7 @@ async function searchOFF() {
 
         const firstName = String(products[0]?.name ?? '').toLowerCase();
         const normalizedQuery = query.toLowerCase();
-        const shouldAutoFill = firstName.includes(normalizedQuery);
+        const shouldAutoFill = isBarcodeSearch || firstName.includes(normalizedQuery);
         if (shouldAutoFill) {
             populateFormFromOFF(products[0]);
         }
