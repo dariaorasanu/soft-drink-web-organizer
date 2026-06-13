@@ -122,10 +122,42 @@ class OpenFoodFactsService
 
     private function getJson(string $url): ?array
     {
+        $response = $this->httpGet($url);
+        if ($response === null) {
+            return null;
+        }
+
+        $data = json_decode($response, true);
+        return is_array($data) ? $data : null;
+    }
+
+    private function httpGet(string $url): ?string
+    {
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_USERAGENT => self::USER_AGENT,
+                CURLOPT_HTTPHEADER => ['Accept: application/json'],
+            ]);
+
+            $response = curl_exec($ch);
+            $statusCode = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+            curl_close($ch);
+
+            if (is_string($response) && $response !== '' && $statusCode >= 200 && $statusCode < 300) {
+                return $response;
+            }
+        }
+
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',
                 'timeout' => 10,
+                'ignore_errors' => true,
                 'header' => implode("\r\n", [
                     'User-Agent: ' . self::USER_AGENT,
                     'Accept: application/json',
@@ -134,12 +166,7 @@ class OpenFoodFactsService
         ]);
 
         $response = @file_get_contents($url, false, $context);
-        if ($response === false) {
-            return null;
-        }
-
-        $data = json_decode($response, true);
-        return is_array($data) ? $data : null;
+        return is_string($response) && $response !== '' ? $response : null;
     }
 
     private function firstValue(array $data, array $keys): ?string
