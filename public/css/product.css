@@ -349,7 +349,7 @@
     white-space: nowrap;
 }
 
-/* Rating stele */
+/* rating stele */
 .stars-input {
     display: flex;
     gap: 0.4rem;
@@ -490,7 +490,7 @@
     }
 }
 
-/* ── Buton back top ──────────────────────────────────── */
+/* buton back */
 .btn-back-top {
     display: inline-flex;
     align-items: center;
@@ -510,7 +510,7 @@
     background: rgb(141 240 192 / 8%);
 }
 
-/* ── Hero meta (brand + rating) ──────────────────────── */
+/* brand + rating */
 .product-hero-meta {
     display: flex;
     align-items: center;
@@ -526,7 +526,7 @@
     font-size: 0.9rem;
 }
 
-/* ── Badge perisabil ─────────────────────────────────── */
+/* badge perisabil */
 .badge-warn {
     padding: 0.25rem 0.6rem;
     background: rgb(247 37 133 / 12%);
@@ -537,7 +537,7 @@
     font-weight: 800;
 }
 
-/* ── Valori nutriționale ─────────────────────────────── */
+/* valori nutritionale */
 .nutrition-per {
     color: #7a7d75;
     font-size: 0.85rem;

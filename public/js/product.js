@@ -222,6 +222,7 @@ async function toggleFavorite() {
     try {
         const res  = await fetch('/api/product.php?action=toggle_favorite', {
             method: 'POST',
+            credentials: 'include',
             body: new URLSearchParams({ product_id: productId }),
         });
         const data = await res.json();
@@ -233,13 +234,16 @@ async function toggleFavorite() {
 function initStars() {
     const stars = document.querySelectorAll('#stars-input .star');
     stars.forEach(star => {
+
         star.addEventListener('mouseover', () => {
             const val = parseInt(star.dataset.value);
             stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= val));
         });
+
         star.addEventListener('mouseleave', () => {
             stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating));
         });
+        
         star.addEventListener('click', () => {
             selectedRating = parseInt(star.dataset.value);
             stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating));
@@ -258,6 +262,7 @@ async function submitRating() {
     try {
         const res  = await fetch('/api/product.php?action=rate', {
             method: 'POST',
+            credentials: 'include',
             body: new URLSearchParams({
                 product_id: productId,
                 rating:     selectedRating,
