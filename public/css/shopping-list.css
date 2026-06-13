@@ -1101,7 +1101,7 @@
 }
 .sm-done-btn:hover { background: #d9fff0; transform: translateY(-2px); }
 
-/* hint  swpie pe mobile*/
+/* hint  swpie pe mobile */
 .sm-swipe-hint {
     position: absolute;
     bottom: 8.5rem;
@@ -1115,7 +1115,7 @@
     font-family: Nunito, sans-serif;
 }
 
-/*pentru telefon */
+/* pentru telefon */
 @media (width <= 768px) {
     .sl-layout {
         grid-template-columns: 1fr;
@@ -1155,7 +1155,7 @@
     .sl-toast { bottom: 5rem; right: 1rem; left: 1rem; max-width: unset; }
 }
 
-/*CSS Variables mood (setate din JS)*/
+/* CSS Variables mood (setate din JS) */
 :root {
     --mood-accent: #8df0c0;
     --mood-glow:   rgb(141 240 192 / 15%);
@@ -1170,7 +1170,7 @@
 .sl-btn-export:hover  { border-color: var(--mood-accent) !important; color: var(--mood-accent) !important; }
 .sl-total-value       { color: var(--mood-accent, #8df0c0) !important; transition: color 0.4s; }
 
-/*Mood badge în header*/
+/* Mood badge în header */
 .sl-mood-badge {
     display: inline-flex;
     align-items: center;
@@ -1188,7 +1188,7 @@
 }
 .sl-mood-badge:hover { background: rgb(141 240 192 / 6%); }
 
-/* Mood picker în sidebar (la creare)*/
+/* Mood picker în sidebar (la creare) */
 .sl-mood-picker-wrap {
     padding: 0.5rem 0.75rem 0.25rem;
     border-bottom: 1px solid #2a2c2a;
@@ -1250,7 +1250,7 @@
     padding: 0.1rem 0.5rem;
 }
 
-/*Buget tracker în header*/
+/* Buget tracker în header */
 .sl-budget-tracker {
     display: none;
     flex-direction: column;
@@ -1274,9 +1274,11 @@
     border-radius: 999px;
     transition: width 0.4s ease, background 0.3s;
 }
+
 .sl-budget-fill.close {
     background: #ffd166;
 }
+
 .sl-budget-fill.over  {
     background: #f72585;
 }
@@ -1287,14 +1289,16 @@
     color: #bcb5aa;
     font-family: Nunito, sans-serif;
 }
+
 .sl-budget-label.close {
     color: #ffd166;
 }
+
 .sl-budget-label.over  {
     color: #f72585;
 }
 
-/*Budget edit input*/
+/* Budget edit input */
 .sl-budget-edit-btn {
     display: flex;
     align-items: center;
@@ -1311,6 +1315,7 @@
     transition: border-color 0.15s, color 0.15s;
     white-space: nowrap;
 }
+
 .sl-budget-edit-btn:hover {
     border-color: #ffd166;
     color: #ffd166;

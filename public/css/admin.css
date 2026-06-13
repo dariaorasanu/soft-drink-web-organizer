@@ -58,8 +58,8 @@
 }
 
 .admin-nav-link.active {
-    background: rgba(141, 240, 192, 0.1);
-    border-color: rgba(141, 240, 192, 0.25);
+    background: rgb(141 240 192 / 10%);
+    border-color: rgb(141 240 192 / 25%);
     color: #8df0c0;
 }
 
@@ -140,7 +140,7 @@
 }
 
 .admin-stat-card:hover {
-    border-color: rgba(141, 240, 192, 0.3);
+    border-color: rgb(141 240 192 / 30%);
 }
 
 .stat-icon {
@@ -284,7 +284,7 @@
 }
 
 .admin-quick-card:hover {
-    border-color: rgba(141, 240, 192, 0.3);
+    border-color: rgb(141 240 192 / 30%);
     background: #2a2d2a;
 }
 
@@ -311,7 +311,7 @@
     border: 1px solid #555753;
     border-radius: 10px;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.15s;
@@ -357,7 +357,7 @@
 }
 
 .admin-table tr:hover td {
-    background: rgba(141, 240, 192, 0.03);
+    background: rgb(141 240 192 / 3%);
 }
 
 .admin-table-loading {
@@ -395,14 +395,14 @@
 }
 
 .role-badge.admin {
-    background: rgba(247, 37, 133, 0.12);
-    border: 1px solid rgba(247, 37, 133, 0.3);
+    background: rgb(247 37 133 / 12%);
+    border: 1px solid rgb(247 37 133 / 30%);
     color: #f72585;
 }
 
 .role-badge.user {
-    background: rgba(141, 240, 192, 0.08);
-    border: 1px solid rgba(141, 240, 192, 0.2);
+    background: rgb(141 240 192 / 8%);
+    border: 1px solid rgb(141 240 192 / 20%);
     color: #8df0c0;
 }
 
@@ -411,8 +411,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(141, 240, 192, 0.15);
-    border: 1px solid rgba(141, 240, 192, 0.3);
+    background: rgb(141 240 192 / 15%);
+    border: 1px solid rgb(141 240 192 / 30%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -442,7 +442,7 @@
     border: 1px solid #555753;
     background: transparent;
     color: #bcb5aa;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     transition: all 0.15s;
 }
 
@@ -480,7 +480,7 @@
     font-size: 0.85rem;
     font-weight: 800;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     transition: all 0.15s;
 }
 
@@ -490,7 +490,7 @@
 }
 
 .page-btn.active {
-    background: rgba(141, 240, 192, 0.12);
+    background: rgb(141 240 192 / 12%);
     border-color: #8df0c0;
     color: #8df0c0;
 }
@@ -505,7 +505,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / 50%);
     z-index: 100;
 }
 
@@ -605,7 +605,7 @@
     border: 1px solid #555753;
     border-radius: 8px;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.15s;
@@ -661,7 +661,7 @@
     font-size: 0.8rem;
     font-weight: 800;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     transition: all 0.15s;
 }
 
@@ -671,7 +671,7 @@
 }
 
 .multiselect-option.selected {
-    background: rgba(141, 240, 192, 0.12);
+    background: rgb(141 240 192 / 12%);
     border-color: #8df0c0;
     color: #8df0c0;
 }
@@ -723,7 +723,7 @@
     border-radius: 8px;
     color: inherit;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     text-align: left;
     transition: border-color 0.15s;
 }
@@ -736,8 +736,8 @@
     margin: 0;
     padding: 0.45rem 0.6rem;
     border-radius: 8px;
-    background: rgba(141, 240, 192, 0.08);
-    border: 1px solid rgba(141, 240, 192, 0.22);
+    background: rgb(141 240 192 / 8%);
+    border: 1px solid rgb(141 240 192 / 22%);
     color: #8df0c0;
     font-size: 0.78rem;
     font-weight: 800;
@@ -786,7 +786,7 @@
     border: 1px solid #555753;
     border-radius: 6px;
     color: #f4f1ea;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-size: 0.8rem;
     font-weight: 800;
     cursor: pointer;
@@ -804,7 +804,7 @@
     border: none;
     border-radius: 10px;
     padding: 0.65rem 1.25rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.875rem;
     cursor: pointer;
@@ -823,7 +823,7 @@
     color: #d8d2c7;
     border-radius: 10px;
     padding: 0.65rem 1.25rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.875rem;
     cursor: pointer;
@@ -843,7 +843,7 @@
     color: #bcb5aa;
     border-radius: 8px;
     padding: 0.4rem 0.85rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.8rem;
     cursor: pointer;
@@ -858,12 +858,12 @@
 }
 
 .btn-danger {
-    background: rgba(247, 37, 133, 0.15);
-    border: 1px solid rgba(247, 37, 133, 0.4);
+    background: rgb(247 37 133 / 15%);
+    border: 1px solid rgb(247 37 133 / 40%);
     color: #f72585;
     border-radius: 10px;
     padding: 0.65rem 1.25rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 800;
     font-size: 0.875rem;
     cursor: pointer;
@@ -871,14 +871,14 @@
 }
 
 .btn-danger:hover {
-    background: rgba(247, 37, 133, 0.25);
+    background: rgb(247 37 133 / 25%);
 }
 
 /* ── Modal ──────────────────────────────────────────────────── */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgb(0 0 0 / 60%);
     z-index: 200;
     display: flex;
     align-items: center;
@@ -932,7 +932,7 @@
     color: #8df0c0;
     padding: 0.75rem 1.25rem;
     border-radius: 12px;
-    font-family: 'Nunito', sans-serif;
+    font-family: Nunito, sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
     z-index: 9999;
@@ -971,7 +971,7 @@
 }
 
 /* ── Responsiv ──────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .admin-layout {
         grid-template-columns: 1fr;
     }
