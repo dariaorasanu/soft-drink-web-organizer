@@ -219,11 +219,6 @@ class OpenFoodFactsService
             return $this->cleanImportedText($generic);
         }
 
-        $categories = $this->firstValue($data, ['categories']);
-        if ($categories !== null && !$this->looksLikeUnsupportedLanguage($categories)) {
-            return $this->cleanImportedText($categories);
-        }
-
         return null;
     }
 
@@ -231,7 +226,8 @@ class OpenFoodFactsService
     {
         $text = strtolower($text);
 
-        return preg_match('/[\\x{0600}-\\x{06FF}\\x{0400}-\\x{04FF}\\x{0590}-\\x{05FF}\\x{4E00}-\\x{9FFF}]/u', $text) === 1
+        return preg_match('/\b(?!ro:|en:)[a-z]{2}:/i', $text) === 1
+            || preg_match('/[\\x{0600}-\\x{06FF}\\x{0400}-\\x{04FF}\\x{0590}-\\x{05FF}\\x{4E00}-\\x{9FFF}]/u', $text) === 1
             || preg_match("/\\b(eau|sucre|acidifiants?|stabilisant|antioxydant|concentr[ée]?|purée|arômes?|matières?|abricot|fraise|boissons?|bebidas?|zumo|jus|wasser|getr[aä]nke?|pflanzliche|lebensmittel|napoj|succo)\\b|\\bd'|jus d'/u", $text) === 1;
     }
 
